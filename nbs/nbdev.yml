@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "hamux"
+  site-url: "https://bhoov.github.io/hamux"
+  description: "ls"
+  repo-branch: main
+  repo-url: "https://github.com/bhoov/hamux"
