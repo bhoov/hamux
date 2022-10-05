@@ -4,6 +4,6 @@ project:
 website:
   title: "hamux"
   site-url: "https://bhoov.github.io/hamux"
-  description: "ls"
+  description: "A Hierarchical Associative Memory User Experience -- A Deep Learning framework built by designing energy functions rather than operations."
   repo-branch: main
   repo-url: "https://github.com/bhoov/hamux"
