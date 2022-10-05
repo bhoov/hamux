@@ -1,0 +1,8 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - 00_lagrangians.ipynb
+      - 01_layers.ipynb
+      - 02_synapses.ipynb
+      - 03_ham.ipynb
