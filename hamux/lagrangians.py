@@ -11,43 +11,43 @@ import numpy as np
 from fastcore.test import *
 import functools as ft
 
-# %% ../nbs/00_lagrangians.ipynb 6
+# %% ../nbs/00_lagrangians.ipynb 7
 def lagr_identity(x): 
     """The Lagrangian whose activation function is simply the identity."""
     return 1 / 2 * jnp.power(x, 2)
 
-# %% ../nbs/00_lagrangians.ipynb 8
+# %% ../nbs/00_lagrangians.ipynb 9
 def lagr_repu(x, 
               n): # Degree of the polynomial in the power unit
     """Rectified Power Unit of degree `n`"""
     return 1 / n * jnp.power(jnp.maximum(x, 0), n)
 
-# %% ../nbs/00_lagrangians.ipynb 11
+# %% ../nbs/00_lagrangians.ipynb 12
 def lagr_relu(x):
     """Rectified Linear Unit. Same as repu of degree 2"""
     return lagr_repu(x, 2)
 
-# %% ../nbs/00_lagrangians.ipynb 14
+# %% ../nbs/00_lagrangians.ipynb 15
 def lagr_softmax(x,
                  beta:float=1.0, # Inverse temperature
                  axis:int=-1): # Dimension over which to apply logsumexp
     """The lagrangian of the softmax -- the logsumexp"""
     return (1/beta * jax.nn.logsumexp(beta * x, axis=axis, keepdims=True))
 
-# %% ../nbs/00_lagrangians.ipynb 17
+# %% ../nbs/00_lagrangians.ipynb 18
 def lagr_exp(x, 
              beta:float=1.0): # Inverse temperature
     """Exponential activation function, as in [Demicirgil et al.](https://arxiv.org/abs/1702.01929). Operates elementwise"""
     return 1 / beta * jnp.exp(beta * x)
 
-# %% ../nbs/00_lagrangians.ipynb 20
+# %% ../nbs/00_lagrangians.ipynb 21
 def lagr_rexp(x, 
              beta:float=1.0): # Inverse temperature
     """Rectified exponential activation function"""
     xclipped = jnp.maximum(x, 0)
     return (1 / beta * jnp.exp(beta * xclipped)-xclipped)
 
-# %% ../nbs/00_lagrangians.ipynb 24
+# %% ../nbs/00_lagrangians.ipynb 25
 @jax.custom_jvp
 def _lagr_tanh(x, beta=1.0):
     return 1 / beta * jnp.log(jnp.cosh(beta * x))
@@ -65,7 +65,7 @@ def lagr_tanh(x,
     """Lagrangian of the tanh activation function"""
     return _lagr_tanh(x, beta)
 
-# %% ../nbs/00_lagrangians.ipynb 28
+# %% ../nbs/00_lagrangians.ipynb 29
 @jax.custom_jvp
 def _lagr_sigmoid(x, 
                   beta=1.0, # Inverse temperature
@@ -93,12 +93,12 @@ def lagr_sigmoid(x,
     """The lagrangian of the sigmoid activation function"""
     return _lagr_sigmoid(x, beta=beta, scale=scale)
 
-# %% ../nbs/00_lagrangians.ipynb 32
+# %% ../nbs/00_lagrangians.ipynb 33
 import treex as tx
 from dataclasses import dataclass
 from typing import *
 
-# %% ../nbs/00_lagrangians.ipynb 33
+# %% ../nbs/00_lagrangians.ipynb 34
 class LIdentity(tx.Module):
     """Reduced Lagrangian whose activation function is the identity function"""
     def __init__(self): pass
@@ -141,7 +141,7 @@ class LSigmoid(tx.Module):
         self.min_beta = min_beta
 
     def __call__(self, x):
-        return lagr_simoid(x, beta=jnp.clip(self.beta, self.min_beta), scale=self.scale).sum()
+        return lagr_sigmoid(x, beta=jnp.clip(self.beta, self.min_beta), scale=self.scale).sum()
     
 class LSoftmax(tx.Module):
     """Reduced Lagrangian whose activation function is the softmax
