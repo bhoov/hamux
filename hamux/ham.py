@@ -15,10 +15,10 @@ from .utils import pytree_save, pytree_load, to_pickleable, align_with_state_dic
 import pickle
 import functools as ft
 from fastcore.utils import *
+from abc import ABC, abstractmethod, abstractproperty
 
-# %% ../nbs/03_ham.ipynb 5
+# %% ../nbs/03_ham.ipynb 6
 class HAM(tx.Module):
-    """Connecting neuron layers and synapses into a hypergraph"""
     layers: List[Layer]
     synapses: List[Synapse]
     connections: List[Tuple[Tuple, int]]
@@ -29,10 +29,18 @@ class HAM(tx.Module):
         self.connections = connections
 
     @property
-    def n_layers(self): return len(self.layers)
+    def n_layers(self):
+        return len(self.layers)
+
     @property
-    def n_synapses(self): return len(self.synapses)
+    def n_synapses(self):
+        return len(self.synapses)
+
     @property
-    def n_connections(self): return len(self.connections)
+    def n_connections(self):
+        return len(self.connections)
+
     @property
-    def layer_taus(self): return [layer.tau for layer in self.layers]
+    def layer_taus(self):
+        return [layer.tau for layer in self.layers]
+
