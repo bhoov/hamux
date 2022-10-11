@@ -47,15 +47,17 @@ building deep, energy-based associative memories.
 
 ## Install
 
-``` sh
-pip install hamux
-```
+    pip install hamux
 
 If you are using accelerators beyond the CPU you will need to install
 the corresponding `jax` and `jaxlib` versions following [their
 documentation](https://github.com/google/jax#installation). E.g.,
 
     pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+
+You can install the requirements for datasets with
+
+    pip install -r requirements-dev.txt
 
 ## How to Use
 

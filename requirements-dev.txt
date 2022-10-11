@@ -1,0 +1,3 @@
+tfds-nightly
+tensorflow
+timm
