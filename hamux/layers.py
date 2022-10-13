@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['IdentityLayer', 'RepuLayer', 'ReluLayer', 'SoftmaxLayer', 'SigmoidLayer', 'TanhLayer', 'ExpLayer', 'RexpLayer',
-           'Layer', 'MakeLayer']
+           'LayerNormLayer', 'Layer', 'MakeLayer']
 
 # %% ../nbs/01_layers.ipynb 5
 import jax
@@ -27,17 +27,24 @@ class Layer(tx.Module):
     bias: jnp.ndarray = tx.Parameter.node(default=None)
 
     def __init__(self, 
-                 lagrangian:tx.Module, # Describes the non-linearity
+                 lagrangian:tx.Module, # Factory function creating lagrangian module describing
+                 # lagrangian:Union[Callable, tx.Module], Either a factory function or the module itself depending on `init_lagr's` value
                  shape:Tuple[int], # Number and shape of neuron assembly
                  tau:float=1.0, # Time constant
                  use_bias:bool=False, # Add bias?
-                 **kwargs): # Arguments passed to initialize the lagrangian
-        self.lagrangian = lagrangian(**kwargs)
+                 init_lagrangian=False, # Initialize the lagrangian with kwargs?
+                 name:str=None, # Overwrite default class name, if provided
+                 **kwargs, # Passed to lagranigan factory
+                ): 
+        self.lagrangian = lagrangian(**kwargs) if init_lagrangian else lagrangian
         self.shape = shape
         assert tau > 0.0, "Tau must be positive and non-zero"
         self.tau = tau
         self.use_bias = use_bias
 
+        if name is not None:
+            self.name = name
+        
     def energy(self, x):
         """The predefined energy of a layer, defined for any lagrangian"""
         if self.initializing():
@@ -80,8 +87,9 @@ class Layer(tx.Module):
             return jax.random.normal(rng, layer_shape)
         return jnp.zeros(layer_shape)
 
-# %% ../nbs/01_layers.ipynb 14
-def MakeLayer(lagrangian_factory):
+# %% ../nbs/01_layers.ipynb 16
+def MakeLayer(lagrangian_factory:Callable, 
+              name:Optional[str]=None): # Name of the new class
     """Hack to make it easy to create new layers from `Layer` utility class.
     
     `delegates` modifies the signature for all Layers. We want a different signature for each type of layer.
@@ -94,18 +102,19 @@ def MakeLayer(lagrangian_factory):
     class Layer(Layer):
         __doc__ = Layer.__doc__
         
-    out = partialler(Layer, lagrangian_factory)
+    out = partialler(Layer, lagrangian_factory, init_lagrangian=True, name=name)
     out.__doc__ = Layer.__doc__
 
     return out
 
-# %% ../nbs/01_layers.ipynb 15
+# %% ../nbs/01_layers.ipynb 17
 # Some reason, docstrings are not showing the new kwargs, and the docs for these are broken. 
-IdentityLayer = MakeLayer(LIdentity)
-RepuLayer = MakeLayer(LRepu)
-ReluLayer = MakeLayer(LRelu)
-SoftmaxLayer = MakeLayer(LSoftmax)
-SigmoidLayer = MakeLayer(LSigmoid)
-TanhLayer = MakeLayer(LTanh)
-ExpLayer = MakeLayer(LExp)
-RexpLayer = MakeLayer(LRexp)
+IdentityLayer = MakeLayer(LIdentity, "identity_layer")
+RepuLayer = MakeLayer(LRepu, "repu_layer")
+ReluLayer = MakeLayer(LRelu, "relu_layer")
+SoftmaxLayer = MakeLayer(LSoftmax, "softmax_layer")
+SigmoidLayer = MakeLayer(LSigmoid, "sigmoid_layer")
+TanhLayer = MakeLayer(LTanh, "tanh_layer")
+ExpLayer = MakeLayer(LExp, "exp_layer")
+RexpLayer = MakeLayer(LRexp, "rexp_layer")
+LayerNormLayer = MakeLayer(LLayerNorm, "layernorm_layer")

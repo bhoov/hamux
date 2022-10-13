@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['HAM']
 
-# %% ../nbs/03_ham.ipynb 2
+# %% ../nbs/03_ham.ipynb 3
 import jax
 import jax.numpy as jnp
 from typing import *
@@ -16,8 +16,9 @@ import pickle
 import functools as ft
 from fastcore.utils import *
 from abc import ABC, abstractmethod, abstractproperty
+import hypernetx as hnetx
 
-# %% ../nbs/03_ham.ipynb 6
+# %% ../nbs/03_ham.ipynb 7
 class HAM(tx.Module):
     layers: List[Layer]
     synapses: List[Synapse]
@@ -37,7 +38,7 @@ class HAM(tx.Module):
     @property
     def layer_taus(self): return [layer.tau for layer in self.layers]
 
-# %% ../nbs/03_ham.ipynb 7
+# %% ../nbs/03_ham.ipynb 8
 @patch
 def activations(self:HAM, 
                 xs:jnp.ndarray): # Collection of states for each layer
@@ -45,7 +46,7 @@ def activations(self:HAM,
     gs = [self.layers[i].g(xs[i]) for i in range(len(xs))]
     return gs
 
-# %% ../nbs/03_ham.ipynb 8
+# %% ../nbs/03_ham.ipynb 9
 @patch
 def layer_energy(self:HAM,
                  xs:jnp.ndarray): # Collection of states for each layer
@@ -75,7 +76,7 @@ def energy(self:HAM,
     energy = self.layer_energy(xs) + self.synapse_energy(gs)
     return energy
 
-# %% ../nbs/03_ham.ipynb 10
+# %% ../nbs/03_ham.ipynb 11
 @patch
 def init_states(self:HAM, 
                 bs=None, # Batch size of the states to initialize, if needed
@@ -97,7 +98,7 @@ def init_states_and_params(self:HAM,
     states = self.init_states(bs, rng=state_key)
     return states, params
 
-# %% ../nbs/03_ham.ipynb 21
+# %% ../nbs/03_ham.ipynb 22
 @patch
 def dEdg(self:HAM, 
          xs:jnp.ndarray):
@@ -117,7 +118,7 @@ def updates(self:HAM,
     """The negative of our dEdg, computing the update direction each layer should descend"""
     return jtu.tree_map(lambda dg: -dg, self.dEdg(xs))
 
-# %% ../nbs/03_ham.ipynb 27
+# %% ../nbs/03_ham.ipynb 28
 @patch
 def step(self:HAM,
     xs: List[jnp.ndarray], # Collection of current states for each layer
@@ -134,7 +135,7 @@ def step(self:HAM,
         next_xs = jtu.tree_map(lambda x, u, alpha: x + alpha * u, xs, updates, alphas)
     return next_xs
 
-# %% ../nbs/03_ham.ipynb 29
+# %% ../nbs/03_ham.ipynb 30
 @patch
 def _statelist_batch_axes(self:HAM):
     """A helper function to tell vmap to batch along the 0'th dimension of each state in the HAM."""
@@ -164,10 +165,11 @@ def vupdates(self:HAM,
     """A vectorized version of `updates`"""
     return jax.vmap(self.updates, in_axes=self._statelist_batch_axes())(xs)
 
-# %% ../nbs/03_ham.ipynb 36
+# %% ../nbs/03_ham.ipynb 37
 @patch
 def load_state_dict(self:HAM, 
                     state_dict:Any): # The dictionary of all parameters, saved by `save_state_dict`
+    """Load the state dictionary for a HAM"""
     if not self.initialized:
         _, self = self.init_states_and_params(jax.random.PRNGKey(0), 1)
     self.connections = state_dict["connections"]
@@ -179,12 +181,14 @@ def load_state_dict(self:HAM,
 def save_state_dict(self:HAM, 
                     fname:Union[str, Path], # Filename of checkpoint to save
                     overwrite:bool=True): # Overwrite an existing file of the same name?
+    """Save the state dictionary for a HAM"""
     to_save = jtu.tree_map(to_pickleable, self.to_dict())
     pytree_save(to_save, fname, overwrite=overwrite)
 
 @patch
 def load_ckpt(self:HAM, 
               ckpt_f:Union[str, Path]): # Filename of checkpoint to load
+    """Load from file name"""
     with open(ckpt_f, "rb") as fp:
         state_dict = pickle.load(fp)
     return self.load_state_dict(state_dict)
