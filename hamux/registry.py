@@ -97,7 +97,8 @@ def fwd_conv(model:hmx.HAM, # HAM where layer[0] is the image input and layer[-1
 def hn(hidden_lagrangian:tx.Module,
        img_shape: Tuple, # Shape of image input to model
        label_shape: Tuple, # Shape of label probabilities,typically (NLABELS,)
-       nhid:int=1000,): # Number of units in hidden layer
+       nhid:int=1000, # Number of units in hidden layer
+       do_norm:bool=False): # If provided, enforce that all weights are standardized
     """Create a Classical Hopfield Network that is intended to be applied on vectorized inputs"""
     layers = [
         hmx.TanhLayer(img_shape),
@@ -105,7 +106,7 @@ def hn(hidden_lagrangian:tx.Module,
     ]
 
     synapses = [
-        hmx.DenseMatrixSynapseWithHiddenLayer(nhid, hidden_lagrangian=hidden_lagrangian),
+        hmx.DenseMatrixSynapseWithHiddenLayer(nhid, hidden_lagrangian=hidden_lagrangian, do_norm=do_norm),
     ]
 
     connections = [

@@ -11,7 +11,7 @@ have a tractable energy function that converges to a fixed point. Our
 deep Hierarchical Associative Memories (HAMs) have several additional
 advantages over traditional Hopfield Networks (HNs):
 
-| Hopfield Networks                                                                                         | HAMUX                                                                                                                                                                                                       |
+| Hopfield Networks (HNs)                                                                                   | Hierarchical Associative Memories (HAMs)                                                                                                                                                                    |
 |-----------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | HNs connect one visible layer to one hidden layer                                                         | HAMs can connect **arbitrary numbers** of layers, as deep as you want                                                                                                                                       |
 | HNs exclusively model layer relationships (*synapses*) as dense matrix multiplications                    | HAMs can be composed of **arbitrary operations**, e.g., convolutions, pooling, attention, $\ldots$                                                                                                          |
