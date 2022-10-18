@@ -8,3 +8,4 @@ dependencies:
   - nb_conda # Assumes jupyter and jupyter_contrib_nbextensions are globally installed
   - cudatoolkit
   - cudnn
+  - ipywidgets
