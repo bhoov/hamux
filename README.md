@@ -47,6 +47,8 @@ building deep, energy-based associative memories.
 
 ## Install
 
+**From pip**:
+
     pip install hamux
 
 If you are using accelerators beyond the CPU you will need to install
@@ -58,6 +60,15 @@ documentation](https://github.com/google/jax#installation). E.g.,
 You can install the requirements for datasets with
 
     pip install -r requirements-dev.txt
+
+**From source**
+
+    git clone ...
+    conda env create -f environment.yml
+    conda activate hamux
+    pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html # If using GPU accelerator
+    pip install -r requirements-dev.txt
+    pip install -e .
 
 ## How to Use
 
