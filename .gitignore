@@ -1,3 +1,6 @@
+_logs
+_dummylogs
+examples/data
 _docs/
 _proc/
 _*/
