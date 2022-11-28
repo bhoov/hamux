@@ -38,6 +38,8 @@ class HAM(tx.Module):
     @property
     def layer_taus(self): return [layer.tau for layer in self.layers]
 
+    def alphas(self, dt): return [dt / tau for tau in self.layer_taus]
+
 # %% ../nbs/03_ham.ipynb 8
 @patch
 def activations(self:HAM, 

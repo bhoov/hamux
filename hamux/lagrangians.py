@@ -254,7 +254,7 @@ class LLayerNorm(tx.Module):
 
     def __init__(self, 
                  gamma=1., # Inverse temperature, for the sharpness of the exponent
-                 delta=0,
+                 delta=0.,
                  eps = 1e-5
                 ): # Minimal accepted value of beta. For energy dynamics, it is important that beta be positive.
         self.gamma = gamma
