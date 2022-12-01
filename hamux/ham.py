@@ -37,7 +37,6 @@ class HAM(tx.Module):
     def n_connections(self): return len(self.connections)
     @property
     def layer_taus(self): return [layer.tau for layer in self.layers]
-
     def alphas(self, dt): return [dt / tau for tau in self.layer_taus]
 
 # %% ../nbs/03_ham.ipynb 8
