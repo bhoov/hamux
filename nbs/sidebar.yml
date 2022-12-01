@@ -6,3 +6,4 @@ website:
       - 01_layers.ipynb
       - 02_synapses.ipynb
       - 03_ham.ipynb
+      - 04_registry.ipynb
