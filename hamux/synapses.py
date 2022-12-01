@@ -5,7 +5,7 @@ __all__ = ['Synapse', 'SimpleDenseSynapse', 'DenseSynapse', 'DenseTensorSynapseW
            'DenseMatrixSynapseWithHiddenLayer', 'ConvSynapse', 'ConvSynapseWithPool', 'AttentionSynapse',
            'SelfAttentionSynapse', 'BinaryMixerSynapse']
 
-# %% ../nbs/02_synapses.ipynb 5
+# %% ../nbs/02_synapses.ipynb 6
 import jax
 import jax.numpy as jnp
 from typing import *
@@ -21,7 +21,7 @@ from string import ascii_letters
 from flax.linen.pooling import max_pool, avg_pool
 from einops import rearrange
 
-# %% ../nbs/02_synapses.ipynb 6
+# %% ../nbs/02_synapses.ipynb 8
 class Synapse(tx.Module, ABC):
     """The simple interface class for any synapse. Define an alignment function through `__call__` that returns a scalar.
 
@@ -36,7 +36,7 @@ class Synapse(tx.Module, ABC):
         """The alignment function of a synapse"""
         pass
 
-# %% ../nbs/02_synapses.ipynb 9
+# %% ../nbs/02_synapses.ipynb 11
 class SimpleDenseSynapse(Synapse):
     """The simplest of dense synapses that connects two layers (with vectorized activations) together"""
     W: jnp.ndarray = tx.Parameter.node() # treex's preferred way of declaring an attribute as a parameter
@@ -45,7 +45,7 @@ class SimpleDenseSynapse(Synapse):
             self.W = nn.initializers.normal(0.02)(tx.next_key(), g1.shape + g2.shape)
         return g1 @ self.W @ g2
 
-# %% ../nbs/02_synapses.ipynb 13
+# %% ../nbs/02_synapses.ipynb 15
 class DenseSynapse(Synapse):
     """A dense synapse that aligns the representations of any number of `gs`.
 
@@ -96,7 +96,7 @@ class DenseSynapse(Synapse):
             einsum_arg = ",".join([Wabcs, ",".join(gabcs)]) + "->"
             return jnp.einsum(einsum_arg, self.W, *gs)
 
-# %% ../nbs/02_synapses.ipynb 16
+# %% ../nbs/02_synapses.ipynb 18
 class DenseTensorSynapseWithHiddenLayer(Synapse):
     """A generalized DenseTensorSynapse that has a hidden lagrangian (non-linearity).
 
@@ -143,7 +143,7 @@ class DenseTensorSynapseWithHiddenLayer(Synapse):
         x = jnp.einsum(einsum_arg, self.W, *gs)
         return self.hidden_lagrangian(x).sum()
 
-# %% ../nbs/02_synapses.ipynb 17
+# %% ../nbs/02_synapses.ipynb 19
 class DenseMatrixSynapseWithHiddenLayer(Synapse):
     """A modified DenseSynapse that has a hidden lagrangian (non-linearity).
 
@@ -184,7 +184,7 @@ class DenseMatrixSynapseWithHiddenLayer(Synapse):
         hid_state = jnp.stack([g @ W for (W, g) in zip(Ws, gs)]).sum(0)
         return self.hidden_lagrangian(hid_state)
 
-# %% ../nbs/02_synapses.ipynb 18
+# %% ../nbs/02_synapses.ipynb 20
 class ConvSynapse(Synapse):
     """A convolutional, binary synapse. Can automatically detect the number of output features from the 2 layers it connects"""
 
@@ -215,7 +215,7 @@ class ConvSynapse(Synapse):
             ).init(tx.next_key(), g1)
         return jnp.multiply(self.conv(g1), g2).sum()
 
-# %% ../nbs/02_synapses.ipynb 20
+# %% ../nbs/02_synapses.ipynb 22
 class ConvSynapseWithPool(Synapse):
     """A convolutional, binary synapse. Can automatically detect the number of output features from the 2 layers it connects"""
 
@@ -260,7 +260,7 @@ class ConvSynapseWithPool(Synapse):
         return jnp.multiply(output, g2).sum()
 
 
-# %% ../nbs/02_synapses.ipynb 22
+# %% ../nbs/02_synapses.ipynb 24
 class AttentionSynapse(Synapse):
     """A generalized synapse of quadratic order, whose update rule looks very similar to the Attention operation of Transformers.
 

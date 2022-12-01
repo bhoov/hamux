@@ -4,7 +4,7 @@
 __all__ = ['IdentityLayer', 'RepuLayer', 'ReluLayer', 'SoftmaxLayer', 'SigmoidLayer', 'TanhLayer', 'ExpLayer', 'RexpLayer',
            'LayerNormLayer', 'Layer', 'MakeLayer']
 
-# %% ../nbs/01_layers.ipynb 5
+# %% ../nbs/01_layers.ipynb 6
 import jax
 import jax.numpy as jnp
 from typing import *
@@ -17,7 +17,7 @@ from fastcore.meta import delegates
 from fastcore.utils import *
 from fastcore.basics import *
 
-# %% ../nbs/01_layers.ipynb 6
+# %% ../nbs/01_layers.ipynb 7
 class Layer(tx.Module):
     """The energy building block of any activation in our network that we want to hold state over time"""
     lagrangian: tx.Module 
@@ -87,7 +87,7 @@ class Layer(tx.Module):
             return jax.random.normal(rng, layer_shape)
         return jnp.zeros(layer_shape)
 
-# %% ../nbs/01_layers.ipynb 16
+# %% ../nbs/01_layers.ipynb 17
 def MakeLayer(lagrangian_factory:Callable, 
               name:Optional[str]=None): # Name of the new class
     """Hack to make it easy to create new layers from `Layer` utility class.
@@ -107,7 +107,7 @@ def MakeLayer(lagrangian_factory:Callable,
 
     return out
 
-# %% ../nbs/01_layers.ipynb 17
+# %% ../nbs/01_layers.ipynb 18
 # Some reason, docstrings are not showing the new kwargs, and the docs for these are broken. 
 IdentityLayer = MakeLayer(LIdentity, "identity_layer")
 RepuLayer = MakeLayer(LRepu, "repu_layer")

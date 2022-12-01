@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['HAM']
 
-# %% ../nbs/03_ham.ipynb 3
+# %% ../nbs/03_ham.ipynb 5
 import jax
 import jax.numpy as jnp
 from typing import *

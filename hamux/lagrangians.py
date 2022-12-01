@@ -2,8 +2,8 @@
 
 # %% auto 0
 __all__ = ['lagr_identity', 'lagr_repu', 'lagr_relu', 'lagr_softmax', 'lagr_exp', 'lagr_rexp', 'lagr_tanh', 'lagr_sigmoid',
-           'lagr_layernorm', 'LIdentity', 'LRepu', 'LRelu', 'LSigmoid', 'LSoftmax', 'LExp', 'LRexp', 'LTanh',
-           'LLayerNorm']
+           'lagr_layernorm', 'lagr_spherical_norm', 'LIdentity', 'LRepu', 'LRelu', 'LSigmoid', 'LSoftmax', 'LExp',
+           'LRexp', 'LTanh', 'LLayerNorm', 'LSphericalNorm']
 
 # %% ../nbs/00_lagrangians.ipynb 3
 import jax.numpy as jnp
@@ -125,7 +125,28 @@ def lagr_layernorm(x:jnp.ndarray,
     return D * gamma * y + (delta * x).sum()
 
 
-# %% ../nbs/00_lagrangians.ipynb 35
+# %% ../nbs/00_lagrangians.ipynb 34
+def _simple_spherical_norm(x:jnp.ndarray, 
+                   axis=-1, # Which axis to normalize
+                  ): 
+    """Spherical norm activation function"""
+    xmean = x.mean(axis, keepdims=True)
+    xmeaned = x - xmean
+    denominator = jnp.sqrt(jnp.power(xmeaned, 2).mean(axis, keepdims=True) + eps)
+    return gamma * xmeaned / denominator + delta
+
+def lagr_spherical_norm(x:jnp.ndarray, 
+                   gamma:float=1.0, # Scale the stdev
+                   delta:Union[float, jnp.ndarray]=0., # Shift the mean
+                   axis=-1, # Which axis to normalize
+                   eps=1e-5, # Prevent division by 0
+                  ): 
+    """Lagrangian of the spherical norm activation function"""
+    y = jnp.sqrt(jnp.power(x, 2).sum(axis, keepdims=True) + eps)
+    return gamma * y + (delta * x).sum()
+
+
+# %% ../nbs/00_lagrangians.ipynb 37
 class LIdentity(tx.Module):
     """Reduced Lagrangian whose activation function is the identity function"""
     def __init__(self): pass
@@ -263,3 +284,24 @@ class LLayerNorm(tx.Module):
 
     def __call__(self, x):
         return lagr_layernorm(x, gamma=self.gamma, delta=self.delta, eps=self.eps).sum()
+    
+class LSphericalNorm(tx.Module):
+    """Reduced Lagrangian whose activation function is the spherical L2 norm
+    
+    Parameterized by (gamma, delta), a scale and a shift
+    """
+    # gamma: Union[float, jnp.ndarray] = tx.Parameter.node(default=1.0)
+    # delta: Union[float, jnp.ndarray] = tx.Parameter.node(default=0.)
+    eps: float = 1e-5
+
+    def __init__(self, 
+                 gamma=1., # Inverse temperature, for the sharpness of the exponent
+                 delta=0.,
+                 eps = 1e-5
+                ): # Minimal accepted value of beta. For energy dynamics, it is important that beta be positive.
+        self.gamma = gamma
+        self.delta = delta
+        self.eps = eps
+
+    def __call__(self, x):
+        return lagr_spherical_norm(x, gamma=self.gamma, delta=self.delta, eps=self.eps).sum()

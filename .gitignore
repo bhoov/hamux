@@ -16,6 +16,7 @@ _tmp*
 tmp*
 tags
 *.pkg
+code_example_snippets.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
