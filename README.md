@@ -13,7 +13,7 @@ Networks.
 e**X**perience
 
 <div class="alert alert-info">
-    🚧 <strong>API is in rapid development</strong>. Remember to specify the version when building off of HAMUX.
+    🚧 <strong>HAMUX is in rapid development</strong>. Remember to specify the version when building off of HAMUX.
 </div>
 
 ## A Universal Abstraction for Hopfield Networks
