@@ -217,6 +217,10 @@ print(probs.shape) # batchsize, nclasses
 assert jnp.allclose(probs.sum(-1), 1)
 ```
 
+    (3, 10)
+
+![](index_files/figure-gfm/cell-11-output-1.png)
+
 ## The Energy Function vs the Loss Function
 
 We use JAX’s autograd to descend the energy function of our system AND
