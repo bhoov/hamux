@@ -84,10 +84,12 @@ neuron in a HAM. It turns out that many activation functions used in
 today’s Deep Learning landscape are expressible as a Lagrangian. HAMUX
 is “batteries-included” for many common activation functions including
 `relu`s, `softmax`es, `sigmoid`s, `LayerNorm`s, etc. See our
-[documentation on Lagrangians](...) for examples on how to implement
-efficient activation functions from Lagrangians in JAX. We show how to
-turn Lagrangians into usable energy building blocks in our
-[documentation on neuron layers](...).
+[documentation on
+Lagrangians](https://bhoov.github.io/hamux/lagrangians.html) for
+examples on how to implement efficient activation functions from
+Lagrangians in JAX. We show how to turn Lagrangians into usable energy
+building blocks in our [documentation on neuron
+layers](https://bhoov.github.io/hamux/layers.html).
 
 ### 🤝Synapses
 
@@ -95,7 +97,8 @@ A 🤝synapse ONLY sees activations of connected 🌀neuron layers. Its one
 job: report HIGH ⚡️energy if the connected activations are dissimilar
 and LOW ⚡️energy when they are aligned. Synapses can resemble
 convolutions, dense multiplications, even attention… Take a look at our
-\[documentation on synapses\].
+[documentation on
+synapses](https://bhoov.github.io/hamux/synapses.html).
 
 <div class="alert alert-info">
     🚨 <strong>Point of confusion</strong>: modern AI frameworks have <code>AttentionLayer</code>s and <code>ConvolutionalLayer</code>s. In HAMUX, these would be more appropriately called <code>AttentionSynapse</code>s and <code>ConvolutionalSynapse</code>s.
