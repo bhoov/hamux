@@ -179,11 +179,16 @@ def load_state_dict(self:HAM,
     return self
 
 @patch
+def to_state_dict(self:HAM):
+    """Convert HAM to state dictionary of parameters and connections"""
+    return jtu.tree_map(to_pickleable, self.to_dict())
+
+@patch
 def save_state_dict(self:HAM, 
                     fname:Union[str, Path], # Filename of checkpoint to save
                     overwrite:bool=True): # Overwrite an existing file of the same name?
     """Save the state dictionary for a HAM"""
-    to_save = jtu.tree_map(to_pickleable, self.to_dict())
+    to_save = self.to_state_dict()
     pytree_save(to_save, fname, overwrite=overwrite)
 
 @patch
