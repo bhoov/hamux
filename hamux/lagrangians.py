@@ -39,7 +39,6 @@ def lagr_softmax(x,
     """The lagrangian of the softmax -- the logsumexp"""
     return (1/beta * jax.nn.logsumexp(beta * x, axis=axis, keepdims=True))
 
-#| export
 def lagr_softmax_unstable(x,
                  beta:float=1.0, # Inverse temperature
                  axis:int=-1): # Dimension over which to apply logsumexp
@@ -48,7 +47,7 @@ def lagr_softmax_unstable(x,
     The benefit is in porting HAMUX models into the browser, because [TensorFlowJS](https://github.com/tensorflow/tfjs) does not currently support 
     JAX logsumexp
     """
-    return (1/beta * jnp.log(jnp.sum(jnp.exp(beta * x), axis=axis, keepdims=True)))
+    return 1/beta * jnp.log(jnp.sum(jnp.exp(beta * x), axis=axis, keepdims=True))
 
 # %% ../nbs/00_lagrangians.ipynb 18
 def lagr_exp(x, 
