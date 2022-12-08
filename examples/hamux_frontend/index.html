@@ -20,54 +20,35 @@ window.onerror = (message, source, lineno, colno, error) =>
   status.innerText = `### JAVASCRIPT ERROR: ${message} at ${source}:${lineno}`;
 
 // Bypass finite-ness checking
-const IsFinite = (node) => {
-  if (node.inputs) {
-    return tf.logicalNot(tf.logicalOr(tf.isNaN(node.inputs[0]), tf.isInf(node.inputs[0])))
-  }
+const IsFinite = (vec) => {
   return true
-  // return true
+  // tf.logicalNot(tf.logicalOr(tf.isNaN(vec), tf.isInf(vec)))
 }
 tf.registerOp('IsFinite', IsFinite);
 
-const modelDir = 'flax_model';
+const modelDir = 'hamux_model';
 tf.loadGraphModel(modelDir + '/model.json', {
     onProgress: p => status.innerText = `loading model: ${Math.round(p*100)}%`
 }).then(async model => {
   console.log('loaded', model)
   status.textContent = 'ready!'
-
-  // const imgs = tf.ones([1,28,28]).cast('float32')
-  const imgs = tf.ones([784,]).cast('float32')
-  const logits = tf.zeros([10,]).cast('float32')
+  const imgs = tf.ones([784]).cast('float32')
+  const logits = tf.zeros([10]).cast('float32')
   const dt = tf.tensor([0.000001]).cast('float32')
   console.log("p5")
 
-  const input = {
-    "xs_0": imgs,
-    "xs_1": logits
-  }
-  // const output = model.predict(input)
-  const output = model.execute(input)
-  // const output = model.predict(input)
+  // let outputs = awaijt model.executeAsync(
+  //   { 'img_pixels' : imgs, "labels": logits, "dt": dt },
+  //   [ 'energy','next_imgs','next_labels']);
+  // tf.print(outputs);
+  // BREAKS HERE
+  const output = model.predict([dt, logits, imgs])
+  console.log("p6")
+  console.log("OUTPUT")
 
-  // const output = model.predict(imgs)
-
-  // const imglogits = tf.ones([1,794]).cast('float32')
-  // const output = model.execute([imglogits])
-
-  // const imgflat= tf.ones([1,784]).cast('float32')
-  // const imgflat= tf.ones([794,]).cast('float32')
-  // const output = model.execute([imgflat])
-  console.log(output)
-  const [energy, x1next, x2next] = output
-  console.log(output.length)
-  console.log(Object.keys(output))
-  // const outputData = await output[0].data()
-  // console.log("OUTPUT", outputData)
-
-  console.log(`Energy: ${energy.dataSync().length}`)
-  console.log(`Next imgs: ${x1next.dataSync().length}`)
-  console.log(`Next logits: ${x2next.dataSync().length}`)
+  // console.log(`Energy: ${energy.dataSync()}`)
+  // console.log(`Next imgs: ${newimgs.dataSync()}`)
+  // console.log(`Next logits: ${newlogits.dataSync()}`)
 
   // const ui = mnist_ui(document.querySelector('#mnist'))
   // ui.onUpdate(img => {
@@ -79,8 +60,7 @@ tf.loadGraphModel(modelDir + '/model.json', {
   //   ui.showPreds([...values.dataSync()], [...indices.dataSync()])
   // })
 
+}).catch(error => {
+  status.textContent = 'ERROR : ' + error.message
 })
-// .catch(error => {
-//   status.textContent = 'ERROR : ' + error.message
-// })
 </script>
