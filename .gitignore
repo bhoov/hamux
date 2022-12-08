@@ -20,6 +20,7 @@ tags
 code_example_snippets.py
 model.json
 *.bin
+flaxrepo
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
