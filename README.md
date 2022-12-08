@@ -58,7 +58,7 @@ signals from a layer’s connected synapses (red circles in the figure
 below) can tell the hidden state how to change. This is shown in the
 following equation:
 
-$$\tau \frac{d x_{i}^{l}}{dt} = \frac{\partial E}{\partial g_i^l}$$
+$$\tau \frac{d x_{i}^{l}}{dt} = -\frac{\partial E}{\partial g_i^l}$$
 
 where $g_i^l$ are the *activations* (i.e., non-linearities) on each
 neuron layer, described in the section on [Neuron
