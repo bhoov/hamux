@@ -67,7 +67,7 @@ differential equation as the following discretized equation (where the
 bold ${\mathbf x}_l$ is the collection of all elements in layer $l$’s
 state):
 
-$$ {\mathbf x}_l^{(t+1)} = {\mathbf x}_l^{(t)} - \frac{dt}{\tau} \nabla_{{\mathbf g}_l}E(t)$$
+$$ \mathbf{x}_l^{(t+1)} = \mathbf{x}_l^{(t)} - \frac{dt}{\tau} \nabla_{\mathbf{g}_l}E(t)$$
 
 HAMUX handles all the complexity of scaling this fundamental update
 equation to many layers and synapses. In addition, it provides a
