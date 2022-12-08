@@ -18,6 +18,8 @@ tmp*
 tags
 *.pkg
 code_example_snippets.py
+model.json
+*.bin
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
