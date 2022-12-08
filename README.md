@@ -6,8 +6,7 @@ HAMUX
 <img src="https://raw.githubusercontent.com/bhoov/hamux/main/assets/header.png" alt="HAMUX Logo" width="400"/>
 
 Part proof-of-concept, part functional prototype, HAMUX is designed to
-bridge modern AI architectures and biologically plausible Hopfield
-Networks.
+bridge modern AI architectures and Hopfield Networks.
 
 **HAMUX**: A **H**ierarchical **A**ssociative **M**emory **U**ser
 e**X**perience
@@ -32,25 +31,29 @@ guaranteed to have a *tractable energy* function that *converges* to a
 fixed point. Our deep [Hierarchical Associative
 Memories](https://arxiv.org/abs/2107.06446) (HAMs) have several
 additional advantages over traditional [Hopfield
-Networks](https://en.wikipedia.org/wiki/Hopfield_network) (HNs):
+Networks](http://www.scholarpedia.org/article/Hopfield_network) (HNs):
 
-| Hopfield Networks (HNs)                                | Hierarchical Associative Memories (HAMs)                                                       |
-|--------------------------------------------------------|------------------------------------------------------------------------------------------------|
-| HNs are only **two layers** systems                    | HAMs connect **any number** of layers                                                          |
-| HNs model only **linear relationships** between layers | HAMs model **any differentiable operation** (e.g., convolutions, pooling, attention, $\ldots$) |
-| HNs use only **pairwise synapses**                     | HAMs use **many-body synapses**                                                                |
+| Hopfield Networks (HNs)                                | Hierarchical Associative Memories (HAMs)                                                                   |
+|--------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| HNs are only **two layers** systems                    | HAMs connect **any number** of layers                                                                      |
+| HNs model only **simple relationships** between layers | HAMs model **any complex but differentiable operation** (e.g., convolutions, pooling, attention, $\ldots$) |
+| HNs use only **pairwise synapses**                     | HAMs use **many-body synapses**                                                                            |
 
 ## How does HAMUX work?
 
 > **HAMUX** is a
 > <a href="https://en.wikipedia.org/wiki/Hypergraph" >hypergraph</a> of
 > 🌀neurons connected via 🤝synapses, an abstraction sufficiently
-> general to model the complexity of connections contained in the 🧠.
+> general to model the complexity of connections used in modern AI
+> architectures
 
 HAMUX defines two fundamental building blocks of energy: the **🌀neuron
-layer** and the **🤝synapse**, connected via a **hypergraph**
+layer** and the **🤝synapse**, connected via a **hypergraph**.
 
+<figure>
 <img src="https://raw.githubusercontent.com/bhoov/hamux/main/assets/fig1.png" alt="HAMUX Overview" width="700"/>
+<figcaption style="color:#999">Explaining the "energy fundamentals" of HAMUX (Layers and Synapses, left) using a 4-layer, 3-synapse example HAM (middle) that can be built using the code on the right.</figcaption>
+</figure>
 
 ### 🌀Neuron Layers
 
@@ -244,7 +247,7 @@ next_states = jax.tree_util.tree_map(lambda state, score: state - stepsize, stat
 ```
 
 But it turns out we improve the efficiency of our network if we instead
-take $\nabla_g E$: the derivative of the energy wrt. the *activations*
+take $\nabla_g E$: the derivative of the energy wrt the *activations*
 instead of the *states*. They have the same local minima, even though
 the trajectory to get there is different. Some nice terms cancel, and we
 get:
