@@ -62,7 +62,7 @@ $$\tau \frac{d x_{i}^{l}}{dt} = \frac{\partial E}{\partial g_i^l}$$
 
 where $g_i^l$ are the *activations* (i.e., non-linearities) on each
 neuron layer, described in the section on [Neuron
-Layers](#🌀Neuron-Layers) below. Concretely, we implement the above
+Layers](#🌀Neuron-Layers). Concretely, we implement the above
 differential equation as the following discretized equation (where the
 bold ${\mathbf x}_l$ is the collection of all elements in layer $l$’s
 state):
@@ -71,19 +71,22 @@ $$ {\mathbf x}_l^{(t+1)} = {\mathbf x}_l^{(t)} - \frac{dt}{\tau} \nabla_{{\mathb
 
 HAMUX handles all the complexity of scaling this fundamental update
 equation to many layers and synapses. In addition, it provides a
-*framework* to: 1. Implement your favorite Deep Learning operations as a
-[Synapse](https://bhoov.github.io/hamux/synapses.html) 2. Port over your
-favorite activation functions as
-[Lagrangians](https://bhoov.github.io/hamux/lagrangians.html) 3. Connect
-your layers and synapses into a
-[HAM](https://bhoov.github.io/hamux/ham.html) (using a hypergraph as the
-data structure) 4. Inject your data into the associative memory 5.
-Automatically calculate and descend the energy given the hidden states
-at any point in time
+*framework* to:
 
-All of this made possible by [JAX](https://github.com/google/jax). Use
-these features to train any hierarchical associative memory on your own
-data!
+1.  Implement your favorite Deep Learning operations as a
+    [Synapse](https://bhoov.github.io/hamux/synapses.html)
+2.  Port over your favorite activation functions as
+    [Lagrangians](https://bhoov.github.io/hamux/lagrangians.html)
+3.  Connect your layers and synapses into a
+    [HAM](https://bhoov.github.io/hamux/ham.html) (using a hypergraph as
+    the data structure)
+4.  Inject your data into the associative memory
+5.  Automatically calculate and descend the energy given the hidden
+    states at any point in time
+
+Use these features to train any hierarchical associative memory on your
+own data! All of this made possible by
+[JAX](https://github.com/google/jax).
 
 The `examples/` subdirectory contains a (growing) list of examples on
 how to apply HAMUX on real data.
