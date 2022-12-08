@@ -9,7 +9,9 @@ Part proof-of-concept, part functional prototype, HAMUX is designed to
 bridge modern AI architectures and Hopfield Networks.
 
 **HAMUX**: A **H**ierarchical **A**ssociative **M**emory **U**ser
-e**X**perience
+e**X**perience.
+
+[Documentation](https://bhoov.github.io/hamux)
 
 <div class="alert alert-info">
     🚧 <strong>HAMUX is in rapid development</strong>. Remember to specify the version when building off of HAMUX.
@@ -45,10 +47,46 @@ Networks](http://www.scholarpedia.org/article/Hopfield_network) (HNs):
 > <a href="https://en.wikipedia.org/wiki/Hypergraph" >hypergraph</a> of
 > 🌀neurons connected via 🤝synapses, an abstraction sufficiently
 > general to model the complexity of connections used in modern AI
-> architectures
+> architectures.
 
 HAMUX defines two fundamental building blocks of energy: the **🌀neuron
-layer** and the **🤝synapse**, connected via a **hypergraph**.
+layer** and the **🤝synapse**, connected via a **hypergraph**. It is a
+fully dynamical system, where the “hidden state” $x_i^l$ of each layer
+$l$ (blue squares in the figure below) is an independent variable that
+evolves over time. The update rule of each layer is entirely local; only
+signals from a layer’s connected synapses (red circles in the figure
+below) can tell the hidden state how to change. This is shown in the
+following equation:
+
+$$\tau \frac{d x_{i}^{l}}{dt} = \frac{\partial E}{\partial g_i^l}$$
+
+where $g_i^l$ are the *activations* (i.e., non-linearities) on each
+neuron layer, described in the section on [Neuron
+Layers](#🌀Neuron-Layers) below. Concretely, we implement the above
+differential equation as the following discretized equation (where the
+bold ${\mathbf x}_l$ is the collection of all elements in layer $l$’s
+state):
+
+$$ {\mathbf x}_l^{(t+1)} = {\mathbf x}_l^{(t)} - \frac{dt}{\tau} \nabla_{{\mathbf g}_l}E(t)$$
+
+HAMUX handles all the complexity of scaling this fundamental update
+equation to many layers and synapses. In addition, it provides a
+*framework* to: 1. Implement your favorite Deep Learning operations as a
+[Synapse](https://bhoov.github.io/hamux/synapses.html) 2. Port over your
+favorite activation functions as
+[Lagrangians](https://bhoov.github.io/hamux/lagrangians.html) 3. Connect
+your layers and synapses into a
+[HAM](https://bhoov.github.io/hamux/ham.html) (using a hypergraph as the
+data structure) 4. Inject your data into the associative memory 5.
+Automatically calculate and descend the energy given the hidden states
+at any point in time
+
+All of this made possible by [JAX](https://github.com/google/jax). Use
+these features to train any hierarchical associative memory on your own
+data!
+
+The `examples/` subdirectory contains a (growing) list of examples on
+how to apply HAMUX on real data.
 
 <figure>
 <img src="https://raw.githubusercontent.com/bhoov/hamux/main/assets/fig1.png" alt="HAMUX Overview" width="700"/>
@@ -102,7 +140,7 @@ convolutions, dense multiplications, even attention… Take a look at our
 synapses](https://bhoov.github.io/hamux/synapses.html).
 
 <div class="alert alert-info">
-    🚨 <strong>Point of confusion</strong>: modern AI frameworks have <code>AttentionLayer</code>s and <code>ConvolutionalLayer</code>s. In HAMUX, these would be more appropriately called <code>AttentionSynapse</code>s and <code>ConvolutionalSynapse</code>s.
+    🚨 <strong>Point of confusion</strong>: modern AI frameworks have <code>ConvLayer</code>s and <code>NormalizationLayer</code>s. In HAMUX, these would be more appropriately called <code>ConvSynapse</code>s and <code>NormalizationLagrangian</code>s.
 </div>
 
 ## Install
@@ -224,6 +262,10 @@ assert jnp.allclose(probs.sum(-1), 1)
 
 ![](index_files/figure-gfm/cell-11-output-1.png)
 
+<div class="alert alert-info">
+    More examples coming soon!
+</div>
+
 ## The Energy Function vs the Loss Function
 
 We use JAX’s autograd to descend the energy function of our system AND
@@ -263,8 +305,16 @@ def fscore_smart(xs):
 next_states = jax.tree_util.tree_map(lambda state, score: state - stepsize, states, fscore_smart(states))
 ```
 
-## Citation
+## Credits
+
+Read our extended abstract on OpenReview: [HAMUX: A Universal
+Abstraction for Hierarchical Hopfield
+Networks](https://openreview.net/forum?id=SAv3nhzNWhw)
 
 Work is a collaboration between the [MIT-IBM Watson AI
 Lab](https://mitibmwatsonailab.mit.edu/) and the
-[PoloClub](https://poloclub.github.io/) @ GA Tech
+[PoloClub](https://poloclub.github.io/) @ GA Tech. - [Ben
+Hoover](https://www.bhoov.com/) (IBM & GATech) - [Polo
+Chau](https://faculty.cc.gatech.edu/~dchau/) (GATech) - [Hendrik
+Strobelt](http://hendrik.strobelt.com/) (IBM) - [Dmitry
+Krotov](https://mitibmwatsonailab.mit.edu/people/dmitry-krotov/) (IBM)
