@@ -59,15 +59,24 @@ tf.loadGraphModel(modelDir + '/model.json', {
   // const imgflat= tf.ones([794,]).cast('float32')
   // const output = model.execute([imgflat])
   console.log(output)
-  const [energy, x1next, x2next] = output
+  let [x2next, energy, x1next] = output
   console.log(output.length)
   console.log(Object.keys(output))
   // const outputData = await output[0].data()
   // console.log("OUTPUT", outputData)
 
-  console.log(`Energy: ${energy.dataSync().length}`)
-  console.log(`Next imgs: ${x1next.dataSync().length}`)
-  console.log(`Next logits: ${x2next.dataSync().length}`)
+  energy = energy.dataSync()
+  x1next = x1next.dataSync()
+  x2next = x2next.dataSync()
+
+  console.log(`Energy: ${energy.length}`)
+  console.log(`Next imgs: ${x1next.length}`)
+  console.log(`Next logits: ${x2next.length}`)
+
+  console.log(`Energy: ${energy}`)
+  console.log(`Next imgs: ${x1next}`)
+  console.log(`Next logits: ${x2next}`)
+
 
   // const ui = mnist_ui(document.querySelector('#mnist'))
   // ui.onUpdate(img => {

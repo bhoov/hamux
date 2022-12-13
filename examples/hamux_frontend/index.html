@@ -20,9 +20,13 @@ window.onerror = (message, source, lineno, colno, error) =>
   status.innerText = `### JAVASCRIPT ERROR: ${message} at ${source}:${lineno}`;
 
 // Bypass finite-ness checking
-const IsFinite = (vec) => {
+// Bypass finite-ness checking
+const IsFinite = (node) => {
+  if (node.inputs) {
+    return tf.logicalNot(tf.logicalOr(tf.isNaN(node.inputs[0]), tf.isInf(node.inputs[0])))
+  }
   return true
-  // tf.logicalNot(tf.logicalOr(tf.isNaN(vec), tf.isInf(vec)))
+  // return true
 }
 tf.registerOp('IsFinite', IsFinite);
 
@@ -31,10 +35,15 @@ tf.loadGraphModel(modelDir + '/model.json', {
     onProgress: p => status.innerText = `loading model: ${Math.round(p*100)}%`
 }).then(async model => {
   console.log('loaded', model)
+  let keys = Object.keys(model.artifacts.signature.inputs)
+  console.log("order", keys)
+  console.log("order output", Object.keys(model.artifacts.signature.outputs))
+
+  model.artifacts.signature.outputs // object_2, object_1, object_0
   status.textContent = 'ready!'
-  const imgs = tf.ones([784]).cast('float32')
-  const logits = tf.zeros([10]).cast('float32')
-  const dt = tf.tensor([0.000001]).cast('float32')
+  const imgs = tf.ones([1,784]).cast('float32')
+  const logits = tf.ones([1,10]).cast('float32')
+  const dt = tf.tensor([0.2]).cast('float32')
   console.log("p5")
 
   // let outputs = awaijt model.executeAsync(
@@ -42,9 +51,25 @@ tf.loadGraphModel(modelDir + '/model.json', {
   //   [ 'energy','next_imgs','next_labels']);
   // tf.print(outputs);
   // BREAKS HERE
-  const output = model.predict([dt, logits, imgs])
+  const output = model.predict([imgs, logits, dt], ["Identity", "Identity_1", "Identity_2"])
+
+  // Try model.execute(..., output_names=...)
+  // 
+  let [energy, x1next, x2next] = output
   console.log("p6")
   console.log("OUTPUT")
+
+  energy = energy.dataSync()
+  x1next = x1next.dataSync()
+  x2next = x2next.dataSync()
+
+  console.log(`Energy: ${energy.length}`)
+  console.log(`Next imgs: ${x1next.length}`)
+  console.log(`Next logits: ${x2next.length}`)
+
+  console.log(`Energy: ${energy}`)
+  console.log(`Next imgs: ${x1next}`)
+  console.log(`Next logits: ${x2next}`)
 
   // console.log(`Energy: ${energy.dataSync()}`)
   // console.log(`Next imgs: ${newimgs.dataSync()}`)
