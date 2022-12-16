@@ -2,90 +2,93 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.1.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ramda/0.28.0/ramda.js"
+  integrity="sha512-ZZcBsXW4OcbCTfDlXbzGCamH1cANkg6EfZAN2ukOl7s5q8skbB+WndmAqFT8fuMzeuHkceqd5UbIDn7fcqJFgg=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="mnist_ui.js"></script>
+<script src="tfjsHelpers.js" type="module"></script>
+
 <style>
-  #mnist * { display: block; }
-  #mnist canvas { border: 1px solid black; }
+  #mnist * {
+    display: block;
+  }
+
+  #mnist canvas {
+    border: 1px solid black;
+  }
 </style>
 
 <pre id="status">initializing...</pre>
 <div id="mnist"></div>
 
-<script>
+<script type="module">
+  import { TFJSInterface } from "./tfjsHelpers.js"
+  const status = document.querySelector('#status')
 
-const status = document.querySelector('#status')
-status.innerText = 'loading model: 0%'
+  window.onerror = (message, source, lineno, colno, error) =>
+    status.innerText = `### JAVASCRIPT ERROR: ${message} at ${source}:${lineno}`;
 
-window.onerror = (message, source, lineno, colno, error) =>
-  status.innerText = `### JAVASCRIPT ERROR: ${message} at ${source}:${lineno}`;
+  console.log(R.sortBy(R.identity)(["blank", 'aaa', "abc"]))
 
-// Bypass finite-ness checking
-// Bypass finite-ness checking
-const IsFinite = (node) => {
-  if (node.inputs) {
-    return tf.logicalNot(tf.logicalOr(tf.isNaN(node.inputs[0]), tf.isInf(node.inputs[0])))
-  }
-  return true
-  // return true
-}
-tf.registerOp('IsFinite', IsFinite);
+  const modelDir = 'hamux_model2';
+  tf.loadGraphModel(modelDir + '/model.json', {
+    onProgress: p => status.innerText = `loading model: ${Math.round(p * 100)}%`
+  }).then(async model => {
 
-const modelDir = 'hamux_model';
-tf.loadGraphModel(modelDir + '/model.json', {
-    onProgress: p => status.innerText = `loading model: ${Math.round(p*100)}%`
-}).then(async model => {
-  console.log('loaded', model)
-  let keys = Object.keys(model.artifacts.signature.inputs)
-  console.log("order", keys)
-  console.log("order output", Object.keys(model.artifacts.signature.outputs))
+    console.log(model)
+    // TFJS has some weird ordering tricks. Standardize inside of the helper
+    // const modelHelper = TFJSInterface(model, ["energy", "x1next", "x2next"])
+    const modelHelper = TFJSInterface(model, ["energy", "x1next", "x2next", "g1next", "g2next"])
 
-  model.artifacts.signature.outputs // object_2, object_1, object_0
-  status.textContent = 'ready!'
-  const imgs = tf.ones([1,784]).cast('float32')
-  const logits = tf.ones([1,10]).cast('float32')
-  const dt = tf.tensor([0.2]).cast('float32')
-  console.log("p5")
+    status.textContent = 'ready!'
 
-  // let outputs = awaijt model.executeAsync(
-  //   { 'img_pixels' : imgs, "labels": logits, "dt": dt },
-  //   [ 'energy','next_imgs','next_labels']);
-  // tf.print(outputs);
-  // BREAKS HERE
-  const output = model.predict([imgs, logits, dt], ["Identity", "Identity_1", "Identity_2"])
+    let imgsSquare = tf.zeros([1, 28, 28]).cast('float32').bufferSync()
+    let imgs = tf.zeros([1, 784]).cast('float32').bufferSync()
+    let logits = tf.zeros([1, 10]).cast('float32').bufferSync()
+    let dt = tf.tensor([0.02]).cast('float32').bufferSync()
+    let computeDelay = 150
 
-  // Try model.execute(..., output_names=...)
-  // 
-  let [energy, x1next, x2next] = output
-  console.log("p6")
-  console.log("OUTPUT")
+    console.log(imgsSquare.values)
+    logits.values = [0, 1000, 0, 0, 0, 0, 0, 0, 0, 0]
+    // console.log("L0: ", logits.get(0))
+    // logits.set(1000, 0, 1)
+    console.log(logits)
 
-  energy = energy.dataSync()
-  x1next = x1next.dataSync()
-  x2next = x2next.dataSync()
+    /**
+     * The basic stepping function of our model that descends the energy by a tiny amount. 
+     * 
+     * Interacts with and modifies global state variables `imgs`, `logits`, `dt`
+     */
+    async function step() {
+      const output = modelHelper.predict([imgs.toTensor(), logits.toTensor(), dt.toTensor()])
+      // tf.max(output.x1next).data().then(x => console.log(x))
+      imgs.values = await output.x1next.data()
+      logits.values = await output.x2next.data()
+      const energyData = await output.energy.data()
+      tf.max(output.g1next).data().then(x => console.log(x))
+      // console.log(energyData)
+      return true
+    }
 
-  console.log(`Energy: ${energy.length}`)
-  console.log(`Next imgs: ${x1next.length}`)
-  console.log(`Next logits: ${x2next.length}`)
+    /**
+     * Repeatedly resubmit an (asynchronous function) `f` with some delay and some maxCount if desired
+     */
+    function repeatedResubmit(f, delay=100, maxCount=null) {
+      let n = 0
+      const repeater = async () => {
+        const out = await f()
+        n+=1
+        if ((maxCount != null) && (n < maxCount)) {
+          setTimeout(repeater, delay)
+        }
+      }
+      return repeater
+    }
 
-  console.log(`Energy: ${energy}`)
-  console.log(`Next imgs: ${x1next}`)
-  console.log(`Next logits: ${x2next}`)
+    repeatedResubmit(step, 10, 5000)()
 
-  // console.log(`Energy: ${energy.dataSync()}`)
-  // console.log(`Next imgs: ${newimgs.dataSync()}`)
-  // console.log(`Next logits: ${newlogits.dataSync()}`)
 
-  // const ui = mnist_ui(document.querySelector('#mnist'))
-  // ui.onUpdate(img => {
-  //   const imgs = tf.tensor(img).cast('float32').reshape([1, 28, 28, 1])
-  //   const logits = model.predict(imgs)
-  //   const preds = tf.softmax(logits)
-  //   const { values, indices } = tf.topk(preds, 10)
-
-  //   ui.showPreds([...values.dataSync()], [...indices.dataSync()])
-  // })
-
-}).catch(error => {
-  status.textContent = 'ERROR : ' + error.message
-})
+  }).catch(error => {
+    status.textContent = 'ERROR : ' + error.message
+  })
 </script>
