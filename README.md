@@ -45,7 +45,7 @@ Networks](http://www.scholarpedia.org/article/Hopfield_network) (HNs):
 
 > **HAMUX** is a
 > <a href="https://en.wikipedia.org/wiki/Hypergraph" >hypergraph</a> of
-> 🌀neurons connected via 🤝synapses, an abstraction sufficiently
+> 🌀neurons connected via 🤝hyper-synapses, an abstraction sufficiently
 > general to model the complexity of connections used in modern AI
 > architectures.
 
