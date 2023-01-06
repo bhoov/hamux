@@ -39,18 +39,30 @@ Networks](http://www.scholarpedia.org/article/Hopfield_network) (HNs):
 |--------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
 | HNs are only **two layers** systems                    | HAMs connect **any number** of layers                                                                      |
 | HNs model only **simple relationships** between layers | HAMs model **any complex but differentiable operation** (e.g., convolutions, pooling, attention, $\ldots$) |
-| HNs use only **pairwise synapses**                     | HAMs use **many-body synapses**                                                                            |
+| HNs use only **pairwise synapses**                     | HAMs use **many-body synapses** (which we denote **HyperSynapses**)                                        |
 
 ## How does HAMUX work?
 
 > **HAMUX** is a
 > <a href="https://en.wikipedia.org/wiki/Hypergraph" >hypergraph</a> of
-> 🌀neurons connected via 🤝synapses, an abstraction sufficiently
+> 🌀neurons connected via 🤝hypersynapses, an abstraction sufficiently
 > general to model the complexity of connections used in modern AI
 > architectures.
 
+display(HTML(““”
+
+<div class="alert alert-info">
+
+    We conflate the terms <em>hypersynapse</em> and <em>synapse</em> regularly. We explicitly say "pairwise synapse" when referring to the classical understanding of synapses.
+
+</div>
+
+“““))
+
 HAMUX defines two fundamental building blocks of energy: the **🌀neuron
-layer** and the **🤝synapse**, connected via a **hypergraph**. It is a
+layer** and the **🤝hypersynapse** (an abstraction of a pairwise synapse
+to include many-body interactions) connected via a
+[**hypergraph**](https://en.wikipedia.org/wiki/Hypergraph). It is a
 fully dynamical system, where the “hidden state” $x_i^l$ of each layer
 $l$ (blue squares in the figure below) is an independent variable that
 evolves over time. The update rule of each layer is entirely local; only
@@ -70,14 +82,14 @@ state):
 $$ \mathbf{x}_l^{(t+1)} = \mathbf{x}_l^{(t)} - \frac{dt}{\tau} \nabla_{\mathbf{g}_l}E(t)$$
 
 HAMUX handles all the complexity of scaling this fundamental update
-equation to many layers and synapses. In addition, it provides a
+equation to many layers and hyper synapses. In addition, it provides a
 *framework* to:
 
 1.  Implement your favorite Deep Learning operations as a
-    [Synapse](https://bhoov.github.io/hamux/synapses.html)
+    [HyperSynapse](https://bhoov.github.io/hamux/synapses.html)
 2.  Port over your favorite activation functions as
     [Lagrangians](https://bhoov.github.io/hamux/lagrangians.html)
-3.  Connect your layers and synapses into a
+3.  Connect your layers and hypersynapses into a
     [HAM](https://bhoov.github.io/hamux/ham.html) (using a hypergraph as
     the data structure)
 4.  Inject your data into the associative memory
@@ -92,7 +104,7 @@ The `examples/` subdirectory contains a (growing) list of examples on
 how to apply HAMUX on real data.
 
 <figure>
-<img src="https://raw.githubusercontent.com/bhoov/hamux/main/assets/fig1.png" alt="HAMUX Overview" width="700"/>
+<img src="https://raw.githubusercontent.com/bhoov/hamux/main/assets/HyperSynapse-fig1.png" alt="HAMUX Overview" width="700"/>
 <figcaption style="color:#999">Explaining the "energy fundamentals" of HAMUX (Layers and Synapses, left) using a 4-layer, 3-synapse example HAM (middle) that can be built using the code on the right.</figcaption>
 </figure>
 
@@ -133,11 +145,11 @@ Lagrangians in JAX. We show how to turn Lagrangians into usable energy
 building blocks in our [documentation on neuron
 layers](https://bhoov.github.io/hamux/layers.html).
 
-### 🤝Synapses
+### 🤝HyperSynapses
 
-A 🤝synapse ONLY sees activations of connected 🌀neuron layers. Its one
-job: report HIGH ⚡️energy if the connected activations are dissimilar
-and LOW ⚡️energy when they are aligned. Synapses can resemble
+A 🤝hypersynapse ONLY sees activations of connected 🌀neuron layers. Its
+one job: report HIGH ⚡️energy if the connected activations are
+dissimilar and LOW ⚡️energy when they are aligned. Synapses can resemble
 convolutions, dense multiplications, even attention… Take a look at our
 [documentation on
 synapses](https://bhoov.github.io/hamux/synapses.html).
