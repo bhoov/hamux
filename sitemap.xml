@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://bhoov.github.io/hamux/layers.html</loc>
+    <lastmod>2023-01-06T21:03:40.837Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bhoov.github.io/hamux/index.html</loc>
+    <lastmod>2023-01-06T21:03:41.629Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bhoov.github.io/hamux/tfjs.html</loc>
+    <lastmod>2023-01-06T21:03:41.953Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bhoov.github.io/hamux/registry.html</loc>
+    <lastmod>2023-01-06T21:03:42.393Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bhoov.github.io/hamux/synapses.html</loc>
+    <lastmod>2023-01-06T21:03:42.773Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bhoov.github.io/hamux/lagrangians.html</loc>
+    <lastmod>2023-01-06T21:03:43.285Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bhoov.github.io/hamux/ham.html</loc>
+    <lastmod>2023-01-06T21:03:43.873Z</lastmod>
+  </url>
+</urlset>

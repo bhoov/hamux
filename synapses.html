@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.313">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Using Modern Deep Learning operations with Energy.">
+
+<title>hamux - (Hyper)Synapses</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="hamux - (Hyper)Synapses">
+<meta property="og:description" content="Using Modern Deep Learning operations with Energy.">
+<meta property="og:site-name" content="hamux">
+<meta name="twitter:title" content="hamux - (Hyper)Synapses">
+<meta name="twitter:description" content="Using Modern Deep Learning operations with Energy.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">hamux</span>
+    </a>
+  </div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">(Hyper)Synapses</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">HAMUX</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lagrangians.html" class="sidebar-item-text sidebar-link">Lagrangians</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./layers.html" class="sidebar-item-text sidebar-link">Neuron Layers</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./synapses.html" class="sidebar-item-text sidebar-link active">(Hyper)Synapses</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ham.html" class="sidebar-item-text sidebar-link">HAM</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./registry.html" class="sidebar-item-text sidebar-link">Registry</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tfjs.html" class="sidebar-item-text sidebar-link">Converting to TFJS</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#synapse" id="toc-synapse" class="nav-link active" data-scroll-target="#synapse">Synapse</a></li>
+  <li><a href="#synapse.energy" id="toc-synapse.energy" class="nav-link" data-scroll-target="#synapse.energy">Synapse.energy</a></li>
+  <li><a href="#dense-synapse" id="toc-dense-synapse" class="nav-link" data-scroll-target="#dense-synapse">Dense Synapse</a>
+  <ul class="collapse">
+  <li><a href="#simpledensesynapse" id="toc-simpledensesynapse" class="nav-link" data-scroll-target="#simpledensesynapse">SimpleDenseSynapse</a></li>
+  <li><a href="#densesynapse" id="toc-densesynapse" class="nav-link" data-scroll-target="#densesynapse">DenseSynapse</a></li>
+  <li><a href="#densetensorsynapsewithhiddenlayer" id="toc-densetensorsynapsewithhiddenlayer" class="nav-link" data-scroll-target="#densetensorsynapsewithhiddenlayer">DenseTensorSynapseWithHiddenLayer</a></li>
+  <li><a href="#densematrixsynapsewithhiddenlayer" id="toc-densematrixsynapsewithhiddenlayer" class="nav-link" data-scroll-target="#densematrixsynapsewithhiddenlayer">DenseMatrixSynapseWithHiddenLayer</a></li>
+  <li><a href="#convsynapse" id="toc-convsynapse" class="nav-link" data-scroll-target="#convsynapse">ConvSynapse</a></li>
+  <li><a href="#convsynapsewithpool" id="toc-convsynapsewithpool" class="nav-link" data-scroll-target="#convsynapsewithpool">ConvSynapseWithPool</a></li>
+  <li><a href="#binarymixersynapse" id="toc-binarymixersynapse" class="nav-link" data-scroll-target="#binarymixersynapse">BinaryMixerSynapse</a></li>
+  <li><a href="#selfattentionsynapse" id="toc-selfattentionsynapse" class="nav-link" data-scroll-target="#selfattentionsynapse">SelfAttentionSynapse</a></li>
+  <li><a href="#attentionsynapse" id="toc-attentionsynapse" class="nav-link" data-scroll-target="#attentionsynapse">AttentionSynapse</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/bhoov/hamux/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">(Hyper)Synapses</h1>
+</div>
+
+<div>
+  <div class="description">
+    Using Modern Deep Learning operations with Energy.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div class="cell">
+<div class="cell-output cell-output-error">
+<pre><code>NameError: name 'HTML' is not defined</code></pre>
+</div>
+</div>
+<p><strong>Hypersynapses</strong> are the only way that neuron layers can communicate with each other. This generalization of the pairwise synapse from the Hopfield paradigm is now more general than ever before:</p>
+<table class="table">
+<colgroup>
+<col style="width: 57%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Before</th>
+<th>HAMUX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Synapses connect only one neuron layer to another</td>
+<td>Hypersynapses can connect <strong>arbitrary numbers</strong> of layers</td>
+</tr>
+<tr class="even">
+<td>Synapses are simple matrix multiplications</td>
+<td>Hypersynapses can be almost <strong>any operation</strong>, e.g., convolutions, pooling, attention, <span class="math inline">\(\ldots\)</span></td>
+</tr>
+<tr class="odd">
+<td>Synapses are shallow</td>
+<td>Hypersynapses can be <strong>deep</strong>! E.g., a sequence of convolutions, pooling, and activation functions</td>
+</tr>
+</tbody>
+</table>
+<p>At its core, a hypersynapse’s energy is completely defined by its <em>alignment function</em> <span class="math inline">\(\mathcal{F}\)</span> that converts any number of layer activations <span class="math inline">\((g^1, g^2, \ldots)\)</span> into a scalar describing its alignment:</p>
+<p><span class="math display">\[
+E_{\text{synapse}} = -\mathcal{F},\ \ \ \ \text{where}\ \ \ \  \mathcal{F} (g^1, g^2, \ldots) \mapsto \mathbb{R}.
+\]</span></p>
+<p>The hypersynapse’s energy is typically HIGH when all connected layers are “incongruous” and LOW when all connected layers are “aligned” as defined by its operation.</p>
+<p>All <a href="https://bhoov.github.io/hamux/synapses.html#synapse"><code>Synapse</code></a>s conform to the following simple API. Just define a <code>__call__</code> function to describe the scalar alignment of different activations. Energy is calculated for you.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Synapse(tx.Module, ABC):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""The simple interface class for any synapse. Define an alignment function through `__call__` that returns a scalar.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">    The energy is simply the negative of this function.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> energy(<span class="va">self</span>, <span class="op">*</span>gs):</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span><span class="va">self</span>(<span class="op">*</span>gs)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, <span class="op">*</span>gs):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""The alignment function of a synapse"""</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/synapses.py#L25" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="synapse" class="level3">
+<h3 class="anchored" data-anchor-id="synapse">Synapse</h3>
+<blockquote class="blockquote">
+<pre><code> Synapse (name:Optional[str]=None)</code></pre>
+</blockquote>
+<p>The simple interface class for any synapse. Define an alignment function through <code>__call__</code> that returns a scalar.</p>
+<p>The energy is simply the negative of this function.</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/synapses.py#L31" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="synapse.energy" class="level3">
+<h3 class="anchored" data-anchor-id="synapse.energy">Synapse.energy</h3>
+<blockquote class="blockquote">
+<pre><code> Synapse.energy (*gs)</code></pre>
+</blockquote>
+</section>
+<section id="dense-synapse" class="level2">
+<h2 class="anchored" data-anchor-id="dense-synapse">Dense Synapse</h2>
+<p>The simplest of synapses is a dense alignment synapse. In feedforward networks, dense operations take an input and return an output. In HAMUX, dense operations align the activations <span class="math inline">\(g^1 \in \mathbb{R}^{D_1}\)</span> and <span class="math inline">\(g^2 \in \mathbb{R}^{D_2}\)</span> as follows:</p>
+<p><span class="math display">\[\mathcal{F}_\text{dense} = g^1_i W_{ij} g^2_j\]</span></p>
+<p>And would be implemented as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SimpleDenseSynapse(Synapse):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""The simplest of dense synapses that connects two layers (with vectorized activations) together"""</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    W: jnp.ndarray <span class="op">=</span> tx.Parameter.node() <span class="co"># treex's preferred way of declaring an attribute as a parameter</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, g1, g2):</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.initializing():</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.W <span class="op">=</span> nn.initializers.normal(<span class="fl">0.02</span>)(tx.next_key(), g1.shape <span class="op">+</span> g2.shape)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> g1 <span class="op">@</span> <span class="va">self</span>.W <span class="op">@</span> g2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/synapses.py#L40" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="simpledensesynapse" class="level3">
+<h3 class="anchored" data-anchor-id="simpledensesynapse">SimpleDenseSynapse</h3>
+<blockquote class="blockquote">
+<pre><code> SimpleDenseSynapse (name:Optional[str]=None)</code></pre>
+</blockquote>
+<p>The simplest of dense synapses that connects two layers (with vectorized activations) together</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>g1 <span class="op">=</span> jnp.ones(<span class="dv">4</span>, dtype<span class="op">=</span>jnp.float32)<span class="op">;</span> g2 <span class="op">=</span> jnp.ones(<span class="dv">5</span>, dtype<span class="op">=</span>jnp.float32)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>syn <span class="op">=</span> SimpleDenseSynapse().init(jax.random.PRNGKey(<span class="dv">0</span>), (g1, g2))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>syn(g1, g2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>2022-12-02 01:13:30.993496: E external/org_tensorflow/tensorflow/compiler/xla/stream_executor/cuda/cuda_driver.cc:267] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+WARNING:absl:No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>DeviceArray(-0.09093504, dtype=float32)</code></pre>
+</div>
+</div>
+<p>When building HAMs in practice, we typically want to follow this pattern: subclass the minimal <a href="https://bhoov.github.io/hamux/synapses.html#synapse"><code>Synapse</code></a> class and overwrite the <a href="https://bhoov.github.io/hamux/synapses.html#synapse.__call__"><code>Synapse.__call__</code></a> method with our desired alignment function</p>
+<p>We extend this simple concept into a more robust synapse that can linearly connect <span class="math inline">\(&gt;2\)</span> layers and optionally flattens layer activations.</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/synapses.py#L49" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="densesynapse" class="level3">
+<h3 class="anchored" data-anchor-id="densesynapse">DenseSynapse</h3>
+<blockquote class="blockquote">
+<pre><code> DenseSynapse (stdinit:float=0.02, flatten_args=True)</code></pre>
+</blockquote>
+<p>A dense synapse that aligns the representations of any number of <code>gs</code>.</p>
+<p>The one learnable parameter <code>W</code> is a tensor with a dimension for each connected layer. In the case of 2 layers, this is the traditional learnable matrix synapse. In cases <code>N&gt;2</code> layers this is a new kind of layer where the learnable parameter is an N dimensional tensor.</p>
+<p>By default, this will flatten all inputs as needed to treat all activations as vectors.</p>
+<p>The number of layers we can align with this synapse is capped at the number of ranks that JAX stores (&lt;255), but you’ll probably run out of memory first..</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>g1 <span class="op">=</span> jnp.ones(<span class="dv">4</span>, dtype<span class="op">=</span>jnp.float32)<span class="op">;</span> g2 <span class="op">=</span> jnp.ones(<span class="dv">5</span>, dtype<span class="op">=</span>jnp.float32)<span class="op">;</span> g3 <span class="op">=</span> jnp.ones(<span class="dv">6</span>, dtype<span class="op">=</span>jnp.float32)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>syn <span class="op">=</span> DenseSynapse().init(jax.random.PRNGKey(<span class="dv">0</span>), (g1, g2, g3))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>syn(g1, g2, g3)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> syn.W.shape <span class="op">==</span> (<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can even implement a <a href="https://bhoov.github.io/hamux/synapses.html#densesynapse"><code>DenseSynapse</code></a> with a hidden layer (Lagrangian) inside the alignment function. This is how we can implement layers that do not need to hold state through time.</p>
+<pre><code>/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/treeo/api.py:268: FutureWarning: jax.tree_flatten is deprecated, and will be removed in a future release. Use jax.tree_util.tree_flatten instead.
+  flat, treedef = jax.tree_flatten(obj)
+/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/treeo/api.py:270: FutureWarning: jax.tree_unflatten is deprecated, and will be removed in a future release. Use jax.tree_util.tree_unflatten instead.
+  obj = jax.tree_unflatten(treedef, flat)</code></pre>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/synapses.py#L100" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="densetensorsynapsewithhiddenlayer" class="level3">
+<h3 class="anchored" data-anchor-id="densetensorsynapsewithhiddenlayer">DenseTensorSynapseWithHiddenLayer</h3>
+<blockquote class="blockquote">
+<pre><code> DenseTensorSynapseWithHiddenLayer (nhid:int, num_heads=1,
+                                    stdinit:float=0.02, hidden_lagrangian:
+                                    treex.module.Module=LRelu {     name:
+                                    "lrelu",    str })</code></pre>
+</blockquote>
+<p>A generalized DenseTensorSynapse that has a hidden lagrangian (non-linearity).</p>
+<p>We can specify a Lagrangian non-linearity for the hidden neuron layer with tau=0 and shape <code>(nhid,)</code>.</p>
+<p>The lagrangian can have its own learnable parameters, for example:</p>
+<pre><code>from hamux.core.lagrangians import *
+
+syn = DenseTerminusSynapse(20, hidden_lagrangian=LSoftmax(beta_init=0.2)).init(jax.random.PRNGKey(0), tuple(gs))</code></pre>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/synapses.py#L147" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="densematrixsynapsewithhiddenlayer" class="level3">
+<h3 class="anchored" data-anchor-id="densematrixsynapsewithhiddenlayer">DenseMatrixSynapseWithHiddenLayer</h3>
+<blockquote class="blockquote">
+<pre><code> DenseMatrixSynapseWithHiddenLayer (nhid:int, stdinit:float=0.02,
+                                    hidden_lagrangian:treex.module.Module=
+                                    LRelu {     name: "lrelu",    str },
+                                    do_ravel=True, do_norm=False)</code></pre>
+</blockquote>
+<p>A modified DenseSynapse that has a hidden lagrangian (non-linearity).</p>
+<p>We can specify a Lagrangian non-linearity for the hidden neuron layer with tau=0 and shape <code>(nhid,)</code>.</p>
+<p>Unlike the DenseTensorSynapseWithHiddenLayer, treat layers as if they are concatenated on the same visible layer dimension instead of giving each its own dimension of the tensor space.</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/synapses.py#L188" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="convsynapse" class="level3">
+<h3 class="anchored" data-anchor-id="convsynapse">ConvSynapse</h3>
+<blockquote class="blockquote">
+<pre><code> ConvSynapse (kernel_size:Union[int,Iterable[int]],
+              strides:Optional[Iterable[int]]=None,
+              padding:Union[str,Iterable[Tuple[int,int]]]='SAME',
+              input_dilation:Optional[Iterable[int]]=None,
+              kernel_dilation:Optional[Iterable[int]]=None,
+              feature_group_count:int=1, use_bias:bool=True,
+              dtype:Any=&lt;class 'jax.numpy.float32'&gt;,
+              param_dtype:Any=&lt;class 'jax.numpy.float32'&gt;,
+              precision:Any=None,
+              kernel_init:Callable[[Any,Tuple[int,...],Any],Any]=&lt;function
+              init&gt;,
+              bias_init:Callable[[Any,Tuple[int,...],Any],Any]=&lt;function
+              zeros&gt;)</code></pre>
+</blockquote>
+<p>A convolutional, binary synapse. Can automatically detect the number of output features from the 2 layers it connects</p>
+<p>Or contain pooling</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/synapses.py#L219" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="convsynapsewithpool" class="level3">
+<h3 class="anchored" data-anchor-id="convsynapsewithpool">ConvSynapseWithPool</h3>
+<blockquote class="blockquote">
+<pre><code> ConvSynapseWithPool (kernel_size:Union[int,Iterable[int]],
+                      pool_window=(5, 5), pool_stride=(2, 2),
+                      pool_type='avg',
+                      strides:Optional[Iterable[int]]=None,
+                      padding:Union[str,Iterable[Tuple[int,int]]]='SAME',
+                      input_dilation:Optional[Iterable[int]]=None,
+                      kernel_dilation:Optional[Iterable[int]]=None,
+                      feature_group_count:int=1, use_bias:bool=True,
+                      dtype:Any=&lt;class 'jax.numpy.float32'&gt;,
+                      param_dtype:Any=&lt;class 'jax.numpy.float32'&gt;,
+                      precision:Any=None, kernel_init:Callable[[Any,Tuple[
+                      int,...],Any],Any]=&lt;function init&gt;, bias_init:Callab
+                      le[[Any,Tuple[int,...],Any],Any]=&lt;function zeros&gt;)</code></pre>
+</blockquote>
+<p>A convolutional, binary synapse. Can automatically detect the number of output features from the 2 layers it connects</p>
+<p>We can also create synapses that model attention operations in modern networks</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/synapses.py#L342" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="binarymixersynapse" class="level3">
+<h3 class="anchored" data-anchor-id="binarymixersynapse">BinaryMixerSynapse</h3>
+<blockquote class="blockquote">
+<pre><code> BinaryMixerSynapse (num_heads:int=1, zspace_dim:int=64,
+                     stdinit:float=0.02,
+                     hidden_lagrangian:treex.module.Module=LSoftmax {
+                     axis: -1,     beta: 1.0,           Parameter
+                     min_beta: 1e-06,     name: "lsoftmax",    str })</code></pre>
+</blockquote>
+<p>A generalized binary synapse of quadratic order. This synapse is very similar to the Attention synapse but uses a single weight matrix instead of a query and key matrix.</p>
+<p>We can specify any Lagrangian non-linearity for the hidden neuron layer (which operates with tau=0), but we default to the Softmax Lagrangian.</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/synapses.py#L335" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="selfattentionsynapse" class="level3">
+<h3 class="anchored" data-anchor-id="selfattentionsynapse">SelfAttentionSynapse</h3>
+<blockquote class="blockquote">
+<pre><code> SelfAttentionSynapse (num_heads:int=1, zspace_dim:int=64,
+                       stdinit:float=0.02,
+                       hidden_lagrangian:treex.module.Module=LSoftmax {
+                       axis: -1,     beta: 1.0,           Parameter
+                       min_beta: 1e-06,     name: "lsoftmax",    str },
+                       do_qk_norm:bool=False)</code></pre>
+</blockquote>
+<p>A special case of the AttentionSynapse where both inputs are of the same layer</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/synapses.py#L264" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="attentionsynapse" class="level3">
+<h3 class="anchored" data-anchor-id="attentionsynapse">AttentionSynapse</h3>
+<blockquote class="blockquote">
+<pre><code> AttentionSynapse (num_heads:int=1, zspace_dim:int=64, stdinit:float=0.02,
+                   hidden_lagrangian:treex.module.Module=LSoftmax {
+                   axis: -1,     beta: 1.0,           Parameter
+                   min_beta: 1e-06,     name: "lsoftmax",    str },
+                   do_qk_norm:bool=False)</code></pre>
+</blockquote>
+<p>A generalized synapse of quadratic order, whose update rule looks very similar to the Attention operation of Transformers.</p>
+<p>We can specify any Lagrangian non-linearity for the hidden neuron layer (which operates with tau=0), but we default to the Softmax Lagrangian.</p>
+<p>To replicate similar configuration to the famous BERT-base models and “Attention is all you need” paper:</p>
+<pre><code>zspace = 64
+syn = AttentionSynapse(zspace_dim=zspace, num_heads=12, hidden_lagrangian=LSoftmax(beta=1/jnp.sqrt(zspace)))</code></pre>
+<p>Connecting two layers of shapes: ((Nq, Dq), (Nk, Dk)) and layernorm lagrangians</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

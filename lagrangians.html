@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.313">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="The well-behaved energy of associative memories is captured by the Lagrangian of the neurons">
+
+<title>hamux - Lagrangians</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="hamux - Lagrangians">
+<meta property="og:description" content="The well-behaved energy of associative memories is captured by the **Lagrangian** of the neurons">
+<meta property="og:site-name" content="hamux">
+<meta name="twitter:title" content="hamux - Lagrangians">
+<meta name="twitter:description" content="The well-behaved energy of associative memories is captured by the **Lagrangian** of the neurons">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">hamux</span>
+    </a>
+  </div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Lagrangians</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">HAMUX</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lagrangians.html" class="sidebar-item-text sidebar-link active">Lagrangians</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./layers.html" class="sidebar-item-text sidebar-link">Neuron Layers</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./synapses.html" class="sidebar-item-text sidebar-link">(Hyper)Synapses</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ham.html" class="sidebar-item-text sidebar-link">HAM</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./registry.html" class="sidebar-item-text sidebar-link">Registry</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tfjs.html" class="sidebar-item-text sidebar-link">Converting to TFJS</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#functional-interface" id="toc-functional-interface" class="nav-link active" data-scroll-target="#functional-interface">Functional interface</a>
+  <ul class="collapse">
+  <li><a href="#lagr_identity" id="toc-lagr_identity" class="nav-link" data-scroll-target="#lagr_identity">lagr_identity</a></li>
+  <li><a href="#lagr_repu" id="toc-lagr_repu" class="nav-link" data-scroll-target="#lagr_repu">lagr_repu</a></li>
+  <li><a href="#lagr_relu" id="toc-lagr_relu" class="nav-link" data-scroll-target="#lagr_relu">lagr_relu</a></li>
+  <li><a href="#lagr_softmax_unstable" id="toc-lagr_softmax_unstable" class="nav-link" data-scroll-target="#lagr_softmax_unstable">lagr_softmax_unstable</a></li>
+  <li><a href="#lagr_softmax" id="toc-lagr_softmax" class="nav-link" data-scroll-target="#lagr_softmax">lagr_softmax</a></li>
+  <li><a href="#lagr_exp" id="toc-lagr_exp" class="nav-link" data-scroll-target="#lagr_exp">lagr_exp</a></li>
+  <li><a href="#lagr_rexp" id="toc-lagr_rexp" class="nav-link" data-scroll-target="#lagr_rexp">lagr_rexp</a></li>
+  <li><a href="#lagr_tanh" id="toc-lagr_tanh" class="nav-link" data-scroll-target="#lagr_tanh">lagr_tanh</a></li>
+  <li><a href="#lagr_sigmoid" id="toc-lagr_sigmoid" class="nav-link" data-scroll-target="#lagr_sigmoid">lagr_sigmoid</a></li>
+  <li><a href="#lagr_layernorm" id="toc-lagr_layernorm" class="nav-link" data-scroll-target="#lagr_layernorm">lagr_layernorm</a></li>
+  <li><a href="#lagr_spherical_norm" id="toc-lagr_spherical_norm" class="nav-link" data-scroll-target="#lagr_spherical_norm">lagr_spherical_norm</a></li>
+  </ul></li>
+  <li><a href="#parameterized-lagrangians" id="toc-parameterized-lagrangians" class="nav-link" data-scroll-target="#parameterized-lagrangians">Parameterized Lagrangians</a>
+  <ul class="collapse">
+  <li><a href="#lsphericalnorm" id="toc-lsphericalnorm" class="nav-link" data-scroll-target="#lsphericalnorm">LSphericalNorm</a></li>
+  <li><a href="#llayernorm" id="toc-llayernorm" class="nav-link" data-scroll-target="#llayernorm">LLayerNorm</a></li>
+  <li><a href="#ltanh" id="toc-ltanh" class="nav-link" data-scroll-target="#ltanh">LTanh</a></li>
+  <li><a href="#lrexp" id="toc-lrexp" class="nav-link" data-scroll-target="#lrexp">LRexp</a></li>
+  <li><a href="#lexp" id="toc-lexp" class="nav-link" data-scroll-target="#lexp">LExp</a></li>
+  <li><a href="#lsoftmaxunstable" id="toc-lsoftmaxunstable" class="nav-link" data-scroll-target="#lsoftmaxunstable">LSoftmaxUnstable</a></li>
+  <li><a href="#lsoftmax" id="toc-lsoftmax" class="nav-link" data-scroll-target="#lsoftmax">LSoftmax</a></li>
+  <li><a href="#lsigmoid" id="toc-lsigmoid" class="nav-link" data-scroll-target="#lsigmoid">LSigmoid</a></li>
+  <li><a href="#lrelu" id="toc-lrelu" class="nav-link" data-scroll-target="#lrelu">LRelu</a></li>
+  <li><a href="#lrepu" id="toc-lrepu" class="nav-link" data-scroll-target="#lrepu">LRepu</a></li>
+  <li><a href="#lidentity" id="toc-lidentity" class="nav-link" data-scroll-target="#lidentity">LIdentity</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/bhoov/hamux/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Lagrangians</h1>
+</div>
+
+<div>
+  <div class="description">
+    The well-behaved energy of associative memories is captured by the <strong>Lagrangian</strong> of the neurons
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>We begin with the lagrangian, the fundamental unit of any neuron layer.</p>
+<section id="functional-interface" class="level2">
+<h2 class="anchored" data-anchor-id="functional-interface">Functional interface</h2>
+<p>The Lagrangian functions are central to understanding the energy that neuron layers provide to an associative memory, and they can be thought of as the integrand of common activation functions (e.g., <code>relu</code>s and <code>softmax</code>es). All lagrangians are functions of the form:</p>
+<p><span class="math display">\[\mathcal{L}(x;\ldots) \mapsto \mathbb{R}\]</span></p>
+<p>where <span class="math inline">\(x \in \mathbb{R}^{D_1 \times \ldots \times D_n}\)</span> can be a tensor of arbitrary shape and <span class="math inline">\(\mathcal{L}\)</span> can be optionally parameterized (e.g., the <code>LayerNorm</code>’s learnable bias and scale). It is important that our Lagrangians be convex and differentiable.</p>
+<p>We want to rely on JAX’s autograd to automatically differentiate our Lagrangians into activation functions. For certain Lagrangians, the naively autodiff-ed function of the defined Lagrangian is numerically unstable (e.g., <code>lagr_sigmoid(x).sum()</code> and <code>lagr_tanh(x).sum()</code>). In these cases, we follow JAX’s <a href="https://jax.readthedocs.io/en/latest/notebooks/Custom_derivative_rules_for_Python_code.html">documentation guidelines</a> to define <code>custom_jvp</code>s to fix this behavior.</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L20" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="lagr_identity" class="level3">
+<h3 class="anchored" data-anchor-id="lagr_identity">lagr_identity</h3>
+<blockquote class="blockquote">
+<pre><code> lagr_identity (x)</code></pre>
+</blockquote>
+<p>The Lagrangian whose activation function is simply the identity.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>2022-12-07 14:06:54.891743: E external/org_tensorflow/tensorflow/compiler/xla/stream_executor/cuda/cuda_driver.cc:267] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+WARNING:jax._src.lib.xla_bridge:No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="00_lagrangians_files/figure-html/cell-3-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L25" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lagr_repu" class="level3">
+<h3 class="anchored" data-anchor-id="lagr_repu">lagr_repu</h3>
+<blockquote class="blockquote">
+<pre><code> lagr_repu (x, n)</code></pre>
+</blockquote>
+<p>Rectified Power Unit of degree <code>n</code></p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>x</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>n</td>
+<td>Degree of the polynomial in the power unit</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="cell-output cell-output-display">
+<p><img src="00_lagrangians_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p><span class="math display">\[\frac{1}{n} \max(x,0)^n\]</span></p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L31" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lagr_relu" class="level3">
+<h3 class="anchored" data-anchor-id="lagr_relu">lagr_relu</h3>
+<blockquote class="blockquote">
+<pre><code> lagr_relu (x)</code></pre>
+</blockquote>
+<p>Rectified Linear Unit. Same as repu of degree 2</p>
+<p><span class="math display">\[\frac{1}{2} \max(x,0)^2\]</span></p>
+<div class="cell">
+<div class="cell-output cell-output-display">
+<p><img src="00_lagrangians_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L42" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lagr_softmax_unstable" class="level3">
+<h3 class="anchored" data-anchor-id="lagr_softmax_unstable">lagr_softmax_unstable</h3>
+<blockquote class="blockquote">
+<pre><code> lagr_softmax_unstable (x, beta:float=1.0, axis:int=-1)</code></pre>
+</blockquote>
+<p>The lagrangian of the softmax – the logsumexp. However, code the <code>log(sum(exp(...)))</code> part manually, which can lead to instabilities</p>
+<p>The benefit is in porting HAMUX models into the browser, because <a href="https://github.com/tensorflow/tfjs">TensorFlowJS</a> does not currently support JAX logsumexp</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>x</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>beta</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature</td>
+</tr>
+<tr class="odd">
+<td>axis</td>
+<td>int</td>
+<td>-1</td>
+<td>Dimension over which to apply logsumexp</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L36" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lagr_softmax" class="level3">
+<h3 class="anchored" data-anchor-id="lagr_softmax">lagr_softmax</h3>
+<blockquote class="blockquote">
+<pre><code> lagr_softmax (x, beta:float=1.0, axis:int=-1)</code></pre>
+</blockquote>
+<p>The lagrangian of the softmax – the logsumexp</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>x</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>beta</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature</td>
+</tr>
+<tr class="odd">
+<td>axis</td>
+<td>int</td>
+<td>-1</td>
+<td>Dimension over which to apply logsumexp</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[\frac{1}{\beta} \log \sum\limits_i \exp(\beta x)\]</span></p>
+<p>We do not plot the <code>logsumexp</code> because it has an implicit summation</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L53" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lagr_exp" class="level3">
+<h3 class="anchored" data-anchor-id="lagr_exp">lagr_exp</h3>
+<blockquote class="blockquote">
+<pre><code> lagr_exp (x, beta:float=1.0)</code></pre>
+</blockquote>
+<p>Exponential activation function, as in <a href="https://arxiv.org/abs/1702.01929">Demicirgil et al.</a>. Operates elementwise</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>x</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>beta</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[ \frac{1}{\beta} \exp(\beta x)\]</span></p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>1.2130613
+0.36787945
+0.14875345</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="00_lagrangians_files/figure-html/cell-11-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L59" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lagr_rexp" class="level3">
+<h3 class="anchored" data-anchor-id="lagr_rexp">lagr_rexp</h3>
+<blockquote class="blockquote">
+<pre><code> lagr_rexp (x, beta:float=1.0)</code></pre>
+</blockquote>
+<p>Rectified exponential activation function</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>x</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>beta</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[\frac{1}{\beta} \exp(\beta \bar{x}) - \bar{x} \ \ \ \ \text{where} \ \ \bar{x} = \max(x,0)\]</span></p>
+<div class="cell">
+<div class="cell-output cell-output-display">
+<p><img src="00_lagrangians_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>The lagrangian of the <code>tanh</code> and the <code>sigmoid</code> are a bit more numerically unstable. We will need to define custom gradients for them. We show how this is done for the <code>tanh</code> case to forward to gradient compute to the optimized <code>jnp.tanh</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="at">@jax.custom_jvp</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _lagr_tanh(x, beta<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span> <span class="op">/</span> beta <span class="op">*</span> jnp.log(jnp.cosh(beta <span class="op">*</span> x))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="at">@_lagr_tanh.defjvp</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _lagr_tanh_defjvp(primals, tangents):</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    x, beta <span class="op">=</span> primals</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    x_dot, beta_dot <span class="op">=</span> tangents</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    primal_out <span class="op">=</span> _lagr_tanh(x, beta)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    tangent_out <span class="op">=</span> jnp.tanh(beta <span class="op">*</span> x) <span class="op">*</span> x_dot</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> primal_out, tangent_out</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lagr_tanh(x, </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>              beta<span class="op">=</span><span class="fl">1.0</span>): <span class="co"># Inverse temperature</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Lagrangian of the tanh activation function"""</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> _lagr_tanh(x, beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L78" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lagr_tanh" class="level3">
+<h3 class="anchored" data-anchor-id="lagr_tanh">lagr_tanh</h3>
+<blockquote class="blockquote">
+<pre><code> lagr_tanh (x, beta=1.0)</code></pre>
+</blockquote>
+<p>Lagrangian of the tanh activation function</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>x</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>beta</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="cell-output cell-output-display">
+<p><img src="00_lagrangians_files/figure-html/cell-16-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>We define a similar custom JVP for the sigmoid, but its interface is simple.</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L105" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lagr_sigmoid" class="level3">
+<h3 class="anchored" data-anchor-id="lagr_sigmoid">lagr_sigmoid</h3>
+<blockquote class="blockquote">
+<pre><code> lagr_sigmoid (x, beta=1.0, scale=1.0)</code></pre>
+</blockquote>
+<p>The lagrangian of the sigmoid activation function</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>x</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>beta</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature</td>
+</tr>
+<tr class="odd">
+<td>scale</td>
+<td>float</td>
+<td>1.0</td>
+<td>Amount to stretch the range of the sigmoid’s lagrangian</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="cell-output cell-output-display">
+<p><img src="00_lagrangians_files/figure-html/cell-18-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L124" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lagr_layernorm" class="level3">
+<h3 class="anchored" data-anchor-id="lagr_layernorm">lagr_layernorm</h3>
+<blockquote class="blockquote">
+<pre><code> lagr_layernorm (x:jax.Array, gamma:float=1.0,
+                 delta:Union[float,jax.Array]=0.0, axis=-1, eps=1e-05)</code></pre>
+</blockquote>
+<p>Lagrangian of the layer norm activation function</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>x</td>
+<td>Array</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>gamma</td>
+<td>float</td>
+<td>1.0</td>
+<td>Scale the stdev</td>
+</tr>
+<tr class="odd">
+<td>delta</td>
+<td>typing.Union[float, jax.Array]</td>
+<td>0.0</td>
+<td>Shift the mean</td>
+</tr>
+<tr class="even">
+<td>axis</td>
+<td>int</td>
+<td>-1</td>
+<td>Which axis to normalize</td>
+</tr>
+<tr class="odd">
+<td>eps</td>
+<td>float</td>
+<td>1e-05</td>
+<td>Prevent division by 0</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L148" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lagr_spherical_norm" class="level3">
+<h3 class="anchored" data-anchor-id="lagr_spherical_norm">lagr_spherical_norm</h3>
+<blockquote class="blockquote">
+<pre><code> lagr_spherical_norm (x:jax.Array, gamma:float=1.0,
+                      delta:Union[float,jax.Array]=0.0, axis=-1,
+                      eps=1e-05)</code></pre>
+</blockquote>
+<p>Lagrangian of the spherical norm activation function</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>x</td>
+<td>Array</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>gamma</td>
+<td>float</td>
+<td>1.0</td>
+<td>Scale the stdev</td>
+</tr>
+<tr class="odd">
+<td>delta</td>
+<td>typing.Union[float, jax.Array]</td>
+<td>0.0</td>
+<td>Shift the mean</td>
+</tr>
+<tr class="even">
+<td>axis</td>
+<td>int</td>
+<td>-1</td>
+<td>Which axis to normalize</td>
+</tr>
+<tr class="odd">
+<td>eps</td>
+<td>float</td>
+<td>1e-05</td>
+<td>Prevent division by 0</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="parameterized-lagrangians" class="level2">
+<h2 class="anchored" data-anchor-id="parameterized-lagrangians">Parameterized Lagrangians</h2>
+<p>It is beneficial to consider lagrangians as modules with their own learnable parameters.</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L319" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="lsphericalnorm" class="level3">
+<h3 class="anchored" data-anchor-id="lsphericalnorm">LSphericalNorm</h3>
+<blockquote class="blockquote">
+<pre><code> LSphericalNorm (gamma=1.0, delta=0.0, eps=1e-05)</code></pre>
+</blockquote>
+<p>Reduced Lagrangian whose activation function is the spherical L2 norm</p>
+<p>Parameterized by (gamma, delta), a scale and a shift</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>gamma</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature, for the sharpness of the exponent</td>
+</tr>
+<tr class="even">
+<td>delta</td>
+<td>float</td>
+<td>0.0</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>eps</td>
+<td>float</td>
+<td>1e-05</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L298" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="llayernorm" class="level3">
+<h3 class="anchored" data-anchor-id="llayernorm">LLayerNorm</h3>
+<blockquote class="blockquote">
+<pre><code> LLayerNorm (gamma=1.0, delta=0.0, eps=1e-05)</code></pre>
+</blockquote>
+<p>Reduced Lagrangian whose activation function is the layer norm</p>
+<p>Parameterized by (gamma, delta), a scale and a shift</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>gamma</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature, for the sharpness of the exponent</td>
+</tr>
+<tr class="even">
+<td>delta</td>
+<td>float</td>
+<td>0.0</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>eps</td>
+<td>float</td>
+<td>1e-05</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L281" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="ltanh" class="level3">
+<h3 class="anchored" data-anchor-id="ltanh">LTanh</h3>
+<blockquote class="blockquote">
+<pre><code> LTanh (beta=1.0, min_beta=1e-06)</code></pre>
+</blockquote>
+<p>Reduced Lagrangian whose activation function is the tanh</p>
+<p>Parameterized by (beta)</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>beta</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature, for the sharpness of the exponent</td>
+</tr>
+<tr class="even">
+<td>min_beta</td>
+<td>float</td>
+<td>1e-06</td>
+<td>Minimal accepted value of beta. For energy dynamics, it is important that beta be positive.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L263" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lrexp" class="level3">
+<h3 class="anchored" data-anchor-id="lrexp">LRexp</h3>
+<blockquote class="blockquote">
+<pre><code> LRexp (beta=1.0, min_beta=1e-06)</code></pre>
+</blockquote>
+<p>Reduced Lagrangian whose activation function is the rectified exponential function</p>
+<p>Parameterized by (beta)</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>beta</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature, for the sharpness of the exponent</td>
+</tr>
+<tr class="even">
+<td>min_beta</td>
+<td>float</td>
+<td>1e-06</td>
+<td>Minimal accepted value of beta. For energy dynamics, it is important that beta be positive.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L246" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lexp" class="level3">
+<h3 class="anchored" data-anchor-id="lexp">LExp</h3>
+<blockquote class="blockquote">
+<pre><code> LExp (beta=1.0, min_beta=1e-06)</code></pre>
+</blockquote>
+<p>Reduced Lagrangian whose activation function is the exponential function</p>
+<p>Parameterized by (beta)</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>beta</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature, for the sharpness of the exponent</td>
+</tr>
+<tr class="even">
+<td>min_beta</td>
+<td>float</td>
+<td>1e-06</td>
+<td>Minimal accepted value of beta. For energy dynamics, it is important that beta be positive.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L225" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lsoftmaxunstable" class="level3">
+<h3 class="anchored" data-anchor-id="lsoftmaxunstable">LSoftmaxUnstable</h3>
+<blockquote class="blockquote">
+<pre><code> LSoftmaxUnstable (beta=1.0, axis=-1, min_beta=1e-06)</code></pre>
+</blockquote>
+<p>Reduced Lagrangian whose activation function is the softmax, using manually coded <code>logsumexp</code> for browser compatibility</p>
+<p>Parameterized by (beta)</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>beta</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature</td>
+</tr>
+<tr class="even">
+<td>axis</td>
+<td>int</td>
+<td>-1</td>
+<td>Axis over which to apply the softmax</td>
+</tr>
+<tr class="odd">
+<td>min_beta</td>
+<td>float</td>
+<td>1e-06</td>
+<td>Minimal accepted value of beta. For energy dynamics, it is important that beta be positive.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L204" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lsoftmax" class="level3">
+<h3 class="anchored" data-anchor-id="lsoftmax">LSoftmax</h3>
+<blockquote class="blockquote">
+<pre><code> LSoftmax (beta=1.0, axis=-1, min_beta=1e-06)</code></pre>
+</blockquote>
+<p>Reduced Lagrangian whose activation function is the softmax</p>
+<p>Parameterized by (beta)</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>beta</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature</td>
+</tr>
+<tr class="even">
+<td>axis</td>
+<td>int</td>
+<td>-1</td>
+<td>Axis over which to apply the softmax</td>
+</tr>
+<tr class="odd">
+<td>min_beta</td>
+<td>float</td>
+<td>1e-06</td>
+<td>Minimal accepted value of beta. For energy dynamics, it is important that beta be positive.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L184" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lsigmoid" class="level3">
+<h3 class="anchored" data-anchor-id="lsigmoid">LSigmoid</h3>
+<blockquote class="blockquote">
+<pre><code> LSigmoid (beta=1.0, scale=1.0, min_beta=1e-06)</code></pre>
+</blockquote>
+<p>Reduced Lagrangian whose activation function is the sigmoid</p>
+<p>Parameterized by (beta)</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>beta</td>
+<td>float</td>
+<td>1.0</td>
+<td>Inverse temperature</td>
+</tr>
+<tr class="even">
+<td>scale</td>
+<td>float</td>
+<td>1.0</td>
+<td>Amount to stretch the sigmoid.</td>
+</tr>
+<tr class="odd">
+<td>min_beta</td>
+<td>float</td>
+<td>1e-06</td>
+<td>Minimal accepted value of beta. For energy dynamics, it is important that beta be positive.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L178" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lrelu" class="level3">
+<h3 class="anchored" data-anchor-id="lrelu">LRelu</h3>
+<blockquote class="blockquote">
+<pre><code> LRelu ()</code></pre>
+</blockquote>
+<p>Reduced Lagrangian whose activation function is the rectified linear unit</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L166" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lrepu" class="level3">
+<h3 class="anchored" data-anchor-id="lrepu">LRepu</h3>
+<blockquote class="blockquote">
+<pre><code> LRepu (n=2.0)</code></pre>
+</blockquote>
+<p>Reduced Lagrangian whose activation function is the rectified polynomial unit of specified degree <code>n</code></p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>n</td>
+<td>float</td>
+<td>2.0</td>
+<td>The degree of the RePU. By default, set to the ReLU configuration</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/lagrangians.py#L160" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="lidentity" class="level3">
+<h3 class="anchored" data-anchor-id="lidentity">LIdentity</h3>
+<blockquote class="blockquote">
+<pre><code> LIdentity ()</code></pre>
+</blockquote>
+<p>Reduced Lagrangian whose activation function is the identity function</p>
+<p>The modules can be initialized and used as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>lag <span class="op">=</span> LRepu(n<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> jax.random.normal(jax.random.PRNGKey(<span class="dv">1</span>), (<span class="dv">7</span>,))</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>lag(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>Array(8.217218, dtype=float32)</code></pre>
+</div>
+</div>
+<p>To apply the lagrangian to a batch of samples, we should take advantage of <code>jax.vmap</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>lag <span class="op">=</span> jax.vmap(LRepu(n<span class="op">=</span><span class="dv">4</span>))<span class="op">;</span> batch_size <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> jax.random.normal(jax.random.PRNGKey(<span class="dv">1</span>), (batch_size,<span class="dv">7</span>))</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>lag(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>Array([0.79066116, 0.634871  , 0.13261071, 3.3233747 ], dtype=float32)</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

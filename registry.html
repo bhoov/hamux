@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.313">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Easily create preconfigured models and prediction functions on a HAM">
+
+<title>hamux - Registry</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="hamux - Registry">
+<meta property="og:description" content="Easily create preconfigured models and prediction functions on a HAM">
+<meta property="og:site-name" content="hamux">
+<meta name="twitter:title" content="hamux - Registry">
+<meta name="twitter:description" content="Easily create preconfigured models and prediction functions on a HAM">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">hamux</span>
+    </a>
+  </div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Registry</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">HAMUX</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lagrangians.html" class="sidebar-item-text sidebar-link">Lagrangians</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./layers.html" class="sidebar-item-text sidebar-link">Neuron Layers</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./synapses.html" class="sidebar-item-text sidebar-link">(Hyper)Synapses</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ham.html" class="sidebar-item-text sidebar-link">HAM</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./registry.html" class="sidebar-item-text sidebar-link active">Registry</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tfjs.html" class="sidebar-item-text sidebar-link">Converting to TFJS</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-registry" id="toc-the-registry" class="nav-link active" data-scroll-target="#the-registry">The Registry</a>
+  <ul class="collapse">
+  <li><a href="#named_partial" id="toc-named_partial" class="nav-link" data-scroll-target="#named_partial">named_partial</a></li>
+  <li><a href="#create_model" id="toc-create_model" class="nav-link" data-scroll-target="#create_model">create_model</a></li>
+  <li><a href="#register_model" id="toc-register_model" class="nav-link" data-scroll-target="#register_model">register_model</a></li>
+  <li><a href="#fwd_conv" id="toc-fwd_conv" class="nav-link" data-scroll-target="#fwd_conv">fwd_conv</a></li>
+  <li><a href="#fwd_vec" id="toc-fwd_vec" class="nav-link" data-scroll-target="#fwd_vec">fwd_vec</a></li>
+  <li><a href="#simple_fwd" id="toc-simple_fwd" class="nav-link" data-scroll-target="#simple_fwd">simple_fwd</a></li>
+  </ul></li>
+  <li><a href="#model-registry" id="toc-model-registry" class="nav-link" data-scroll-target="#model-registry">Model Registry</a>
+  <ul class="collapse">
+  <li><a href="#layer-hn" id="toc-layer-hn" class="nav-link" data-scroll-target="#layer-hn">2 Layer HN</a></li>
+  <li><a href="#hn_softmax_cifar" id="toc-hn_softmax_cifar" class="nav-link" data-scroll-target="#hn_softmax_cifar">hn_softmax_cifar</a></li>
+  <li><a href="#hn_softmax_mnist" id="toc-hn_softmax_mnist" class="nav-link" data-scroll-target="#hn_softmax_mnist">hn_softmax_mnist</a></li>
+  <li><a href="#hn_repu5_cifar" id="toc-hn_repu5_cifar" class="nav-link" data-scroll-target="#hn_repu5_cifar">hn_repu5_cifar</a></li>
+  <li><a href="#hn_repu5_mnist" id="toc-hn_repu5_mnist" class="nav-link" data-scroll-target="#hn_repu5_mnist">hn_repu5_mnist</a></li>
+  <li><a href="#hn_relu_cifar" id="toc-hn_relu_cifar" class="nav-link" data-scroll-target="#hn_relu_cifar">hn_relu_cifar</a></li>
+  <li><a href="#hn_relu_mnist" id="toc-hn_relu_mnist" class="nav-link" data-scroll-target="#hn_relu_mnist">hn_relu_mnist</a></li>
+  <li><a href="#hn" id="toc-hn" class="nav-link" data-scroll-target="#hn">hn</a></li>
+  </ul></li>
+  <li><a href="#simple-convolution" id="toc-simple-convolution" class="nav-link" data-scroll-target="#simple-convolution">Simple Convolution</a>
+  <ul class="collapse">
+  <li><a href="#conv_ham_maxpool_cifar" id="toc-conv_ham_maxpool_cifar" class="nav-link" data-scroll-target="#conv_ham_maxpool_cifar">conv_ham_maxpool_cifar</a></li>
+  <li><a href="#conv_ham_avgpool_cifar" id="toc-conv_ham_avgpool_cifar" class="nav-link" data-scroll-target="#conv_ham_avgpool_cifar">conv_ham_avgpool_cifar</a></li>
+  <li><a href="#conv_ham_maxpool_mnist" id="toc-conv_ham_maxpool_mnist" class="nav-link" data-scroll-target="#conv_ham_maxpool_mnist">conv_ham_maxpool_mnist</a></li>
+  <li><a href="#conv_ham_avgpool_mnist" id="toc-conv_ham_avgpool_mnist" class="nav-link" data-scroll-target="#conv_ham_avgpool_mnist">conv_ham_avgpool_mnist</a></li>
+  <li><a href="#conv_ham" id="toc-conv_ham" class="nav-link" data-scroll-target="#conv_ham">conv_ham</a></li>
+  <li><a href="#energy-version-of-attention" id="toc-energy-version-of-attention" class="nav-link" data-scroll-target="#energy-version-of-attention">Energy Version of Attention</a></li>
+  <li><a href="#energy_attn_cifar" id="toc-energy_attn_cifar" class="nav-link" data-scroll-target="#energy_attn_cifar">energy_attn_cifar</a></li>
+  <li><a href="#energy_attn_mnist" id="toc-energy_attn_mnist" class="nav-link" data-scroll-target="#energy_attn_mnist">energy_attn_mnist</a></li>
+  <li><a href="#energy_attn" id="toc-energy_attn" class="nav-link" data-scroll-target="#energy_attn">energy_attn</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/bhoov/hamux/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Registry</h1>
+</div>
+
+<div>
+  <div class="description">
+    Easily create preconfigured models and prediction functions on a HAM
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>We create very simple helper functions to instantiate HAMs with particular architectural choices. Inspired by <a href="https://github.com/rwightman/pytorch-image-models"><code>timm</code></a>.</p>
+<p>A HAM is a fundamentally general purpose architecture. It is a general-purpose Associative Memory – it is up to the user to extract the desired information from the system. Hence, every registered model must return the <code>ham</code> architecture and a <code>fwd</code> function that accomplishes a task from that architecture</p>
+<section id="the-registry" class="level2">
+<h2 class="anchored" data-anchor-id="the-registry">The Registry</h2>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L36" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="named_partial" class="level3">
+<h3 class="anchored" data-anchor-id="named_partial">named_partial</h3>
+<blockquote class="blockquote">
+<pre><code> named_partial (f, *args, new_name=None, order=None, **kwargs)</code></pre>
+</blockquote>
+<p>Like <code>functools.partial</code> but also copies over function name and docstring.</p>
+<p>If new_name is not None, use that as the name</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L29" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="create_model" class="level3">
+<h3 class="anchored" data-anchor-id="create_model">create_model</h3>
+<blockquote class="blockquote">
+<pre><code> create_model (mname:str, *args, **kwargs)</code></pre>
+</blockquote>
+<p>Retrieve the model name from all registered models, passing <code>args</code> and <code>kwargs</code> to the factory function</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>mname</td>
+<td>str</td>
+<td>Retrieve this stored model name</td>
+</tr>
+<tr class="even">
+<td>args</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>kwargs</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L23" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="register_model" class="level3">
+<h3 class="anchored" data-anchor-id="register_model">register_model</h3>
+<blockquote class="blockquote">
+<pre><code> register_model (fgen:Callable)</code></pre>
+</blockquote>
+<p>Register a function that returns a model configuration factory function. The name of the function acts as the retrieval key and must be unique across models</p>
+<table class="table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 38%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>fgen</td>
+<td>typing.Callable</td>
+<td>Function that returns a HAM with desired config</td>
+</tr>
+</tbody>
+</table>
+<p>We can now register a model as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="at">@register_model</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> example_classical_hn(img_shape:Tuple, <span class="co"># Vector input size</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>            label_shape:Tuple[<span class="bu">int</span>], <span class="co"># Number of labels</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>            nhid:<span class="bu">int</span><span class="op">=</span><span class="dv">1000</span>, <span class="co"># Number of hidden units in the single hidden layer</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>            depth:<span class="bu">int</span><span class="op">=</span><span class="dv">4</span>, <span class="co"># Default number of iterations to run the Hopfield Network prediction function</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>            dt:<span class="bu">float</span><span class="op">=</span><span class="fl">0.4</span>, <span class="co"># Default step size of the system</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>           ): </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Create a 2-layer classical Hopfield Network applied on vectorized inputs and a function showing how to use it"""</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    layers <span class="op">=</span> [</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        hmx.TanhLayer(img_shape),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        hmx.SoftmaxLayer(label_shape),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    synapses <span class="op">=</span> [</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        hmx.DenseMatrixSynapseWithHiddenLayer(nhid, hidden_lagrangian<span class="op">=</span>hmx.lagrangians.LRelu()),</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    connections <span class="op">=</span> [</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        ((<span class="dv">0</span>, <span class="dv">1</span>), <span class="dv">0</span>),</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    ham <span class="op">=</span> hmx.HAM(layers, synapses, connections)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fwd(model, x, depth<span class="op">=</span>depth, dt<span class="op">=</span>dt, rng<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""A pure function to extract desired information from the configured HAM, applied on batched inputs"""</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Initialize hidden states to our image</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        xs <span class="op">=</span> model.init_states(x.shape[<span class="dv">0</span>], rng<span class="op">=</span>rng)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        xs[<span class="dv">0</span>] <span class="op">=</span> jnp.array(x)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Masks allow us to clamp our visible data over time</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        masks <span class="op">=</span> jtu.tree_map(<span class="kw">lambda</span> x: jnp.ones_like(x, dtype<span class="op">=</span>jnp.int8), xs)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        masks[<span class="dv">0</span>] <span class="op">=</span> jnp.zeros_like(masks[<span class="dv">0</span>], dtype<span class="op">=</span>jnp.int8)  <span class="co"># Don't evolve images</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(depth):</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>            updates <span class="op">=</span> model.vupdates(xs)  <span class="co"># Calculate the updates</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>            xs <span class="op">=</span> model.step(</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>                xs, updates, dt<span class="op">=</span>dt, masks<span class="op">=</span>masks</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>            )  <span class="co"># Add them to our current states</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        <span class="co"># All labels have a softmax activation function as the last layer, spitting out probabilities</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> model.layers[<span class="op">-</span><span class="dv">1</span>].g(xs[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ham, fwd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The model that we just created comes with a default function that predicts label probabilities after 4 steps (though feel free to write any function to extract a layer state/activation at any point in time).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>img_shape <span class="op">=</span> (<span class="dv">32</span>,<span class="dv">32</span>)<span class="op">;</span> bs <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>model, fwd <span class="op">=</span> create_model(<span class="st">"example_classical_hn"</span>, img_shape<span class="op">=</span>img_shape, label_shape<span class="op">=</span>(<span class="dv">10</span>,))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>_, model <span class="op">=</span> model.init_states_and_params(jax.random.PRNGKey(<span class="dv">0</span>))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> jnp.ones((bs, <span class="op">*</span>img_shape))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>probs <span class="op">=</span> fwd(model, x)<span class="op">;</span> probs.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>2022-12-13 16:24:58.481170: E external/org_tensorflow/tensorflow/compiler/xla/stream_executor/cuda/cuda_driver.cc:267] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+WARNING:jax._src.lib.xla_bridge:No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>(12, 10)</code></pre>
+</div>
+</div>
+<p>For the simple pipeline of classification, our <code>fwd</code> pipelines are quite similar. We therefore create some helper functions to use throughout the rest of our model configuration.</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L85" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="fwd_conv" class="level3">
+<h3 class="anchored" data-anchor-id="fwd_conv">fwd_conv</h3>
+<blockquote class="blockquote">
+<pre><code> fwd_conv (model:hamux.ham.HAM, x:jax.Array, depth:int, dt:float,
+           rng:Optional[jax.Array]=None)</code></pre>
+</blockquote>
+<p>Where the image input is kept as a 3 channel image</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>model</td>
+<td>HAM</td>
+<td></td>
+<td>HAM where layer[0] is the image input and layer[-1] are the labels</td>
+</tr>
+<tr class="even">
+<td>x</td>
+<td>Array</td>
+<td></td>
+<td>Starting point for clamped layer[0]</td>
+</tr>
+<tr class="odd">
+<td>depth</td>
+<td>int</td>
+<td></td>
+<td>Number of iterations for which to run the model</td>
+</tr>
+<tr class="even">
+<td>dt</td>
+<td>float</td>
+<td></td>
+<td>Step size through time</td>
+</tr>
+<tr class="odd">
+<td>rng</td>
+<td>typing.Optional[jax.Array]</td>
+<td>None</td>
+<td>If provided, initialize states to random instead of 0</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L76" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="fwd_vec" class="level3">
+<h3 class="anchored" data-anchor-id="fwd_vec">fwd_vec</h3>
+<blockquote class="blockquote">
+<pre><code> fwd_vec (model:hamux.ham.HAM, x:jax.Array, depth:int, dt:float,
+          rng:Optional[jax.Array]=None)</code></pre>
+</blockquote>
+<p>Where the image input is vectorized</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>model</td>
+<td>HAM</td>
+<td></td>
+<td>HAM where layer[0] is the image input and layer[-1] are the labels</td>
+</tr>
+<tr class="even">
+<td>x</td>
+<td>Array</td>
+<td></td>
+<td>Starting point for clamped layer[0]</td>
+</tr>
+<tr class="odd">
+<td>depth</td>
+<td>int</td>
+<td></td>
+<td>Number of iterations for which to run the model</td>
+</tr>
+<tr class="even">
+<td>dt</td>
+<td>float</td>
+<td></td>
+<td>Step size through time</td>
+</tr>
+<tr class="odd">
+<td>rng</td>
+<td>typing.Optional[jax.Array]</td>
+<td>None</td>
+<td>If provided, initialize states to random instead of 0</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L50" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="simple_fwd" class="level3">
+<h3 class="anchored" data-anchor-id="simple_fwd">simple_fwd</h3>
+<blockquote class="blockquote">
+<pre><code> simple_fwd (model:hamux.ham.HAM, x:jax.Array, depth:int, dt:float,
+             rng:Optional[jax.Array]=None)</code></pre>
+</blockquote>
+<p>A simple version of the forward function for showing in the paper.</p>
+<p>All time constants <code>tau</code> are set to be 1 in our architecture, but this is variable</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>model</td>
+<td>HAM</td>
+<td></td>
+<td>HAM where layer[0] is the image input and layer[-1] are the labels</td>
+</tr>
+<tr class="even">
+<td>x</td>
+<td>Array</td>
+<td></td>
+<td>Starting point for clamped layer[0]</td>
+</tr>
+<tr class="odd">
+<td>depth</td>
+<td>int</td>
+<td></td>
+<td>Number of iterations for which to run the model</td>
+</tr>
+<tr class="even">
+<td>dt</td>
+<td>float</td>
+<td></td>
+<td>Step size through time</td>
+</tr>
+<tr class="odd">
+<td>rng</td>
+<td>typing.Optional[jax.Array]</td>
+<td>None</td>
+<td>If provided, initialize states to random instead of 0</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="model-registry" class="level2">
+<h2 class="anchored" data-anchor-id="model-registry">Model Registry</h2>
+<section id="layer-hn" class="level3">
+<h3 class="anchored" data-anchor-id="layer-hn">2 Layer HN</h3>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L156" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="hn_softmax_cifar" class="level3">
+<h3 class="anchored" data-anchor-id="hn_softmax_cifar">hn_softmax_cifar</h3>
+<blockquote class="blockquote">
+<pre><code> hn_softmax_cifar (nhid=6000)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L152" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="hn_softmax_mnist" class="level3">
+<h3 class="anchored" data-anchor-id="hn_softmax_mnist">hn_softmax_mnist</h3>
+<blockquote class="blockquote">
+<pre><code> hn_softmax_mnist (nhid=1000)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L147" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="hn_repu5_cifar" class="level3">
+<h3 class="anchored" data-anchor-id="hn_repu5_cifar">hn_repu5_cifar</h3>
+<blockquote class="blockquote">
+<pre><code> hn_repu5_cifar (nhid=6000)</code></pre>
+</blockquote>
+<p>Vectorized DAM on flattened CIFAR</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L142" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="hn_repu5_mnist" class="level3">
+<h3 class="anchored" data-anchor-id="hn_repu5_mnist">hn_repu5_mnist</h3>
+<blockquote class="blockquote">
+<pre><code> hn_repu5_mnist (nhid=1000)</code></pre>
+</blockquote>
+<p>Vectorized DAM on flattened MNIST</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L137" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="hn_relu_cifar" class="level3">
+<h3 class="anchored" data-anchor-id="hn_relu_cifar">hn_relu_cifar</h3>
+<blockquote class="blockquote">
+<pre><code> hn_relu_cifar (nhid:int=6000)</code></pre>
+</blockquote>
+<p>Vectorized HN on flattened CIFAR10</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>nhid</td>
+<td>int</td>
+<td>6000</td>
+<td>Number of units in the single hidden layer</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L132" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="hn_relu_mnist" class="level3">
+<h3 class="anchored" data-anchor-id="hn_relu_mnist">hn_relu_mnist</h3>
+<blockquote class="blockquote">
+<pre><code> hn_relu_mnist (nhid:int=1000)</code></pre>
+</blockquote>
+<p>Vectorized HN on flattened MNIST</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>nhid</td>
+<td>int</td>
+<td>1000</td>
+<td>Number of units in the single hidden layer</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L97" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="hn" class="level3">
+<h3 class="anchored" data-anchor-id="hn">hn</h3>
+<blockquote class="blockquote">
+<pre><code> hn (hidden_lagrangian:treex.module.Module, img_shape:Tuple,
+     label_shape:Tuple, nhid:int=1000, do_norm:bool=False)</code></pre>
+</blockquote>
+<p>Create a Classical Hopfield Network that is intended to be applied on vectorized inputs</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>hidden_lagrangian</td>
+<td>Module</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>img_shape</td>
+<td>typing.Tuple</td>
+<td></td>
+<td>Shape of image input to model</td>
+</tr>
+<tr class="odd">
+<td>label_shape</td>
+<td>typing.Tuple</td>
+<td></td>
+<td>Shape of label probabilities,typically (NLABELS,)</td>
+</tr>
+<tr class="even">
+<td>nhid</td>
+<td>int</td>
+<td>1000</td>
+<td>Number of units in hidden layer</td>
+</tr>
+<tr class="odd">
+<td>do_norm</td>
+<td>bool</td>
+<td>False</td>
+<td>If provided, enforce that all weights are standardized</td>
+</tr>
+</tbody>
+</table>
+<p>These models can now be instantiated by their strings:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>xcifar <span class="op">=</span> jnp.ones((<span class="dv">1</span>,<span class="dv">3</span>, <span class="dv">32</span>,<span class="dv">32</span>)) <span class="co"># Per pytorch convention, CHW</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>xmnist <span class="op">=</span> jnp.ones((<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">28</span>,<span class="dv">28</span>)) <span class="co"># Per pytorch convention, CHW</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>exhn, exhn_fwd <span class="op">=</span> create_model(<span class="st">"hn"</span>, hmx.lagrangians.LExp(), (<span class="dv">32</span>,<span class="dv">32</span>,<span class="dv">3</span>), (<span class="dv">10</span>,))</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>_, exhn <span class="op">=</span> exhn.init_states_and_params(jax.random.PRNGKey(<span class="dv">22</span>))</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>exhn_fwd(exhn, xcifar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>Array([[0.31536135, 0.08483113, 0.0897951 , 0.02981309, 0.03241062,
+        0.03071734, 0.03666373, 0.00281298, 0.03433144, 0.3432633 ]],      dtype=float32)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="simple-convolution" class="level2">
+<h2 class="anchored" data-anchor-id="simple-convolution">Simple Convolution</h2>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L216" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="conv_ham_maxpool_cifar" class="level3">
+<h3 class="anchored" data-anchor-id="conv_ham_maxpool_cifar">conv_ham_maxpool_cifar</h3>
+<blockquote class="blockquote">
+<pre><code> conv_ham_maxpool_cifar (nhid=1000)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L211" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="conv_ham_avgpool_cifar" class="level3">
+<h3 class="anchored" data-anchor-id="conv_ham_avgpool_cifar">conv_ham_avgpool_cifar</h3>
+<blockquote class="blockquote">
+<pre><code> conv_ham_avgpool_cifar (nhid=1000)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L206" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="conv_ham_maxpool_mnist" class="level3">
+<h3 class="anchored" data-anchor-id="conv_ham_maxpool_mnist">conv_ham_maxpool_mnist</h3>
+<blockquote class="blockquote">
+<pre><code> conv_ham_maxpool_mnist (nhid=1000)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L201" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="conv_ham_avgpool_mnist" class="level3">
+<h3 class="anchored" data-anchor-id="conv_ham_avgpool_mnist">conv_ham_avgpool_mnist</h3>
+<blockquote class="blockquote">
+<pre><code> conv_ham_avgpool_mnist (nhid=1000)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L162" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="conv_ham" class="level3">
+<h3 class="anchored" data-anchor-id="conv_ham">conv_ham</h3>
+<blockquote class="blockquote">
+<pre><code> conv_ham (s1, s2, s3, pool_type, nhid=1000)</code></pre>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>model, fwd <span class="op">=</span> create_model(<span class="st">"conv_ham_avgpool_cifar"</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>_, model <span class="op">=</span> model.init_states_and_params(jax.random.PRNGKey(<span class="dv">0</span>))</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>fwd(model, xcifar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="energy-version-of-attention" class="level3">
+<h3 class="anchored" data-anchor-id="energy-version-of-attention">Energy Version of Attention</h3>
+<p>We now introduce a simple model for energy-based attention</p>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L256" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="energy_attn_cifar" class="level3">
+<h3 class="anchored" data-anchor-id="energy_attn_cifar">energy_attn_cifar</h3>
+<blockquote class="blockquote">
+<pre><code> energy_attn_cifar ()</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L246" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="energy_attn_mnist" class="level3">
+<h3 class="anchored" data-anchor-id="energy_attn_mnist">energy_attn_mnist</h3>
+<blockquote class="blockquote">
+<pre><code> energy_attn_mnist ()</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/bhoov/hamux/blob/main/hamux/registry.py#L221" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="energy_attn" class="level3">
+<h3 class="anchored" data-anchor-id="energy_attn">energy_attn</h3>
+<blockquote class="blockquote">
+<pre><code> energy_attn (s1, s2, nheads_self, nheads_cross)</code></pre>
+</blockquote>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

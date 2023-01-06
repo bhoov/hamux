@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.313">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="A New Class of Deep Learning Library Built around ENERGY">
+
+<title>hamux - HAMUX</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="hamux - HAMUX">
+<meta property="og:description" content="A New Class of  Deep Learning Library Built around **ENERGY**">
+<meta property="og:site-name" content="hamux">
+<meta name="twitter:title" content="hamux - HAMUX">
+<meta name="twitter:description" content="A New Class of  Deep Learning Library Built around **ENERGY**">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">hamux</span>
+    </a>
+  </div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">HAMUX</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">HAMUX</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lagrangians.html" class="sidebar-item-text sidebar-link">Lagrangians</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./layers.html" class="sidebar-item-text sidebar-link">Neuron Layers</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./synapses.html" class="sidebar-item-text sidebar-link">(Hyper)Synapses</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ham.html" class="sidebar-item-text sidebar-link">HAM</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./registry.html" class="sidebar-item-text sidebar-link">Registry</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tfjs.html" class="sidebar-item-text sidebar-link">Converting to TFJS</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#a-universal-abstraction-for-hopfield-networks" id="toc-a-universal-abstraction-for-hopfield-networks" class="nav-link active" data-scroll-target="#a-universal-abstraction-for-hopfield-networks">A Universal Abstraction for Hopfield Networks</a></li>
+  <li><a href="#how-does-hamux-work" id="toc-how-does-hamux-work" class="nav-link" data-scroll-target="#how-does-hamux-work">How does HAMUX work?</a>
+  <ul class="collapse">
+  <li><a href="#neuron-layers" id="toc-neuron-layers" class="nav-link" data-scroll-target="#neuron-layers">🌀Neuron Layers</a></li>
+  <li><a href="#hypersynapses" id="toc-hypersynapses" class="nav-link" data-scroll-target="#hypersynapses">🤝HyperSynapses</a></li>
+  </ul></li>
+  <li><a href="#install" id="toc-install" class="nav-link" data-scroll-target="#install">Install</a></li>
+  <li><a href="#how-to-use" id="toc-how-to-use" class="nav-link" data-scroll-target="#how-to-use">How to Use</a></li>
+  <li><a href="#the-energy-function-vs-the-loss-function" id="toc-the-energy-function-vs-the-loss-function" class="nav-link" data-scroll-target="#the-energy-function-vs-the-loss-function">The Energy Function vs the Loss Function</a></li>
+  <li><a href="#credits" id="toc-credits" class="nav-link" data-scroll-target="#credits">Credits</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/bhoov/hamux/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">HAMUX</h1>
+</div>
+
+<div>
+  <div class="description">
+    A New Class of Deep Learning Library Built around <strong>ENERGY</strong>
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div class="cell">
+<div class="cell-output cell-output-display">
+
+<img src="https://raw.githubusercontent.com/bhoov/hamux/main/assets/header.png" alt="HAMUX Logo" width="400">
+</div>
+</div>
+<p>Part proof-of-concept, part functional prototype, HAMUX is designed to bridge modern AI architectures and Hopfield Networks.</p>
+<p><strong>HAMUX</strong>: A <strong>H</strong>ierarchical <strong>A</strong>ssociative <strong>M</strong>emory <strong>U</strong>ser e<strong>X</strong>perience.</p>
+<p><a href="https://bhoov.github.io/hamux">Documentation</a></p>
+<div class="cell">
+<div class="cell-output cell-output-display">
+
+<div class="alert alert-info">
+    🚧 <strong>HAMUX is in rapid development</strong>. Remember to specify the version when building off of HAMUX.
+</div>
+</div>
+</div>
+<section id="a-universal-abstraction-for-hopfield-networks" class="level2">
+<h2 class="anchored" data-anchor-id="a-universal-abstraction-for-hopfield-networks">A Universal Abstraction for Hopfield Networks</h2>
+<p>HAMUX fully captures the the energy fundamentals of Hopfield Networks and enables anyone to:</p>
+<ul>
+<li><p>🧠 Build <strong>DEEP</strong> Hopfield nets</p></li>
+<li><p>🧱 With modular <strong>ENERGY</strong> components</p></li>
+<li><p>🏆 That resemble modern DL operations</p></li>
+</ul>
+<p><strong>Every</strong> architecture built using HAMUX is a <em>dynamical system</em> guaranteed to have a <em>tractable energy</em> function that <em>converges</em> to a fixed point. Our deep <a href="https://arxiv.org/abs/2107.06446">Hierarchical Associative Memories</a> (HAMs) have several additional advantages over traditional <a href="http://www.scholarpedia.org/article/Hopfield_network">Hopfield Networks</a> (HNs):</p>
+<table class="table">
+<colgroup>
+<col style="width: 57%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Hopfield Networks (HNs)</th>
+<th>Hierarchical Associative Memories (HAMs)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>HNs are only <strong>two layers</strong> systems</td>
+<td>HAMs connect <strong>any number</strong> of layers</td>
+</tr>
+<tr class="even">
+<td>HNs model only <strong>simple relationships</strong> between layers</td>
+<td>HAMs model <strong>any complex but differentiable operation</strong> (e.g., convolutions, pooling, attention, <span class="math inline">\(\ldots\)</span>)</td>
+</tr>
+<tr class="odd">
+<td>HNs use only <strong>pairwise synapses</strong></td>
+<td>HAMs use <strong>many-body synapses</strong> (which we denote <strong>HyperSynapses</strong>)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="how-does-hamux-work" class="level2">
+<h2 class="anchored" data-anchor-id="how-does-hamux-work">How does HAMUX work?</h2>
+<blockquote class="blockquote">
+<p><strong>HAMUX</strong> is a <a href="https://en.wikipedia.org/wiki/Hypergraph">hypergraph</a> of 🌀neurons connected via 🤝hypersynapses, an abstraction sufficiently general to model the complexity of connections used in modern AI architectures.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output cell-output-display">
+
+<div class="alert alert-info">
+    We conflate the terms <em>hypersynapse</em> and <em>synapse</em> regularly. We explicitly say "pairwise synapse" when referring to the classical understanding of synapses.
+</div>
+</div>
+</div>
+<p>HAMUX defines two fundamental building blocks of energy: the <strong>🌀neuron layer</strong> and the <strong>🤝hypersynapse</strong> (an abstraction of a pairwise synapse to include many-body interactions) connected via a <a href="https://en.wikipedia.org/wiki/Hypergraph"><strong>hypergraph</strong></a>. It is a fully dynamical system, where the “hidden state” <span class="math inline">\(x_i^l\)</span> of each layer <span class="math inline">\(l\)</span> (blue squares in the figure below) is an independent variable that evolves over time. The update rule of each layer is entirely local; only signals from a layer’s connected synapses (red circles in the figure below) can tell the hidden state how to change. This is shown in the following equation:</p>
+<p><span class="math display">\[\tau \frac{d x_{i}^{l}}{dt} = -\frac{\partial E}{\partial g_i^l}\]</span></p>
+<p>where <span class="math inline">\(g_i^l\)</span> are the <em>activations</em> (i.e., non-linearities) on each neuron layer, described in the section on <a href="#🌀Neuron-Layers">Neuron Layers</a>. Concretely, we implement the above differential equation as the following discretized equation (where the bold <span class="math inline">\({\mathbf x}_l\)</span> is the collection of all elements in layer <span class="math inline">\(l\)</span>’s state):</p>
+<p><span class="math display">\[ \mathbf{x}_l^{(t+1)} = \mathbf{x}_l^{(t)} - \frac{dt}{\tau} \nabla_{\mathbf{g}_l}E(t)\]</span></p>
+<p>HAMUX handles all the complexity of scaling this fundamental update equation to many layers and hyper synapses. In addition, it provides a <em>framework</em> to:</p>
+<ol type="1">
+<li>Implement your favorite Deep Learning operations as a <a href="https://bhoov.github.io/hamux/synapses.html">HyperSynapse</a></li>
+<li>Port over your favorite activation functions as <a href="https://bhoov.github.io/hamux/lagrangians.html">Lagrangians</a></li>
+<li>Connect your layers and hypersynapses into a <a href="https://bhoov.github.io/hamux/ham.html">HAM</a> (using a hypergraph as the data structure)</li>
+<li>Inject your data into the associative memory</li>
+<li>Automatically calculate and descend the energy given the hidden states at any point in time</li>
+</ol>
+<p>Use these features to train any hierarchical associative memory on your own data! All of this made possible by <a href="https://github.com/google/jax">JAX</a>.</p>
+<p>The <code>examples/</code> subdirectory contains a (growing) list of examples on how to apply HAMUX on real data.</p>
+<div class="cell">
+<div class="cell-output cell-output-display">
+
+<figure class="figure">
+<img src="https://raw.githubusercontent.com/bhoov/hamux/main/assets/HyperSynapse-fig1.png" alt="HAMUX Overview" width="700" class="figure-img">
+<figcaption style="color:#999" class="figure-caption">Explaining the "energy fundamentals" of HAMUX (Layers and Synapses, left) using a 4-layer, 3-synapse example HAM (middle) that can be built using the code on the right.</figcaption>
+</figure>
+</div>
+</div>
+<section id="neuron-layers" class="level3">
+<h3 class="anchored" data-anchor-id="neuron-layers">🌀Neuron Layers</h3>
+<p>Neuron layers are the recurrent unit of a HAM; that is, 🌀neurons keep a state that changes over time according to the dynamics of the system. These states always change to minimize the global energy function of the system.</p>
+<p>For those of us familiar with traditional Deep Learning architectures, we are familiar with nonlinear activation functions like the <code>ReLU</code> and <code>SoftMax</code>. A neuron layer in HAMUX is exactly that: a nonlinear activation function defined on some neuron. However, we need to express the activation function as a convex <strong>Lagrangian function</strong> <span class="math inline">\(\mathcal{L}\)</span> that is the integral of the desired non-linearity such that the <strong>derivative of the Lagrangian function</strong> <span class="math inline">\(\nabla \mathcal{L}\)</span> is our desired non-linearity. E.g., consider the ReLU:</p>
+<p><span class="math display">\[
+\begin{align*}
+\mathcal{L}(x) &amp;:= \frac{1}{2} (\max(x, 0))^2\\
+\nabla \mathcal{L} &amp;= \max(x, 0) = \mathrm{relu}(x)\\
+\end{align*}
+\]</span></p>
+<p>We need to define our activation layer in terms of the <em>Lagrangian</em> of the ReLU instead of the ReLU itself. Extending this constraint to other nonlinearities makes it possible to define the scalar energy for any neuron in a HAM. It turns out that many activation functions used in today’s Deep Learning landscape are expressible as a Lagrangian. HAMUX is “batteries-included” for many common activation functions including <code>relu</code>s, <code>softmax</code>es, <code>sigmoid</code>s, <code>LayerNorm</code>s, etc. See our <a href="https://bhoov.github.io/hamux/lagrangians.html">documentation on Lagrangians</a> for examples on how to implement efficient activation functions from Lagrangians in JAX. We show how to turn Lagrangians into usable energy building blocks in our <a href="https://bhoov.github.io/hamux/layers.html">documentation on neuron layers</a>.</p>
+</section>
+<section id="hypersynapses" class="level3">
+<h3 class="anchored" data-anchor-id="hypersynapses">🤝HyperSynapses</h3>
+<p>A 🤝hypersynapse ONLY sees activations of connected 🌀neuron layers. Its one job: report HIGH ⚡️energy if the connected activations are dissimilar and LOW ⚡️energy when they are aligned. Hypersynapses can resemble convolutions, dense multiplications, even attention… Take a look at our <a href="https://bhoov.github.io/hamux/synapses.html">documentation on (hyper)synapses</a>.</p>
+<div class="cell">
+<div class="cell-output cell-output-display">
+
+<div class="alert alert-info">
+    🚨 <strong>Point of confusion</strong>: modern AI frameworks have <code>ConvLayer</code>s and <code>NormalizationLayer</code>s. In HAMUX, these would be more appropriately called <code>ConvSynapse</code>s and <code>NormalizationLagrangian</code>s.
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="install" class="level2">
+<h2 class="anchored" data-anchor-id="install">Install</h2>
+<p><strong>From pip</strong>:</p>
+<pre><code>pip install hamux</code></pre>
+<p>If you are using accelerators beyond the CPU you will need to additionally install the corresponding <code>jax</code> and <code>jaxlib</code> versions following <a href="https://github.com/google/jax#installation">their documentation</a>. E.g.,</p>
+<pre><code>pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html</code></pre>
+<p><strong>From source</strong>:</p>
+<p>After cloning:</p>
+<pre><code>cd hamux
+conda env create -f environment.yml
+conda activate hamux
+pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html # If using GPU accelerator
+pip install -e .
+pip install -r requirements-dev.txt  # To run the examples</code></pre>
+</section>
+<section id="how-to-use" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-use">How to Use</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> hamux <span class="im">as</span> hmx</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jax.numpy <span class="im">as</span> jnp</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jax</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jax.tree_util <span class="im">as</span> jtu</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can build a simple 4 layer HAM architecture using the following code</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>layers <span class="op">=</span> [</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    hmx.TanhLayer((<span class="dv">32</span>,<span class="dv">32</span>,<span class="dv">3</span>)), <span class="co"># e.g., CIFAR Images</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    hmx.SigmoidLayer((<span class="dv">11</span>,<span class="dv">11</span>,<span class="dv">1000</span>)), <span class="co"># CIFAR patches</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    hmx.SoftmaxLayer((<span class="dv">10</span>,)), <span class="co"># CIFAR Labels</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    hmx.SoftmaxLayer((<span class="dv">1000</span>,)), <span class="co"># Hidden Memory Layer</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>synapses <span class="op">=</span> [</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    hmx.ConvSynapse((<span class="dv">3</span>,<span class="dv">3</span>), strides<span class="op">=</span><span class="dv">3</span>),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    hmx.DenseSynapse(),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    hmx.DenseSynapse(),</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>connections <span class="op">=</span> [</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    ([<span class="dv">0</span>,<span class="dv">1</span>], <span class="dv">0</span>),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    ([<span class="dv">1</span>,<span class="dv">3</span>], <span class="dv">1</span>),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    ([<span class="dv">2</span>,<span class="dv">3</span>], <span class="dv">2</span>),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> jax.random.PRNGKey(<span class="dv">0</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>param_key, state_key, rng <span class="op">=</span> jax.random.split(rng, <span class="dv">3</span>)</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>states, ham <span class="op">=</span> hmx.HAM(layers, synapses, connections).init_states_and_params(param_key, state_key<span class="op">=</span>state_key)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that we did not specify any output channel shapes in the synapses. The desired output shape is computed from the layers connected to each synapse during <code>hmx.HAM.init_states_and_params</code>.</p>
+<p>We have two fundamental objects: <code>states</code> and <code>ham</code>. The <code>ham</code> object contains the connectivity structure of the HAM (e.g., layer+hypersynapse+hypergraph information) alongside the <strong>parameters</strong> of the network. The <code>states</code> object is a list of length <code>nlayers</code> where each item is a tensor representing the neuron states of the corresponding layer.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(states) <span class="op">==</span> ham.n_layers</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">all</span>([state.shape <span class="op">==</span> layer.shape <span class="cf">for</span> state, layer <span class="kw">in</span> <span class="bu">zip</span>(states, ham.layers)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We make it easy to run the dynamics of any HAM. Every <code>forward</code> function is defined external to the memory and can be modified to extract different memories from different layers, as desired. The general steps for any forward function are:</p>
+<ol type="1">
+<li>Initialize the dynamic states</li>
+<li>Inject an initial state into the system</li>
+<li>Run dynamics, calculating energy gradient at every point in time.</li>
+<li>Return the layer state/activation of interest</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fwd(model, x, depth<span class="op">=</span><span class="dv">15</span>, dt<span class="op">=</span><span class="fl">0.1</span>):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Assuming a trained HAM, run association with the HAM on batched inputs `x`"""</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Initialize model states at t=0. Account for batch size</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    xs <span class="op">=</span> model.init_states(x.shape[<span class="dv">0</span>])</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Inject initial state</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    xs[<span class="dv">0</span>] <span class="op">=</span> x </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    energies <span class="op">=</span> []</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(depth):</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        energies.append(model.venergy(xs)) <span class="co"># If desired, observe the energy</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        dEdg <span class="op">=</span> model.vdEdg(xs)  <span class="co"># Calculate the gradients</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        xs <span class="op">=</span> jtu.tree_map(<span class="kw">lambda</span> x, stepsize, grad: x <span class="op">-</span> stepsize <span class="op">*</span> grad, xs, model.alphas(dt), dEdg)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Return probabilities of our label layer</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> model.layers[<span class="op">-</span><span class="dv">2</span>].activation(xs[<span class="op">-</span><span class="dv">2</span>])</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> jnp.stack(energies), probs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>batch_size<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> jax.random.normal(jax.random.PRNGKey(<span class="dv">2</span>), (batch_size, <span class="dv">32</span>,<span class="dv">32</span>,<span class="dv">3</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>energies, probs <span class="op">=</span> fwd(ham, x, depth<span class="op">=</span><span class="dv">20</span>, dt<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(probs.shape) <span class="co"># batchsize, nclasses</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(probs.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>), <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(3, 10)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-display">
+
+<div class="alert alert-info">
+    More examples coming soon!
+</div>
+</div>
+</div>
+</section>
+<section id="the-energy-function-vs-the-loss-function" class="level2">
+<h2 class="anchored" data-anchor-id="the-energy-function-vs-the-loss-function">The Energy Function vs the Loss Function</h2>
+<p>We use JAX’s autograd to descend the energy function of our system AND the loss function of our task. The derivative of the energy is always taken wrt to our <em>states</em>; the derivative of the loss function is always taken wrt our <em>parameters</em>. During training, we change our parameters to optimize the <em>Loss Function</em>. During inference, we assume that parameters are constant.</p>
+<p><strong>Autograd for Descending Energy</strong></p>
+<p>Every <a href="https://bhoov.github.io/hamux/ham.html#ham"><code>HAM</code></a> defines the energy function for our system, which is everything we need to compute memories of the system. Naively, we can calculate <span class="math inline">\(\nabla_x E\)</span>: the derivative of the energy function wrt the <em>states</em> of each layer:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>stepsize <span class="op">=</span> <span class="fl">0.01</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>fscore_naive <span class="op">=</span> jax.grad(ham.energy)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>next_states <span class="op">=</span> jax.tree_util.tree_map(<span class="kw">lambda</span> state, score: state <span class="op">-</span> stepsize, states, fscore_naive(states))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>But it turns out we improve the efficiency of our network if we instead take <span class="math inline">\(\nabla_g E\)</span>: the derivative of the energy wrt the <em>activations</em> instead of the <em>states</em>. They have the same local minima, even though the trajectory to get there is different. Some nice terms cancel, and we get:</p>
+<p><span class="math display">\[\nabla_g E_\text{HAM} = x + \nabla_g E_\text{synapse}\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>stepsize <span class="op">=</span> <span class="fl">0.01</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fscore_smart(xs):</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    gs <span class="op">=</span> ham.activations(xs)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> jax.tree_util.tree_map(<span class="kw">lambda</span> x, nabla_g_Esyn: x <span class="op">+</span> nabla_g_Esyn, xs, jax.grad(ham.synapse_energy)(gs))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>next_states <span class="op">=</span> jax.tree_util.tree_map(<span class="kw">lambda</span> state, score: state <span class="op">-</span> stepsize, states, fscore_smart(states))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="credits" class="level2">
+<h2 class="anchored" data-anchor-id="credits">Credits</h2>
+<p>Read our extended abstract on OpenReview: <a href="https://openreview.net/forum?id=SAv3nhzNWhw">HAMUX: A Universal Abstraction for Hierarchical Hopfield Networks</a></p>
+<p>Work is a collaboration between the <a href="https://mitibmwatsonailab.mit.edu/">MIT-IBM Watson AI Lab</a> and the <a href="https://poloclub.github.io/">PoloClub</a> @ GA Tech. - <a href="https://www.bhoov.com/">Ben Hoover</a> (IBM &amp; GATech) - <a href="https://faculty.cc.gatech.edu/~dchau/">Polo Chau</a> (GATech) - <a href="http://hendrik.strobelt.com/">Hendrik Strobelt</a> (IBM) - <a href="https://mitibmwatsonailab.mit.edu/people/dmitry-krotov/">Dmitry Krotov</a> (IBM)</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
