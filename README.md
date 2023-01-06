@@ -49,15 +49,9 @@ Networks](http://www.scholarpedia.org/article/Hopfield_network) (HNs):
 > general to model the complexity of connections used in modern AI
 > architectures.
 
-display(HTML(““”
-
 <div class="alert alert-info">
-
     We conflate the terms <em>hypersynapse</em> and <em>synapse</em> regularly. We explicitly say "pairwise synapse" when referring to the classical understanding of synapses.
-
 </div>
-
-“““))
 
 HAMUX defines two fundamental building blocks of energy: the **🌀neuron
 layer** and the **🤝hypersynapse** (an abstraction of a pairwise synapse
@@ -149,10 +143,10 @@ layers](https://bhoov.github.io/hamux/layers.html).
 
 A 🤝hypersynapse ONLY sees activations of connected 🌀neuron layers. Its
 one job: report HIGH ⚡️energy if the connected activations are
-dissimilar and LOW ⚡️energy when they are aligned. Synapses can resemble
-convolutions, dense multiplications, even attention… Take a look at our
-[documentation on
-synapses](https://bhoov.github.io/hamux/synapses.html).
+dissimilar and LOW ⚡️energy when they are aligned. Hypersynapses can
+resemble convolutions, dense multiplications, even attention… Take a
+look at our [documentation on
+(hyper)synapses](https://bhoov.github.io/hamux/synapses.html).
 
 <div class="alert alert-info">
     🚨 <strong>Point of confusion</strong>: modern AI frameworks have <code>ConvLayer</code>s and <code>NormalizationLayer</code>s. In HAMUX, these would be more appropriately called <code>ConvSynapse</code>s and <code>NormalizationLagrangian</code>s.
@@ -224,8 +218,8 @@ to each synapse during `hmx.HAM.init_states_and_params`.
 
 We have two fundamental objects: `states` and `ham`. The `ham` object
 contains the connectivity structure of the HAM (e.g.,
-layer+synapse+hypergraph information) alongside the **parameters** of
-the network. The `states` object is a list of length `nlayers` where
+layer+hypersynapse+hypergraph information) alongside the **parameters**
+of the network. The `states` object is a list of length `nlayers` where
 each item is a tensor representing the neuron states of the
 corresponding layer.
 
@@ -275,7 +269,7 @@ assert jnp.allclose(probs.sum(-1), 1)
 
     (3, 10)
 
-![](index_files/figure-gfm/cell-11-output-1.png)
+![](index_files/figure-gfm/cell-12-output-1.png)
 
 <div class="alert alert-info">
     More examples coming soon!
