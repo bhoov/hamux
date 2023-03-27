@@ -208,9 +208,9 @@ synapses = [
 ]
 
 connections = [
-    ([0,1], 0),
-    ([1,3], 1),
-    ([2,3], 2),
+    hmx.Connect([0,1], 0),
+    hmx.Connect([1,3], 1),
+    hmx.Connect([2,3], 2),
 ]
 
 rng = jax.random.PRNGKey(0)
