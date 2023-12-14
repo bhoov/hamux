@@ -5,7 +5,4 @@ channels:
 dependencies:
   - python=3.9
   - pip>=20.0
-  - nb_conda # Assumes jupyter and jupyter_contrib_nbextensions are globally installed
-  - cudatoolkit
-  - cudnn
-  - ipywidgets
+  - poetry=1.7.1
