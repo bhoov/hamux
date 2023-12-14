@@ -30,3 +30,6 @@ build-backend = "poetry.core.masonry.api"
 pythonpath = [
   "src"
 ]
+
+[tool.ruff]
+indent-width = 2
