@@ -1,4 +1,7 @@
-from neurons import Neurons
+from hamux import Neurons
+import pytest
+import jax
+import jax.numpy as jnp
 from lagrangians import lagr_softmax
 import jax.numpy as jnp
 import jax
@@ -16,3 +19,6 @@ def test_activations():
   x = neuron.init() 
   assert jnp.all(neuron.activations(x) == neuron.g(x))
   assert jnp.allclose(act_fn(x), neuron.g(x))
+
+def test_energies(simple_ham):
+  pass

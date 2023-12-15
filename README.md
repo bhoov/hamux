@@ -26,6 +26,11 @@ poetry install
 
 You are free to install the best version of [`jaxlib`](https://jax.readthedocs.io/en/latest/installation.html) that is consistent with your hardware.
 
+## Philosophy
+
+HAMUX v0.2.0 is designed to be as minimal, barebones, and close to the underlying JAX infrastructure as possible. At its simplest, HAMs are energy functions that are defined by assembling smaller energy functions together in a hypergraph. That is all this library provides in `src/hamux.py`. This is in contrast to HAMUX v0.1.0 which tried to be a batteries included library reimplementing many common layers in Deep Learning.
+
+Extensibility will be provided through tutorials and code snippets in the documentation (in development). Contributions to the main library will be limited fundamental improvements to the hypergraph abstraction. See [Contributing](#Contributing) for more details.
 
 ## A Universal Abstraction for Hopfield Networks
 
@@ -333,3 +338,8 @@ Hoover](https://www.bhoov.com/) (IBM & GATech) - [Polo
 Chau](https://faculty.cc.gatech.edu/~dchau/) (GATech) - [Hendrik
 Strobelt](http://hendrik.strobelt.com/) (IBM) - [Dmitry
 Krotov](https://mitibmwatsonailab.mit.edu/people/dmitry-krotov/) (IBM)
+
+
+## Contributing
+
+Work in progress.
