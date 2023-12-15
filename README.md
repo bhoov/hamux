@@ -54,20 +54,27 @@ HAMUX fully captures the the energy fundamentals of Hopfield Networks and enable
 
 ## How does HAMUX work?
 
+We take great care to make [our documentation](https://bhoov.github.io/hamux/) the best place to learn about Energy-based Associative Memories. All of our documentation is written in jupyter notebooks using [nbdev](https://nbdev.fast.ai/) so you can follow along and execute the examples and tutorials for yourself.
+
+In summary:
+
 > **HAMUX** is a
 > <a href="https://en.wikipedia.org/wiki/Hypergraph" >hypergraph</a> of
-> 🌀neurons connected via 🤝hypersynapses, an abstraction sufficiently
-> general to model the complexity of connections used in modern AI
+> [🌀neurons](https://bhoov.github.io/neurons.html) connected via [🤝hypersynapses](https://bhoov.github.io/hypersynapses.html), an abstraction sufficiently
+> general to model any complexity of connections used in modern AI
 > architectures.
 
+Thus, 🌀neurons represent vertices and 🤝hypersynapses represent edges in our hypergraph. Everything has an energy. The total energy of the system is the sum of energies of these modular components.
+
 <div class="alert alert-info">
-    We conflate the terms <em>hypersynapse</em> and <em>synapse</em> regularly. We explicitly say "pairwise synapse" when referring to the classical understanding of synapses.
+    We conflate the terms <em>hypersynapse</em> and <em>synapse</em> regularly. We explicitly say "pairwise synapse" when referring to the classical understanding that a synapse is only able to connect two 🌀neurons.
 </div>
 
 HAMUX defines two fundamental building blocks of energy: the **🌀neuron
 layer** and the **🤝hypersynapse** (an abstraction of a pairwise synapse
 to include many-body interactions) connected via a
-[**hypergraph**](https://en.wikipedia.org/wiki/Hypergraph). It is a
+[**hypergraph**](https://en.wikipedia.org/wiki/Hypergraph). 
+It is a
 fully dynamical system, where the “hidden state” $x_i^l$ of each layer
 $l$ (blue squares in the figure below) is an independent variable that
 evolves over time. The update rule of each layer is entirely local; only
