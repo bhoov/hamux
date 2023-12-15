@@ -133,9 +133,12 @@ class HAM(eqx.Module):
     The derivative of the neuron energy w.r.t. the activations is the neuron state itself.
     This is a property of the Legendre Transform.
     """
-    dEdg = jtu.tree_map(lambda x, s: x + s, xs, jax.grad(self.synapse_energy)(gs))
+    def all_connection_energy(gs):
+      return jtu.tree_reduce(lambda E, acc: acc + E, self.connection_energies(gs), 0)
+
+    dEdg = jtu.tree_map(lambda x, s: x + s, xs, jax.grad(all_connection_energy)(gs))
     if return_energy:
-      return dEdg, self.energy(gs, xs)
+      return self.energy(gs, xs), dEdg
     return jax.grad(self.energy)(gs, xs)
 
   def vectorize(self):
