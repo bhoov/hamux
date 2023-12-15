@@ -4,7 +4,6 @@ import jax
 import jax.numpy as jnp
 import jax.tree_util as jtu
 
-
 class Neurons(eqx.Module):
   """Neurons represent dynamic variables in the HAM that are evolved during inference (i.e., memory retrieval/error correction)
 
@@ -42,7 +41,6 @@ class Neurons(eqx.Module):
 
   def __repr__(self: jax.Array):
     return f"Neurons(lagrangian={self.lagrangian}, shape={self.shape})"
-
 
 class HAM(eqx.Module):
   """The Hierarchical Associative Memory
