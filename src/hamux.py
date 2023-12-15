@@ -1,4 +1,3 @@
-# %%
 import equinox as eqx
 from typing import *
 import jax
