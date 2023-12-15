@@ -4,6 +4,8 @@ import jax
 import jax.numpy as jnp
 import jax.tree_util as jtu
 
+__all__ = ["Neurons", "HAM", "VectorizedHAM"]
+
 class Neurons(eqx.Module):
   """Neurons represent dynamic variables in the HAM that are evolved during inference (i.e., memory retrieval/error correction)
 
@@ -41,6 +43,7 @@ class Neurons(eqx.Module):
 
   def __repr__(self: jax.Array):
     return f"Neurons(lagrangian={self.lagrangian}, shape={self.shape})"
+
 
 class HAM(eqx.Module):
   """The Hierarchical Associative Memory
@@ -126,10 +129,11 @@ class HAM(eqx.Module):
 
   def dEdg(self, gs, xs, return_energy=False):
     """Calculate gradient of system energy wrt activations using cute trick:
-    
+
     The derivative of the neuron energy w.r.t. the activations is the neuron state itself.
     This is a property of the Legendre Transform.
     """
+
     def all_connection_energy(gs):
       return jtu.tree_reduce(lambda E, acc: acc + E, self.connection_energies(gs), 0)
 
