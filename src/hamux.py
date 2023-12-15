@@ -6,6 +6,7 @@ import jax.tree_util as jtu
 
 __all__ = ["Neurons", "HAM", "VectorizedHAM"]
 
+
 class Neurons(eqx.Module):
   """Neurons represent dynamic variables in the HAM that are evolved during inference (i.e., memory retrieval/error correction)
 

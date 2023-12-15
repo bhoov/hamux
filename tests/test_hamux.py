@@ -30,11 +30,13 @@ def test_ham_lengths(simple_ham: HAM):
   assert simple_ham.n_synapses == 1
   assert simple_ham.n_connections == 1
 
-def test_vham_lengths(simple_ham:HAM):
+
+def test_vham_lengths(simple_ham: HAM):
   vham = simple_ham.vectorize()
   assert vham.n_neurons == 2
   assert vham.n_synapses == 1
   assert vham.n_connections == 1
+
 
 def test_ham_dEdg(simple_ham: HAM):
   xs = simple_ham.init_states()
@@ -43,20 +45,22 @@ def test_ham_dEdg(simple_ham: HAM):
   man_E, man_dEdg = simple_ham.dEdg(gs, xs, return_energy=True)
 
   assert jnp.allclose(auto_E, man_E)
-  assert jnp.allclose(auto_dEdg['image'], man_dEdg['image'])
-  assert jnp.allclose(auto_dEdg['hidden'], man_dEdg['hidden'])
+  assert jnp.allclose(auto_dEdg["image"], man_dEdg["image"])
+  assert jnp.allclose(auto_dEdg["hidden"], man_dEdg["hidden"])
+
 
 def test_vectorize_unvectorize(simple_ham: HAM):
   vham = simple_ham.vectorize()
   assert isinstance(vham, VectorizedHAM)
   assert isinstance(vham.unvectorize(), HAM)
 
+
 @pytest.mark.slow
 @pytest.mark.parametrize("stepsize", [0.001, 0.01, 0.1])
-def test_ham_energies(simple_ham:HAM, stepsize, nsteps=10):
+def test_ham_energies(simple_ham: HAM, stepsize, nsteps=10):
   energies = []
   xs = simple_ham.init_states()
-  xs['image'] = jr.normal(jr.PRNGKey(1), xs['image'].shape)
+  xs["image"] = jr.normal(jr.PRNGKey(1), xs["image"].shape)
   for i in range(nsteps):
     gs = simple_ham.activations(xs)
     E, dEdg = simple_ham.dEdg(gs, xs, return_energy=True)
@@ -67,14 +71,15 @@ def test_ham_energies(simple_ham:HAM, stepsize, nsteps=10):
   assert Estacked.shape == (nsteps,)
   assert jnp.all(jnp.diff(jnp.array(energies)) <= 0)
 
+
 @pytest.mark.slow
 @pytest.mark.parametrize("stepsize", [0.001, 0.01, 0.1])
-def test_vham_energies(simple_ham:HAM, stepsize, nsteps=10):
+def test_vham_energies(simple_ham: HAM, stepsize, nsteps=10):
   bs = 3
   energies = []
   xs = simple_ham.init_states(bs=bs)
   vham = simple_ham.vectorize()
-  xs['image'] = jr.normal(jr.PRNGKey(1), xs['image'].shape)
+  xs["image"] = jr.normal(jr.PRNGKey(1), xs["image"].shape)
   for i in range(nsteps):
     gs = vham.activations(xs)
     E, dEdg = vham.dEdg(gs, xs, return_energy=True)
