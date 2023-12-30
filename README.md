@@ -12,10 +12,12 @@ bridge modern AI architectures and Hopfield Networks.
 e**X**perience.
 
 [Documentation](https://bhoov.github.io/hamux)
+[Github](https://github.com/bhoov/hamux)
 
 <div class="alert alert-info">
-    🚧 <strong>HAMUX is in rapid development</strong>. Remember to specify the version when building off of HAMUX.
+    🚧 <strong>HAMUX is under construction</strong>. Please checkout <a href="https://github.com/bhoov/barebones-hamux">barebones-HAMUX</a> in the meantime.
 </div>
+
 
 ## A Universal Abstraction for Hopfield Networks
 
