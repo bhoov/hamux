@@ -1,0 +1,221 @@
+# MNIST demo
+
+Uncomment the following cell to install necessary dependencies for the demo
+
+```{python}
+## If you setup the env using `uv sync`, uncommenting the following is not necessary:
+#!pip install seaborn optax datasets einops
+```
+
+```{python}
+#| code-fold: true
+#| code-summary: Import dependencies
+from typing import *
+import jax
+import jax.numpy as jnp
+import jax.tree_util as jtu
+import jax.random as jr
+import equinox as eqx
+import hamux as hmx
+
+import datasets
+from einops import rearrange
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+from pathlib import Path
+from tqdm.auto import tqdm
+import optax
+```
+
+```{python}
+#| hide
+import os
+import jax
+import os
+
+# Auto-configure CUDA if available
+gpu_available = any(d.device_kind == 'gpu' for d in jax.devices())
+if gpu_available:
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+    os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"] = "0.5"
+    print("✅ Using CUDA")
+else:
+    print("⚠️  CUDA recommended for better performance")
+```
+
+
+```{python}
+def get_mnist_train_test():
+    # Save to `data/`
+    data_path = Path("data/")
+    data_path.mkdir(parents=True, exist_ok=True)
+    Xtrain_path, Xtest_path = data_path / "Xtrain_mnist.npy", data_path / "Xtest_mnist.npy"
+    if not Xtrain_path.exists() or not Xtest_path.exists():
+        print("Downloading MNIST data...")
+        mnist = datasets.load_dataset("mnist").with_format("numpy")
+        train_set = mnist['train']
+        test_set = mnist['test']
+
+        print("Saving Xtrain...")
+        Xtrain = next(train_set.iter(len(train_set)))['image']
+        np.save(Xtrain_path, Xtrain)
+        print("Saving Xtest...")
+        Xtest = next(test_set.iter(len(test_set)))['image']
+        np.save(Xtest_path, Xtest)
+        print("Done")
+    
+    Xtrain, Xtest = np.load(Xtrain_path), np.load(Xtest_path)
+    return Xtrain, Xtest
+```
+
+```{python}
+def transform(x):
+    x = x / 255.
+    x = rearrange(x, "... h w -> ... (h w)") 
+    x = x / jnp.sqrt((x ** 2).sum(-1, keepdims=True))
+    return x
+
+Xtrain, Xtest = get_mnist_train_test()
+Xtest = transform(Xtest)
+Xtrain = transform(Xtrain)
+```
+
+
+```{python}
+#| hide
+# set the colormap and centre the colorbar
+class MidpointNormalize(mpl.colors.Normalize):
+    """Normalise the colorbar."""
+    def __init__(self, vmin=None, vmax=None, midpoint=None, clip=False):
+        self.midpoint = midpoint
+        mpl.colors.Normalize.__init__(self, vmin, vmax, clip)
+
+    def __call__(self, value, clip=None):
+        x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
+        return np.ma.masked_array(np.interp(value, x, y), np.isnan(value))
+    
+cnorm=MidpointNormalize(midpoint=0.)
+
+def show_img(img):
+    vmin, vmax = img.min(), img.max()
+    vscale = max(np.abs(vmin), np.abs(vmax))
+    cnorm = MidpointNormalize(midpoint=0., vmin=-vscale, vmax=vscale)
+    
+    fig, ax = plt.subplots(1,1)
+    pcm = ax.imshow(img, cmap="seismic", norm=cnorm)
+    ax.axis("off")
+    
+    fig.subplots_adjust(right=0.8)
+    cbar_ax = fig.add_axes([0.83, 0.15, 0.03, 0.7])
+    fig.colorbar(pcm, cax=cbar_ax);
+    return fig
+```
+
+
+```{python}
+class DenseSynapseHid(eqx.Module):
+    """This synapse captures the 'Dense Associative Memory' energy"""
+    W: jax.Array
+    beta: float = 1.
+
+    @property
+    def nW(self):
+        "Normalize the weights"
+        nc = jnp.sqrt(jnp.sum(self.W ** 2, axis=0, keepdims=True))
+        return self.W / nc
+        
+    def __call__(self, xhat1):
+        """Compute the energy of the synapse"""
+        x2 = xhat1 @ self.nW
+        return - 1/self.beta *  jax.nn.logsumexp(self.beta * x2, axis=-1)
+    
+    @classmethod
+    def rand_init(cls, key, d1:int, d2:int):
+        Winit = 0.02 * jr.normal(key, (d1, d2))
+        return cls(W=Winit)
+
+key = jax.random.PRNGKey(0)
+neurons = {
+    "input": hmx.NeuronLayer(hmx.lagr_spherical_norm, (784,)),
+}
+synapses = {
+    "s1": DenseSynapseHid.rand_init(key, 784, 900),
+}
+connections = [
+    (["input"], "s1")
+]
+
+ham = hmx.HAM(neurons, synapses, connections)
+xs = ham.init_states()
+xhats = ham.activations(xs)
+opt = optax.adam(4e-2)
+```
+
+
+```{python}
+n_epochs = 10
+pbar = tqdm(range(n_epochs), total=n_epochs)
+img = Xtrain[:]
+batch_size = 100
+
+ham = ham.vectorize()
+opt_state = opt.init(eqx.filter(ham, eqx.is_array))
+
+def lossf(ham, xs,key, nsteps=1, alpha=1.):
+    """Given a noisy initial image, descend the energy and try to reconstruct the original image at the end of the dynamics.
+    
+    Works best with fewer steps due to vanishing gradient problems"""
+    img = xs['input']
+    xs['input'] = img + jr.normal(key, img.shape) * 0.3
+    
+    for i in range(nsteps):
+        # Construct noisy image to final prediction
+        xhats = ham.activations(xs)
+        evalue, egrad = ham.dEdact(xhats, xs, return_energy=True)
+        xs = jtu.tree_map(lambda x, dEdact: x - alpha * dEdact, xs, egrad)
+
+    xhats = ham.activations(xs)
+    img_final = xhats['input']
+    loss = ((img_final - img)**2).mean()
+    
+    logs = {
+        "loss": loss,
+    }
+    
+    return loss, logs
+
+@eqx.filter_jit
+def step(img, ham, opt_state, key):
+    xs = ham.init_states(bs=img.shape[0])
+    xs["input"] = img
+
+    (loss, logs), grads = eqx.filter_value_and_grad(lossf, has_aux=True)(ham, xs, key)
+    updates, opt_state = opt.update(grads, opt_state, ham)
+    newparams = optax.apply_updates(eqx.filter(ham, eqx.is_array), updates)
+    ham = eqx.combine(newparams, ham)
+    return ham, opt_state, logs
+    
+noise_rng = jr.PRNGKey(100)
+batch_rng = jr.PRNGKey(10)
+for e in pbar:
+    batch_key, batch_rng = jr.split(batch_rng)
+    idxs = jr.permutation(batch_key, jnp.arange(img.shape[0]))
+    i = 0
+
+    while i < img.shape[0]:
+        noise_key, noise_rng = jr.split(noise_rng)
+        batch = img[idxs[i: i+batch_size]]
+        ham, opt_state, logs = step(batch, ham, opt_state, noise_key)
+        i = i+batch_size
+
+        pbar.set_description(f'[{i}]: epoch = {e+1:03d}/{n_epochs:03d}, loss = {logs["loss"].item():2.6f}')
+```
+
+The above architecture trains ok. We can inspect the weights to see the attractors the model has learned.
+
+```{python}
+myW = ham.hypersynapses["s1"].nW
+kh = kw = int(np.sqrt(myW.shape[-1]))
+show_img(rearrange(myW, "(h w) (kh kw) -> (kh h) (kw w)", h=28, w=28, kh=kh, kw=kw));
+```
