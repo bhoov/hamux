@@ -1,10 +1,9 @@
 _modidx.py
 _logs
 _dummylogs
-examples/data
+nbs/_examples/data
 _docs/
 _proc/
-_*/
 *.bak
 .gitattributes
 .last_checked
@@ -21,6 +20,8 @@ code_example_snippets.py
 model.json
 *.bin
 flaxrepo
+OLD/
+*.ini.backup
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -2,8 +2,8 @@ project:
   output-dir: _docs
 
 website:
-  title: "hamux"
+  title: "HAMUX"
   site-url: "https://bhoov.github.io/hamux"
-  description: "A Deep Learning framework built around ENERGY"
+  description: "Energy formulation for deep learning"
   repo-branch: main
   repo-url: "https://github.com/bhoov/hamux"

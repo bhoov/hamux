@@ -1,0 +1,38 @@
+[project]
+name="hamux"
+version = "0.2.1"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Ben Hoover", email = "24350185+bhoov@users.noreply.github.com" }
+]
+requires-python=">=3.10"
+dependencies = [
+    "equinox>=0.12.2",
+    "jax>=0.6.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "datasets>=4.0.0",
+    "einops>=0.8.1",
+    "hamux",
+    "ipykernel>=6.29.5",
+    "jupytext>=1.17.1",
+    "matplotlib>=3.10.3",
+    "nbclient>=0.10.2",
+    "nbdev",
+    "nbformat>=5.10.4",
+    "optax>=0.2.5",
+    "seaborn>=0.13.2",
+    "setuptools<81",
+    "tomli>=2.2.1",
+]
+
+[tool.uv.sources]
+hamux = { workspace = true }
+nbdev = { git = "https://github.com/bhoov/nbdev.git", rev = "qmd_support" }

@@ -1,11 +1,11 @@
 from pkg_resources import parse_version
 from configparser import ConfigParser
-import setuptools
+import setuptools, shlex
 assert parse_version(setuptools.__version__)>=parse_version('36.2')
 
 # note: all settings are in settings.ini; edit there, not here
 config = ConfigParser(delimiters=['='])
-config.read('settings.ini')
+config.read('settings.ini', encoding='utf-8')
 cfg = config['DEFAULT']
 
 cfg_keys = 'version description keywords author author_email'.split()
@@ -22,13 +22,20 @@ licenses = {
 }
 statuses = [ '1 - Planning', '2 - Pre-Alpha', '3 - Alpha',
     '4 - Beta', '5 - Production/Stable', '6 - Mature', '7 - Inactive' ]
-py_versions = '3.6 3.7 3.8 3.9 3.10'.split()
+py_versions = '3.6 3.7 3.8 3.9 3.10 3.11 3.12'.split()
 
-requirements = cfg.get('requirements','').split()
-if cfg.get('pip_requirements'): requirements += cfg.get('pip_requirements','').split()
+requirements = shlex.split(cfg.get('requirements', ''))
+if cfg.get('pip_requirements'): requirements += shlex.split(cfg.get('pip_requirements', ''))
 min_python = cfg['min_python']
 lic = licenses.get(cfg['license'].lower(), (cfg['license'], None))
 dev_requirements = (cfg.get('dev_requirements') or '').split()
+
+package_data = dict()
+pkg_data = cfg.get('package_data', None)
+if pkg_data:
+    package_data[cfg['lib_name']] =  pkg_data.split() # split as multiple files might be listed
+# Add package data to setup_cfg for setuptools.setup(..., **setup_cfg)
+setup_cfg['package_data'] = package_data
 
 setuptools.setup(
     name = cfg['lib_name'],
@@ -45,7 +52,7 @@ setuptools.setup(
     extras_require={ 'dev': dev_requirements },
     dependency_links = cfg.get('dep_links','').split(),
     python_requires  = '>=' + cfg['min_python'],
-    long_description = open('README.md').read(),
+    long_description = open('README.md', encoding='utf-8').read(),
     long_description_content_type = 'text/markdown',
     zip_safe = False,
     entry_points = {

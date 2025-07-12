@@ -1,0 +1,497 @@
+# Lagrangians
+> The well-behaved dynamics of associative memories is described by the Lagrangians of the neurons.
+
+```{python}
+#| default_exp lagrangians
+```
+
+::: {.callout-note}
+## TL;DR
+
+1. All dynamics of Associative Memory are constrained by a Lagrangian
+2. The Lagrangian is a convex, scalar-valued function
+3. A neuron's **activations** are the derivative of that neuron's Lagrangian. These activations are often non-linear functions of the dynamic state, and look like the activation functions that we see in many modern Neural Networks (e.g., `sigmoid`, `tanh`, `relu`, `softmax`, `LayerNorm`, etc.)
+:::
+
+Lagrangian functions are fundamental to the energy of 🌀**neuron layers**. These convex functions can be seen as the integral of common activation functions (e.g., `relu`s and `softmax`es). All Lagrangians are functions of the form:
+
+$$\mathcal{L}(\mathbf{x};\ldots) \mapsto \mathbb{R}$$
+
+where $\mathbf{x} \in \mathbb{R}^{D_1 \times \ldots \times D_n}$ can be a tensor of arbitrary shape and $\mathcal{L}$ can be optionally parameterized (e.g., the `LayerNorm`'s learnable bias and scale). **Lagrangians must be convex and differentiable.**
+
+We want to rely on JAX's autograd to automatically differentiate our Lagrangians into activation functions. For certain Lagrangians, the naively autodiff-ed function of the defined Lagrangian is numerically unstable (e.g., `lagr_sigmoid(x)` and `lagr_tanh(x)`). In these cases, we follow JAX's [documentation guidelines](https://jax.readthedocs.io/en/latest/notebooks/Custom_derivative_rules_for_Python_code.html) to define `custom_jvp`s to fix this behavior.
+
+## Elementwise Lagrangians
+
+Though we define Lagrangians for an entire tensor, these special "elementwise Lagrangians" take a special form: they are simply the sum of the convex, differentiable function applied elementwise to the underlying tensor. This makes it easy to plot and visualize them.
+
+Let's look at what some of these Lagrangians look like in practice.
+
+```{python}
+#| export
+#| hide
+import equinox as eqx
+from typing import Union, Callable, Tuple, Dict, List, Optional
+import jax
+import jax.numpy as jnp
+import jax.tree_util as jtu
+import jax.random as jr
+from jax import lax
+from jax._src.numpy.reductions import _reduction_dims
+from jax._src.numpy.util import promote_args_inexact
+import numpy as np
+from jaxtyping import Float, Array
+
+Scalar = Float[Array, ""]
+Tensor = Float[Array, "..."]
+```
+
+```{python}
+#| hide
+import matplotlib.pyplot as plt
+import functools as ft
+```
+
+```{python}
+#| export
+def lagr_identity(x: Array, # Input tensor
+                  ) -> Float: # Output scalar
+    """The Lagrangian whose activation function is simply the identity."""
+    return 0.5 * jnp.power(x, 2).sum()
+
+```
+
+$$
+\begin{align*}
+\mathcal{L}_\text{identity}(\mathbf{x}) &= \frac{1}{2} \sum_i x_i^2 \\
+\partial_{x_i} \mathcal{L}_\text{identity}(\mathbf{x}) &= x_i
+\end{align*}
+$$
+
+```{python}
+#| echo: false
+#| fig-align: center
+#| fig-responsive: true
+x = np.linspace(-2,2,100)
+y = jax.grad(lagr_identity)(x)
+L = jax.vmap(lagr_identity)(x)
+fig, ax = plt.subplots(1)
+ax.plot(x,y, 'b--', x, L, 'g-')
+# ax.set_title(r"$\mathcal{L}_\text{identity}(x) = \frac{1}{2} \sum x^2$")
+ax.set_title(r"lagr_identity")
+ax.legend(["activation", "lagrangian"])
+plt.show(fig)
+```
+
+```{python}
+#| export
+def _repu(x: Array, # Input tensor
+          n: float # Degree of the polynomial in the power unit
+          ) -> Float: # Output scalar
+    return jnp.maximum(x, 0) ** n
+
+
+def lagr_repu(x: Array, # Input tensor
+              n: float # Degree of the polynomial in the power unit
+              ) -> Float: # Output scalar
+    """Rectified Power Unit of degree `n`"""
+    return 1 / n * jnp.power(jnp.maximum(x, 0), n).sum()
+```
+
+$$
+\begin{align*}
+\mathcal{L}_\text{RePU}(\mathbf{x}; n) &= \frac{1}{n} \sum_i \max(x_i, 0)^n \\
+\partial_{x_i} \mathcal{L}_\text{RePU}(\mathbf{x}; n) &= \max(x_i, 0)^{n-1}
+\end{align*}
+$$
+
+```{python}
+#| echo: false
+#| fig-align: center
+#| fig-responsive: true
+x = np.linspace(-0.5,2,100)
+ns = [2,4]
+fig, ax = plt.subplots(1)
+colors = 'bgr'
+
+legend = []
+for i, n in enumerate(ns):
+    lag = jax.vmap(lambda x_: lagr_repu(x_, n=n))(x)
+    act = jax.grad(lambda x_: lagr_repu(x_, n=n))(x)
+    # ax.plot(x,act, 'b-', x,lag,'g--')
+    c = colors[i]
+    legend += [f"activation (n={n})", f"lagrangian (n={n})"]
+    ax.plot(x,act,f"{c}--", x,lag,f"{c}-")
+    # ax.set_title(r"$\mathcal{L}_\text{RePU}(x; n) = \frac{1}{n} \sum \max(x, 0)^n$")
+    ax.set_title(r"lagr_repu")
+
+ax.legend(legend)
+plt.show(fig)
+```
+
+```{python}
+#| export
+def lagr_relu(x: Array, # Input tensor
+              ) -> Float: # Output scalar
+    """Rectified Linear Unit. Same as `lagr_repu` of degree 2"""
+    return lagr_repu(x, 2)
+```
+
+$$
+\begin{align*}
+\mathcal{L}_\text{relu}(\mathbf{x}) &= \frac{1}{2} \sum_i \max(x_i, 0)^2 \\
+\partial_{x_i} \mathcal{L}_\text{relu}(\mathbf{x}) &= \max(x_i, 0)
+\end{align*}
+$$
+
+```{python}
+#| export
+def lagr_exp(x: Array, # Input tensor
+             beta: float = 1.0, # Inverse temperature
+             ) -> Float: # Output scalar
+    """Exponential activation function, as in [Demicirgil et al.](https://arxiv.org/abs/1702.01929). Operates elementwise"""
+    return 1 / beta * jnp.exp(beta * x).sum()
+```
+
+$$
+\begin{align*}
+\mathcal{L}_\text{exp}(\mathbf{x}; \beta) &= \frac{1}{\beta} \sum_i e^{\beta x_i} \\
+\partial_{x_i} \mathcal{L}_\text{exp}(\mathbf{x}; \beta) &= e^{\beta x_i}
+\end{align*}
+$$
+
+
+```{python}
+#| echo: false
+#| fig-align: center
+#| fig-responsive: true
+x = np.linspace(-1,2,100)
+betas = [0.5,1.,1.5]
+fig, ax = plt.subplots(1)
+colors = 'bgr'
+
+legend = []
+for i, b in enumerate(betas):
+    lagr_fn = ft.partial(lagr_exp, beta=b)
+    y = jax.grad(lagr_fn)(x)
+    L = jax.vmap(lagr_fn)(x)
+    c = colors[i]
+    legend += [f"activation (beta={b})", f"lagrangian (beta={b})"]
+    ax.plot(x,y,f"{c}--", x,L,f"{c}-")
+    # ax.set_title(r"$\mathcal{L}_\text{exp}(x; \beta) = \frac{1}{\beta} \sum_i e^{\beta x_i}$")
+    ax.set_title(r"lagr_exp")
+
+ax.legend(legend)
+plt.show(fig)
+```
+
+```{python}
+#| export
+def _rexp(
+    x: Array, # Input tensor
+    beta: float = 1.0,  # Inverse temperature
+) -> Float: # Output scalar
+    """Rectified exponential activation function"""
+    xclipped = jnp.maximum(x, 0)
+    return jnp.exp(beta * xclipped) - 1
+
+
+def lagr_rexp(x: Array,
+              beta: float = 1.0, # Inverse temperature
+              ) -> Float: # Output scalar
+    """Lagrangian of the Rectified exponential activation function"""
+    xclipped = jnp.maximum(x, 0)
+    return (jnp.exp(beta * xclipped) / beta - xclipped).sum()
+
+```
+
+```{python}
+#| export
+
+@jax.custom_jvp
+def _lagr_tanh(x: Array, # Input tensor
+               beta: float = 1.0, # Inverse temperature
+               ) -> Float: # Output scalar
+    return 1 / beta * jnp.log(jnp.cosh(beta * x))
+
+
+@_lagr_tanh.defjvp
+def _lagr_tanh_defjvp(primals, tangents):
+    x, beta = primals
+    x_dot, beta_dot = tangents
+    primal_out = _lagr_tanh(x, beta)
+    tangent_out = jnp.tanh(beta * x) * x_dot
+    return primal_out, tangent_out
+
+
+def lagr_tanh(x: Array, # Input tensor
+              beta: float = 1.0, # Inverse temperature
+              ) -> Float: # Output scalar
+    """Lagrangian of the tanh activation function"""
+    return _lagr_tanh(x, beta).sum()
+```
+
+$$
+\begin{align*}
+\mathcal{L}_\text{tanh}(\mathbf{x}; \beta) &= \frac{1}{\beta} \sum_i \log(\cosh(\beta x_i)) \\
+\partial_{x_i} \mathcal{L}_\text{tanh}(\mathbf{x}; \beta) &= \tanh(\beta x_i)
+\end{align*}
+$$
+
+```{python}
+#| export
+@jax.custom_jvp
+def _lagr_sigmoid(
+    x: Array, # Input tensor
+    beta: float = 1.0,  # Inverse temperature
+    ) -> Float: # Output scalar
+    """The lagrangian of a sigmoid that we can define custom JVPs of"""
+    return 1. / beta * jnp.log(jnp.exp(beta * x) + 1)
+
+
+def _sigmoid(
+    x: Array, # Input tensor
+    beta: float = 1.0,  # Inverse temperature
+    ) -> Float: # Output scalar
+    """The basic sigmoid"""
+    return 1. / (1 + jnp.exp(-beta * x))
+
+
+@_lagr_sigmoid.defjvp
+def _lagr_sigmoid_jvp(primals, tangents):
+    x, beta = primals
+    x_dot, beta_dot = tangents
+    primal_out = _lagr_sigmoid(x, beta)
+    tangent_out = (
+        _sigmoid(x, beta=beta) * x_dot
+    )  # Manually defined sigmoid
+    return primal_out, tangent_out
+
+
+def lagr_sigmoid(
+    x: Array, # Input tensor
+    beta: float = 1.0,  # Inverse temperature
+) -> Float: # Output scalar
+    """The lagrangian of the sigmoid activation function"""
+    return _lagr_sigmoid(x, beta=beta).sum()
+
+```
+
+```{python}
+#| echo: false
+#| fig-align: center
+#| fig-responsive: true
+x = np.linspace(-6,6,100)
+betas = [0.5,1.,5.]
+fig, ax = plt.subplots(1)
+colors = 'bgr'
+
+legend = []
+for i, b in enumerate(betas):
+    lagr_fn = ft.partial(lagr_sigmoid, beta=b)
+    y = jax.grad(lagr_fn)(x)
+    L = jax.vmap(lagr_fn)(x)
+    c = colors[i]
+    legend += [f"activation (beta={b})", f"lagrangian (beta={b})"]
+    ax.plot(x,y,f"{c}--", x,L,f"{c}-")
+    # ax.set_title(r"$\mathcal{L}_\text{tanh}(x; \beta) = \frac{1}{\beta} \sum \log(\cosh(\beta x))$")
+    ax.set_title(r"lagr_tanh")
+
+ax.legend(legend)
+plt.show(fig)
+```
+
+## Lagrangians with competing units {#lagrangians-with-competing-units}
+
+We can define Lagrangians where activations are normalized in some way (i.e., where the derivative of the Lagrangian introduces some normalization factor). There are many forms of activation functions in modern Deep Learning with this structure; e.g., `softmax`es, `layernorm`s, etc. normalize their input by some value. There is a nice interpretation of these kinds of activation functions as [competing hidden units](https://arxiv.org/abs/1806.10181).
+
+```{python}
+#| export
+def lagr_softmax(
+    x: Array, # Input tensor
+    beta: float = 1.0,  # Inverse temperature
+    axis: int = -1, # Dimension over which to apply logsumexp
+) -> Float: # Output scalar
+    """The lagrangian of the softmax -- the logsumexp"""
+    return 1 / beta * jax.nn.logsumexp(beta * x, axis=axis, keepdims=False)
+```
+
+$$
+\begin{align*}
+\mathcal{L}_\text{softmax}(\mathbf{x}; \beta) &= \frac{1}{\beta} \log \sum_i e^{\beta x_i} \\
+\partial_{x_i} \mathcal{L}_\text{softmax}(\mathbf{x}; \beta) &= \frac{e^{\beta x_i}}{\sum_j e^{\beta x_j}}
+\end{align*}
+$$
+
+We plot its activations (the softmax) for a vector of length 10 below.
+
+```{python}
+#| echo: false
+#| fig-align: center
+#| fig-responsive: true
+x = jr.normal(jr.PRNGKey(5), (10,))*1.5
+y = jax.grad(lagr_softmax)(x)
+fig, ax = plt.subplots(1)
+ax.bar(jnp.arange(len(x)), y)
+ax.set_xlabel("Index")
+ax.set_ylabel("Softmax Activation")
+# ax.set_title(r"$\mathcal{L}_\text{softmax}(x; \beta) = \frac{1}{\beta} \log \sum_i e^{\beta x_i}$, where $\beta = 1$")
+ax.set_title(r"lagr_softmax")
+ax.legend(["softmax"])
+plt.show(fig)
+```
+
+
+```{python}
+#| export
+def _simple_layernorm(
+    x: Array, # Input tensor
+    gamma: float = 1.0,  # Scale the stdev
+    delta: Union[float, Array] = 0.0,  # Shift the mean
+    axis: int = -1,  # Which axis to normalize
+    eps: float = 1e-5,  # Prevent division by 0
+) -> Array: # Layer normalized `x`
+    """Layer norm activation function"""
+    xmean = x.mean(axis, keepdims=True)
+    xmeaned = x - xmean
+    denominator = jnp.sqrt(jnp.power(xmeaned, 2).mean(axis, keepdims=True) + eps)
+    return gamma * xmeaned / denominator + delta
+
+
+def lagr_layernorm(
+    x: Array, # Input tensor
+    gamma: float = 1.0,  # Scale the stdev
+    delta: Union[float, Array] = 0.0,  # Shift the mean
+    axis: int = -1,  # Which axis to normalize
+    eps: float = 1e-5,  # Prevent division by 0
+) -> Float: # Output scalar
+    """Lagrangian of the layer norm activation function. 
+    
+    `gamma` must be a float, not a vector.
+    """
+    D = x.shape[axis] if axis is not None else x.size
+    xmean = x.mean(axis, keepdims=True)
+    xmeaned = x - xmean
+    y = jnp.sqrt(jnp.power(xmeaned, 2).mean(axis, keepdims=True) + eps)
+    return (D * gamma * y + (delta * x).sum()).sum()
+
+```
+
+$$
+\begin{align*}
+\mathcal{L}_\text{layernorm}(\mathbf{x}; \gamma, \delta) &= D \gamma \sqrt{\text{Var}(\mathbf{x}) + \epsilon} + \sum_i \delta_i x_i \\
+\partial_{x_i} \mathcal{L}_\text{layernorm}(\mathbf{x}; \gamma, \delta) &= \gamma \frac{x_i - \text{Mean}(\mathbf{x})}{\sqrt{\text{Var}(\mathbf{x}) + \epsilon}} + \delta_i
+\end{align*}
+$$
+
+```{python}
+#| export
+def _simple_spherical_norm(
+    x: Array, # Input tensor
+    gamma: float = 1.0,  # Scale the stdev
+    delta: Union[float, Array] = 0.0,  # Shift the mean
+    axis: int = -1,  # Which axis to normalize
+    eps=1e-5,  # Prevent division by 0
+):
+    """Spherical norm activation function"""
+    xnorm = jnp.sqrt(jnp.power(x, 2).sum(axis, keepdims=True) + eps)
+    return gamma * x / xnorm + delta
+
+
+def lagr_spherical_norm(
+    x: Array, # input tensor
+    gamma: float = 1.0,  # Scale the stdev
+    delta: Union[float, jnp.ndarray] = 0.0,  # Shift the mean
+    axis: int=-1,  # Which axis to normalize
+    eps: float=1e-5,  # Prevent division by 0
+) -> Float: # Output scalar
+    """Lagrangian of the spherical norm (L2 norm) activation function"""
+    y = jnp.sqrt(jnp.power(x, 2).sum(axis, keepdims=True) + eps)
+    return (gamma * y + (delta * x).sum()).sum()
+
+```
+
+$$
+\begin{align*}
+\mathcal{L}_\text{L2norm}(\mathbf{x}; \gamma, \delta) &= \gamma \sqrt{\sum_i x_i^2 + \epsilon} + \sum_i \delta_i x_i \\
+\partial_{x_i} \mathcal{L}_\text{L2norm}(\mathbf{x}; \gamma, \delta) &= \gamma \frac{x_i}{\sqrt{\sum_j x_j^2 + \epsilon}} + \delta_i
+\end{align*}
+$$
+
+```{python}
+#|export
+#|hide
+
+# Enable this function, but don't document it for now
+def lagr_ghostmax(
+    a: Array, # Input tensor
+    axis: Optional[int] = None, # Axis along which the sum to be computed. If None, the sum is computed along all the axes.
+    b: Union[Array, None] = None, # Scaling factors for the exponentials. Must be broadcastable to the shape of a.
+    keepdims: bool = False, # If `True`, the axes that are reduced are left in the output as dimensions of size 1.
+    return_sign: bool = False, #  If `True`, the output will be a (result, sign) pair, where sign is the sign of the sums and result contains the logarithms of their absolute values. If False only result is returned and it will contain NaN values if the sums are negative.
+    ) -> Union[Array, Tuple[Array, Array]]: # Either an array result or a pair of arrays (result, sign), depending on the value of the return_sign argument.
+    """ A strictly convex version of logsumexp that concatenates 0 to the array before passing to logsumexp. Code adapted from `jax.nn.logsumexp` (documentation below)
+    
+    """ + jax.nn.logsumexp.__doc__
+    if b is not None:
+        a_arr, b_arr = promote_args_inexact("logsumexp", a, b)
+        a_arr = jnp.where(b_arr != 0, a_arr, -jnp.inf)
+    else:
+        a_arr, = promote_args_inexact("logsumexp", a)
+        b_arr = a_arr  # for type checking
+    pos_dims, dims = _reduction_dims(a_arr, axis)
+    amax = jnp.max(a_arr, axis=dims, keepdims=keepdims)
+    amax = lax.max(amax, 0.)
+    amax = lax.stop_gradient(lax.select(jnp.isfinite(amax), amax, lax.full_like(amax, 0)))
+    amax_with_dims = amax if keepdims else lax.expand_dims(amax, pos_dims)
+
+    # fast path if the result cannot be negative.
+    if b is None and not np.issubdtype(a_arr.dtype, np.complexfloating):
+        out = lax.add(lax.log(jnp.sum(lax.exp(lax.sub(a_arr, amax_with_dims)),
+                                      axis=dims, keepdims=keepdims) + lax.exp(-amax)),
+                      amax)
+        sign = jnp.where(jnp.isnan(out), out, 1.0)
+        sign = jnp.where(jnp.isneginf(out), 0.0, sign).astype(out.dtype)
+    else:
+        expsub = lax.exp(lax.sub(a_arr, amax_with_dims))
+        if b is not None:
+            expsub = lax.mul(expsub, b_arr)
+            
+        expsub = expsub + lax.exp(-amax_with_dims)
+        sumexp = jnp.sum(expsub, axis=dims, keepdims=keepdims)
+
+        sign = lax.stop_gradient(jnp.sign(sumexp))
+        if np.issubdtype(sumexp.dtype, np.complexfloating):
+            if return_sign:
+                sumexp = sign*sumexp
+            out = lax.add(lax.log(sumexp), amax)
+        else:
+            out = lax.add(lax.log(lax.abs(sumexp)), amax)
+    if return_sign:
+        return (out, sign)
+    if b is not None:
+        if not np.issubdtype(out.dtype, np.complexfloating):
+            with jax.debug_nans(False):
+                out = jnp.where(sign < 0, jnp.array(np.nan, dtype=out.dtype), out)
+        return out
+    return out
+
+def ghostmax(a, axis=None):
+    """Properly implemented ghostmax, robust to input scale. A softmax with additional `1+__` in the denominator. The derivative of `lseplus`"""
+    if axis is None:
+        og_shape = a.shape
+        a = jnp.pad(a.ravel(), ((1,0),), constant_values=0.)
+        a = jax.nn.softmax(a)
+        return a[1:].reshape(og_shape)
+    else:
+        pad_widths = [(0,0) for _ in range(len(a.shape))]
+        pad_widths[axis] = (1,0)
+        pad_width = tuple(pad_widths)
+        
+        a = jnp.pad(a, pad_width, constant_values=0.)
+        a = jax.nn.softmax(a, axis=axis)
+        
+        out_idxer = [slice(None) for _ in range(len(a.shape))]
+        out_idxer[axis] = slice(1, None)
+        return a[tuple(out_idxer)]
+```
