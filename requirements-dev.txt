@@ -1,5 +1,0 @@
-tfds-nightly
-tensorflow
-timm
-twine
-tensorflowjs

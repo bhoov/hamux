@@ -1,6 +1,4 @@
-__version__ = "0.1.1"
-from .ham import *
-from .synapses import *
-from .layers import *
-import hamux.lagrangians as lagrangians
-from .registry import create_model, register_model
+__version__ = "0.2.1"
+
+from .core import *
+from .lagrangians import *
