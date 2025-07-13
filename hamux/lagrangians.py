@@ -94,7 +94,7 @@ def lagr_tanh(x: Array, # Input tensor
     """Lagrangian of the tanh activation function"""
     return _lagr_tanh(x, beta).sum()
 
-# %% ../nbs/01_lagrangians.qmd 19
+# %% ../nbs/01_lagrangians.qmd 20
 @jax.custom_jvp
 def _lagr_sigmoid(
     x: Array, # Input tensor
@@ -130,7 +130,7 @@ def lagr_sigmoid(
     """The lagrangian of the sigmoid activation function"""
     return _lagr_sigmoid(x, beta=beta).sum()
 
-# %% ../nbs/01_lagrangians.qmd 22
+# %% ../nbs/01_lagrangians.qmd 23
 def lagr_softmax(
     x: Array, # Input tensor
     beta: float = 1.0,  # Inverse temperature
@@ -139,7 +139,7 @@ def lagr_softmax(
     """The lagrangian of the softmax -- the logsumexp"""
     return 1 / beta * jax.nn.logsumexp(beta * x, axis=axis, keepdims=False)
 
-# %% ../nbs/01_lagrangians.qmd 25
+# %% ../nbs/01_lagrangians.qmd 26
 def _simple_layernorm(
     x: Array, # Input tensor
     gamma: float = 1.0,  # Scale the stdev
@@ -171,7 +171,7 @@ def lagr_layernorm(
     y = jnp.sqrt(jnp.power(xmeaned, 2).mean(axis, keepdims=True) + eps)
     return (D * gamma * y + (delta * x).sum()).sum()
 
-# %% ../nbs/01_lagrangians.qmd 27
+# %% ../nbs/01_lagrangians.qmd 28
 def _simple_spherical_norm(
     x: Array, # Input tensor
     gamma: float = 1.0,  # Scale the stdev
@@ -195,7 +195,7 @@ def lagr_spherical_norm(
     y = jnp.sqrt(jnp.power(x, 2).sum(axis, keepdims=True) + eps)
     return (gamma * y + (delta * x).sum()).sum()
 
-# %% ../nbs/01_lagrangians.qmd 29
+# %% ../nbs/01_lagrangians.qmd 30
 # Enable this function, but don't document it for now
 def lagr_ghostmax(
     a: Array, # Input tensor
