@@ -58,7 +58,7 @@ Networks](http://www.scholarpedia.org/article/Hopfield_network) (HNs):
 general to model any conceivable Associative
 Memory.](./figures/hamux_overview.png)
 
-See our walkthrough in [this notebook](./nbs/00_core.ipynb) for a more
+See our walkthrough in [this notebook](./00_core.ipynb) for a more
 detailed explanation of how everything works.
 
 In summary, this library handles all the complexity of scaling modular,
