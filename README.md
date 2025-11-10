@@ -5,7 +5,7 @@
 
 A new class of Deep Learning model built around **ENERGY**.
 
-![HAMUX Logo](./figures/HAMUX-header.png)
+![HAMUX Logo](https://github.com/bhoov/hamux/blob/main/nbs/figures/HAMUX-header.png)
 
 Part proof-of-concept, part functional prototype, HAMUX is designed to
 bridge modern AI architectures and Hopfield Networks.
