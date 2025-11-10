@@ -239,6 +239,30 @@ $$
 $$
 
 ```{python}
+#| echo: false
+#| fig-align: center
+#| fig-responsive: true
+x = np.linspace(-3,3,100)
+betas = [0.5,1.,1.5]
+fig, ax = plt.subplots(1)
+colors = 'bgr'
+
+legend = []
+for i, b in enumerate(betas):
+    lagr_fn = ft.partial(lagr_tanh, beta=b)
+    y = jax.grad(lagr_fn)(x)
+    L = jax.vmap(lagr_fn)(x)
+    c = colors[i]
+    legend += [f"activation (beta={b})", f"lagrangian (beta={b})"]
+    ax.plot(x,y,f"{c}--", x,L,f"{c}-")
+    # ax.set_title(r"$\mathcal{L}_\text{tanh}(x; \beta) = \frac{1}{\beta} \sum \log(\cosh(\beta x))$")
+    ax.set_title(r"lagr_tanh")
+
+ax.legend(legend)
+plt.show(fig)
+```
+
+```{python}
 #| export
 @jax.custom_jvp
 def _lagr_sigmoid(
@@ -295,7 +319,7 @@ for i, b in enumerate(betas):
     legend += [f"activation (beta={b})", f"lagrangian (beta={b})"]
     ax.plot(x,y,f"{c}--", x,L,f"{c}-")
     # ax.set_title(r"$\mathcal{L}_\text{tanh}(x; \beta) = \frac{1}{\beta} \sum \log(\cosh(\beta x))$")
-    ax.set_title(r"lagr_tanh")
+    ax.set_title(r"lagr_sigmoid")
 
 ax.legend(legend)
 plt.show(fig)

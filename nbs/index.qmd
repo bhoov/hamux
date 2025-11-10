@@ -53,7 +53,7 @@ HAMUX fully captures the the energy fundamentals of Hopfield Networks and enable
 
 ![**HAMUX is a [hypergraph](https://en.wikipedia.org/wiki/Hypergraph) of 🌀neurons connected via 🤝hypersynapses**, an abstraction sufficiently general to model any conceivable Associative Memory.](./figures/hamux_overview.png)
 
-See our walkthrough in [this notebook](./nbs/00_core.ipynb) for a more detailed explanation of how everything works. 
+See our walkthrough in [this notebook](./00_core.ipynb) for a more detailed explanation of how everything works. 
 
 In summary, this library handles all the complexity of scaling modular, learnable energy functions that interconnect many layers and hypersynapses. It is a barebones framework to explore Associative Memories that look like Deep Learning architectures.
 
