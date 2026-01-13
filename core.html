@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="The building blocks of energy-based Associative Memory">
+
+<title>Building HAMUX – HAMUX</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-000f0825b9c55ed21d14970d810c14a9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Building HAMUX – HAMUX">
+<meta property="og:description" content="The building blocks of energy-based Associative Memory">
+<meta property="og:image" content="https://bhoov.github.io/hamux/figures/NeuronOverview.png">
+<meta property="og:site_name" content="HAMUX">
+<meta property="og:image:height" content="1107">
+<meta property="og:image:width" content="1007">
+<meta name="twitter:title" content="Building HAMUX – HAMUX">
+<meta name="twitter:description" content="The building blocks of energy-based Associative Memory">
+<meta name="twitter:image" content="https://bhoov.github.io/hamux/figures/NeuronOverview.png">
+<meta name="twitter:image-height" content="1107">
+<meta name="twitter:image-width" content="1007">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">HAMUX</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./core.html">Building HAMUX</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./core.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Building HAMUX</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lagrangians.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lagrangians</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#sec-neurons" id="toc-sec-neurons" class="nav-link active" data-scroll-target="#sec-neurons">Neurons</a>
+  <ul class="collapse">
+  <li><a href="#sec-neuron-implementation" id="toc-sec-neuron-implementation" class="nav-link" data-scroll-target="#sec-neuron-implementation">Neurons as Code</a>
+  <ul class="collapse">
+  <li><a href="#neuronlayer" id="toc-neuronlayer" class="nav-link" data-scroll-target="#neuronlayer">NeuronLayer</a></li>
+  <li><a href="#neuronlayer.activations" id="toc-neuronlayer.activations" class="nav-link" data-scroll-target="#neuronlayer.activations">NeuronLayer.activations</a></li>
+  <li><a href="#neuronlayer.init" id="toc-neuronlayer.init" class="nav-link" data-scroll-target="#neuronlayer.init">NeuronLayer.init</a></li>
+  </ul></li>
+  <li><a href="#legendre-transform-and-neuron-energy" id="toc-legendre-transform-and-neuron-energy" class="nav-link" data-scroll-target="#legendre-transform-and-neuron-energy">Legendre transform and Neuron Energy</a>
+  <ul class="collapse">
+  <li><a href="#legendre_transform" id="toc-legendre_transform" class="nav-link" data-scroll-target="#legendre_transform">legendre_transform</a></li>
+  <li><a href="#neuronlayer.energy" id="toc-neuronlayer.energy" class="nav-link" data-scroll-target="#neuronlayer.energy">NeuronLayer.energy</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#sec-hypersynapses" id="toc-sec-hypersynapses" class="nav-link" data-scroll-target="#sec-hypersynapses">Hypersynapses</a>
+  <ul class="collapse">
+  <li><a href="#how-biological-are-hypersynapses" id="toc-how-biological-are-hypersynapses" class="nav-link" data-scroll-target="#how-biological-are-hypersynapses">How biological are hypersynapses?</a></li>
+  <li><a href="#sec-hypersynapse-implementation" id="toc-sec-hypersynapse-implementation" class="nav-link" data-scroll-target="#sec-hypersynapse-implementation">Hypersynapse implementation</a>
+  <ul class="collapse">
+  <li><a href="#linearsynapse" id="toc-linearsynapse" class="nav-link" data-scroll-target="#linearsynapse">LinearSynapse</a></li>
+  <li><a href="#biassynapse" id="toc-biassynapse" class="nav-link" data-scroll-target="#biassynapse">BiasSynapse</a></li>
+  <li><a href="#linearsynapsewithbias" id="toc-linearsynapsewithbias" class="nav-link" data-scroll-target="#linearsynapsewithbias">LinearSynapseWithBias</a></li>
+  <li><a href="#convsynapse" id="toc-convsynapse" class="nav-link" data-scroll-target="#convsynapse">ConvSynapse</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#sec-energy-hypergraphs" id="toc-sec-energy-hypergraphs" class="nav-link" data-scroll-target="#sec-energy-hypergraphs">Energy Hypergraphs</a>
+  <ul class="collapse">
+  <li><a href="#energy-hypergraph-implementation" id="toc-energy-hypergraph-implementation" class="nav-link" data-scroll-target="#energy-hypergraph-implementation">Energy Hypergraph Implementation</a>
+  <ul class="collapse">
+  <li><a href="#ham" id="toc-ham" class="nav-link" data-scroll-target="#ham">HAM</a></li>
+  <li><a href="#ham.n_connections" id="toc-ham.n_connections" class="nav-link" data-scroll-target="#ham.n_connections">HAM.n_connections</a></li>
+  <li><a href="#ham.n_hypersynapses" id="toc-ham.n_hypersynapses" class="nav-link" data-scroll-target="#ham.n_hypersynapses">HAM.n_hypersynapses</a></li>
+  <li><a href="#ham.n_neurons" id="toc-ham.n_neurons" class="nav-link" data-scroll-target="#ham.n_neurons">HAM.n_neurons</a></li>
+  <li><a href="#ham.init_states" id="toc-ham.init_states" class="nav-link" data-scroll-target="#ham.init_states">HAM.init_states</a></li>
+  <li><a href="#ham.activations" id="toc-ham.activations" class="nav-link" data-scroll-target="#ham.activations">HAM.activations</a></li>
+  <li><a href="#ham.energy" id="toc-ham.energy" class="nav-link" data-scroll-target="#ham.energy">HAM.energy</a></li>
+  <li><a href="#ham.energy_tree" id="toc-ham.energy_tree" class="nav-link" data-scroll-target="#ham.energy_tree">HAM.energy_tree</a></li>
+  <li><a href="#ham.connection_energies" id="toc-ham.connection_energies" class="nav-link" data-scroll-target="#ham.connection_energies">HAM.connection_energies</a></li>
+  <li><a href="#ham.neuron_energies" id="toc-ham.neuron_energies" class="nav-link" data-scroll-target="#ham.neuron_energies">HAM.neuron_energies</a></li>
+  <li><a href="#ham.dedact" id="toc-ham.dedact" class="nav-link" data-scroll-target="#ham.dedact">HAM.dEdact</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#vectorizing-the-energy" id="toc-vectorizing-the-energy" class="nav-link" data-scroll-target="#vectorizing-the-energy">Vectorizing the Energy</a>
+  <ul class="collapse">
+  <li><a href="#vectorizedham" id="toc-vectorizedham" class="nav-link" data-scroll-target="#vectorizedham">VectorizedHAM</a></li>
+  <li><a href="#ham.unvectorize" id="toc-ham.unvectorize" class="nav-link" data-scroll-target="#ham.unvectorize">HAM.unvectorize</a></li>
+  <li><a href="#ham.vectorize" id="toc-ham.vectorize" class="nav-link" data-scroll-target="#ham.vectorize">HAM.vectorize</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/bhoov/hamux/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="core.html.md"><i class="bi bi-file-code"></i>CommonMark</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Building HAMUX</h1>
+</div>
+
+<div>
+  <div class="description">
+    The building blocks of energy-based Associative Memory
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>We develop a <em>modular energy</em> perspective of Associative Memories where the energy of any model from this family can be decomposed into standardized components: <a href="#sec-neurons"><strong>neuron layers</strong></a> that encode dynamic variables, and <a href="#sec-hypersynapses"><strong>hypersynapses</strong></a> that encode their interactions.</p>
+<p><strong>The total energy of the system is the sum of the individual component energies subtracted by the energies of all the layers and all the interactions between those layers.</strong></p>
+<p>In computer science terms, neurons and synapses form a <a href="https://en.wikipedia.org/wiki/Hypergraph"><strong>hypergraph</strong></a>, where each neuron layer is a node and each hypersynapse is a hyperedge.</p>
+<p>This framework of energy-based building blocks for memory not only clarifies how existing methods for building Associative Memories relate to each other (e.g., the Classical Hopfield Network <span class="citation" data-cites="hopfield1982neural">[@hopfield1982neural, @hopfield1984Neurons]</span>, Dense Associative Memory <span class="citation" data-cites="krotov2016dense">[@krotov2016dense]</span>), but it also provides a systematic language for designing new architectures (e.g., Energy Transformers <span class="citation" data-cites="hoover2024energy">[@hoover2024energy]</span>, Neuron-Astrocyte Networks <span class="citation" data-cites="kozachkov2023neuron">[@kozachkov2023neuron]</span>).</p>
+<p>We begin by introducing the building blocks of Associative Memory: <a href="#sec-neurons"><strong>neurons</strong></a> and <a href="#sec-hypersynapses"><strong>hypersynapses</strong></a>.</p>
+<section id="sec-neurons" class="level1">
+<h1>Neurons</h1>
+<blockquote class="blockquote">
+<p>Neurons turn <a href="./lagrangians.html">Lagrangians</a> into the dynamic building blocks of memory.</p>
+</blockquote>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>TL;DR
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>A <em>neuron</em> is a fancy term to describe the dynamic (fast moving) variables in an associative memory.</li>
+<li>Every neuron has an internal state <span class="math inline">\(\mathbf{x}\)</span> that evolves over time and an activation <span class="math inline">\(\hat{\mathbf{x}}\)</span> that affects the rest of the network.</li>
+<li>In the complete hypergraph of Associative Memory, our neurons are the <em>nodes</em> while our <a href="#sec-hypersynapses">hypersynapses</a> are the <em>hyperedges</em> (since a synapse can connect more than two nodes, they cannot be regular “edges”).</li>
+<li>A neuron is just a Lagrangian assigned to a tensor of data.</li>
+</ol>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/NeuronOverview.png" class="img-fluid figure-img" width="350"></p>
+<figcaption>A neuron layer is a Lagrangian function on top of data, where the Lagrangian defines the activations of that neuron</figcaption>
+</figure>
+</div>
+<p>A <strong>neuron layer</strong> (node of the Associative Memory) is a fancy term to describe the dynamic variables in AM. Each neuron layer has an <strong>internal state</strong> <span class="math inline">\(\mathbf{x}\)</span> which evolves over time and an <strong>activation</strong> <span class="math inline">\(\hat{\mathbf{x}}\)</span> that forwards a signal to the rest of the network. Think of neurons like the <em>activation functions</em> of standard neural networks, where <span class="math inline">\(\mathbf{x}\)</span> are the <em>pre-activations</em> and <span class="math inline">\(\hat{\mathbf{x}}\)</span> (the outputs) are the <em>activations</em> e.g., <span class="math inline">\(\hat{\mathbf{x}} = \texttt{ReLU}(\mathbf{x})\)</span>.</p>
+<p>In order to define neuron layer’s energy, AMs employ two mathematical tools from physics: convex <strong>Lagrangian functions</strong> and the <strong>Legendre transform</strong>. For each neuron layer, we define a convex, scalar-valued Lagrangian <span class="math inline">\(\mathcal{L}_x(\mathbf{x})\)</span>. The Legendre transform <span class="math inline">\(\mathcal{T}\)</span> of this Lagrangian produces the dual variable <span class="math inline">\(\hat{\mathbf{x}}\)</span> (our activations) and the dual energy <span class="math inline">\(E_x(\hat{\mathbf{x}})\)</span> (our new energy) as in:</p>
+<p><span id="eq-neuron-legendre-transform"><span class="math display">\[
+\begin{align}
+    \hat{\mathbf{x}} &amp;= \nabla \mathcal{L}_x(\mathbf{x}) \quad \text{(activation function)} \\
+    E_x(\hat{\mathbf{x}}) = \mathcal{T}(\mathcal{L}_x) &amp;= \langle \mathbf{x}, \hat{\mathbf{x}} \rangle - \mathcal{L}_x(\mathbf{x}) \quad \text{(dual energy)}
+\end{align}
+\tag{1}\]</span></span></p>
+<p>where <span class="math inline">\(\langle \cdot, \cdot \rangle\)</span> is the element-wise inner product. Because <span class="math inline">\(\mathcal{L}_x\)</span> is convex, the Jacobian of the activations <span class="math inline">\(\frac{\partial \hat{\mathbf{x}}}{\partial \mathbf{x}} = \nabla^2 \mathcal{L}_x(\mathbf{x})\)</span> (i.e., the Hessian of the Lagrangian) is positive definite. <!-- This important point is summarized in \Cref{fig:hamux-diagram}. --></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Notational conventions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There are lots of named components inside the neuron layer. As a notational convention, each neuron layer is identified by a single letter (e.g., <span class="math inline">\(\mathsf{X}\)</span> or <span class="math inline">\(\mathsf{Y}\)</span>). We say a neuron layer <span class="math inline">\(\mathsf{X}\)</span> has a internal state <span class="math inline">\(\mathbf{x} \in \hat{\mathcal{X}}\)</span> and Lagrangian <span class="math inline">\(\mathcal{L}_x(\mathbf{x})\)</span>, alongside an activation <span class="math inline">\(\hat{\mathbf{x}} \in \hat{\mathcal{X}}\)</span> and total energy <span class="math inline">\(E_x(\hat{\mathbf{x}})\)</span> constrained through the Legendre transform of the Lagrangian. Meanwhile, neuron layer <span class="math inline">\(\mathsf{Y}\)</span> has a internal state <span class="math inline">\(\mathbf{y} \in \mathcal{Y}\)</span> and Lagrangian <span class="math inline">\(\mathcal{L}_y(\mathbf{y})\)</span>, alongside an activation <span class="math inline">\(\hat{\mathbf{y}} \in \hat{\mathcal{Y}}\)</span> and total energy <span class="math inline">\(E_y(\hat{\mathbf{y}})\)</span>.</p>
+<p>Because it is often nice to think of the activations as being a non-linear function of the internal states, we can also write <span class="math inline">\(\hat{\mathbf{x}} = \sigma_x(\mathbf{x})\)</span>, where <span class="math inline">\(\sigma_x(\cdot) := \nabla \mathcal{L}_x (\cdot)\)</span>.</p>
+</div>
+</div>
+<p>The dual energy <span class="math inline">\(E_x(\hat{\mathbf{x}})\)</span> has another nice property: <em>its gradient equals the internal states</em>. Thus, when we minimize the energy of our neurons (in the absence of any other signal), we observe exponential decay. This is nice to keep the dynamic behavior of our system bounded and well-behaved, especially for very large values of <span class="math inline">\(\mathbf{x}\)</span>.</p>
+<p><span id="eq-exponential-decay"><span class="math display">\[
+\frac{d \mathbf{x}}{dt} = - \nabla_{\hat{\mathbf{x}}} E_x(\hat{\mathbf{x}}) = - \mathbf{x}.
+\tag{2}\]</span></span></p>
+<section id="sec-neuron-implementation" class="level2">
+<h2 class="anchored" data-anchor-id="sec-neuron-implementation">Neurons as Code</h2>
+<p>The methods to implement neurons are remarkably simple:</p>
+<hr>
+<section id="neuronlayer" class="level3">
+<h3 class="anchored" data-anchor-id="neuronlayer">NeuronLayer</h3>
+<blockquote class="blockquote">
+<pre><code> NeuronLayer (lagrangian:Callable, shape:Tuple[int])</code></pre>
+</blockquote>
+<p><em>Neuron layers represent dynamic variables that evolve during inference (i.e., memory retrieval/error correction)</em></p>
+<div id="cell-5" class="cell">
+<details open="" class="code-fold">
+<summary>Exported source</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> NeuronLayer(eqx.Module):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Neuron layers represent dynamic variables that evolve during inference (i.e., memory retrieval/error correction)"""</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    lagrangian: Callable <span class="co"># The scalar-valued Lagrangian function:  x |-&gt; R</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    shape: Tuple[<span class="bu">int</span>] <span class="co"># The shape of the neuron layer</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Remember that, at its core, a <code>NeuronLayer</code> object is nothing more than a Lagrangian (see <a href="./lagrangians.html">example Lagrangians</a> for examples) function on top of (shaped) data. All the other methods of the <code>NeuronLayer</code> class just provide conveniences on top of this core functionality.</p>
+<hr>
+</section>
+<section id="neuronlayer.activations" class="level3">
+<h3 class="anchored" data-anchor-id="neuronlayer.activations">NeuronLayer.activations</h3>
+<blockquote class="blockquote">
+<pre><code> NeuronLayer.activations (x)</code></pre>
+</blockquote>
+<p><em>Use autograd to compute the activations of the neuron layer from the Lagrangian</em></p>
+<div id="cell-8" class="cell">
+<details open="" class="code-fold">
+<summary>Exported source</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="at">@patch</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> activations(<span class="va">self</span>: NeuronLayer, x): </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Use autograd to compute the activations of the neuron layer from the Lagrangian"""</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> jax.grad(<span class="va">self</span>.lagrangian)(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The <code>NeuronLayer.activations</code> is the gradient of the Lagrangian with respect to the states. This is easily computed via jax autograd.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Test the activations
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For example, we can test the activations of a few different Lagrangians.</p>
+<div id="cell-10" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> hamux.lagrangians <span class="im">import</span> lagr_relu, lagr_softmax, lagr_sigmoid, lagr_identity</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pprint <span class="im">import</span> pp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-11" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Identity activation</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>nn <span class="op">=</span> NeuronLayer(lagrangian<span class="op">=</span><span class="kw">lambda</span> x: jnp.<span class="bu">sum</span>(<span class="fl">0.5</span> <span class="op">*</span> x<span class="op">**</span><span class="dv">2</span>), shape<span class="op">=</span>(D,)) <span class="co"># Identity activation</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>xtest <span class="op">=</span> jr.normal(jr.key(<span class="dv">0</span>), (D,))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(nn.activations(xtest), xtest)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ReLU activation</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>nn <span class="op">=</span> NeuronLayer(lagrangian<span class="op">=</span>lagr_relu, shape<span class="op">=</span>(D,))</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>xtest <span class="op">=</span> jr.normal(jr.key(<span class="dv">1</span>), (D,))</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(nn.activations(xtest), jnp.maximum(<span class="dv">0</span>, xtest))</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Softmax activation</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>nn <span class="op">=</span> NeuronLayer(lagrangian<span class="op">=</span>lagr_softmax, shape<span class="op">=</span>(D,))</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>xtest <span class="op">=</span> jr.normal(jr.key(<span class="dv">2</span>), (D,))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(nn.activations(xtest), jax.nn.softmax(xtest))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="neuronlayer.init" class="level3">
+<h3 class="anchored" data-anchor-id="neuronlayer.init">NeuronLayer.init</h3>
+<blockquote class="blockquote">
+<pre><code> NeuronLayer.init (bs:Optional[int]=None)</code></pre>
+</blockquote>
+<p><em>Return an empty initial neuron state</em></p>
+<div id="cell-14" class="cell">
+<details open="" class="code-fold">
+<summary>Exported source</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="at">@patch</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> init(<span class="va">self</span>: NeuronLayer, bs: Optional[<span class="bu">int</span>] <span class="op">=</span> <span class="va">None</span>):</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return an empty initial neuron state"""</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> bs <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> bs <span class="op">==</span> <span class="dv">0</span>: <span class="cf">return</span> jnp.zeros(<span class="va">self</span>.shape) <span class="co"># No batch dimension</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> jnp.zeros((bs, <span class="op">*</span><span class="va">self</span>.shape))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The <code>NeuronLayer.init</code> method is a convenience method that initializes an empty collection of neuron layer states. We generally want to populate this state with values from some piece of data.</p>
+<p>It’s used like:</p>
+<div id="cell-16" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> <span class="dv">784</span> <span class="co"># e.g., rasterized MNIST image size</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>nn <span class="op">=</span> NeuronLayer(lagrangian<span class="op">=</span><span class="kw">lambda</span> x: <span class="fl">0.5</span> <span class="op">*</span> x<span class="op">**</span><span class="dv">2</span>, shape<span class="op">=</span>(D,))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>x_unbatched <span class="op">=</span> nn.init()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Unbatched shape:"</span>, x_unbatched.shape)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>x_batched <span class="op">=</span> nn.init(bs<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Batched shape:"</span>, x_batched.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unbatched shape: (784,)
+Batched shape: (2, 784)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="legendre-transform-and-neuron-energy" class="level2">
+<h2 class="anchored" data-anchor-id="legendre-transform-and-neuron-energy">Legendre transform and Neuron Energy</h2>
+<p>The energy is the Legendre transform of the Lagrangian. Consider some scalar-valued function <span class="math inline">\(F: \mathcal{X} \mapsto \mathbb{R}\)</span> for which we want to compute it’s dual representation <span class="math inline">\(\hat{F}: \hat{\mathcal{X}} \mapsto \mathbb{R}\)</span> under the Legendre Transform. The Legendre transform <span class="math inline">\(\mathcal{T}\)</span> of <span class="math inline">\(F\)</span> transforms both the function <span class="math inline">\(F\)</span> and its argument <span class="math inline">\(\mathbf{x}\)</span> into a dual formulation <span class="math inline">\(\hat{F}\)</span> and <span class="math inline">\(\hat{\mathbf{x}} = \sigma(\mathbf{x}) = \nabla F(\mathbf{x})\)</span>. The transform is defined as:</p>
+<p><span class="math display">\[
+\hat{F}(\hat{\mathbf{x}}) = \langle \mathbf{x}, \hat{\mathbf{x}} \rangle - F(\mathbf{x}).
+\]</span></p>
+<p>Note that <span class="math inline">\(\hat{F}\)</span> is only a function of <span class="math inline">\(\hat{\mathbf{x}}\)</span> (<span class="math inline">\(\mathbf{x}\)</span> is computed as <span class="math inline">\(\mathbf{x} = \sigma^{(-1)}(\hat{\mathbf{x}})\)</span>. You can confirm this for yourself by trying to compute <span class="math inline">\(\frac{\partial \hat{F}}{\partial \mathbf{x}}\)</span> and checking that the answer is <span class="math inline">\(0\)</span>).</p>
+<p>The code for the Legendre transform is easy to implement in jax as a higher order function. We’ll assume that we always have the original variable <span class="math inline">\(\mathbf{x}\)</span> so that we don’t need to compute <span class="math inline">\(\sigma^{(-1)}\)</span>.</p>
+<hr>
+<section id="legendre_transform" class="level3">
+<h3 class="anchored" data-anchor-id="legendre_transform">legendre_transform</h3>
+<blockquote class="blockquote">
+<pre><code> legendre_transform (F:Callable)</code></pre>
+</blockquote>
+<p><em>Transform scalar F(x) into the dual Fhat(xhat, x) using the Legendre transform</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>F</td>
+<td>Callable</td>
+<td>The function to transform</td>
+</tr>
+</tbody>
+</table>
+<div id="cell-19" class="cell">
+<details open="" class="code-fold">
+<summary>Exported source</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> legendre_transform(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    F: Callable <span class="co"># The function to transform</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    ):</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"Transform scalar F(x) into the dual Fhat(xhat, x) using the Legendre transform"</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We define custom gradient rules to give jax some autograd shortcuts</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">@jax.custom_jvp</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> Fhat(xhat, x): <span class="cf">return</span> jnp.multiply(xhat, x).<span class="bu">sum</span>() <span class="op">-</span> F(x)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Fhat.defjvp</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> Fhat_jvp(primals, tangents):</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        (xhat, x), (dxhat, dx) <span class="op">=</span> primals, tangents</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        o, do <span class="op">=</span> Fhat(xhat, x), jnp.multiply(x, dxhat).<span class="bu">sum</span>()</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> o, do</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Fhat</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Test the Legendre transform
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let’s test if the <code>legendre_transform</code> automatic gradients are what we expect:</p>
+<div id="cell-21" class="cell">
+<details class="code-fold">
+<summary>Test the Legendre transform</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> jnp.array([<span class="fl">1.</span>, <span class="dv">2</span>, <span class="dv">3</span>])</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> lagr_sigmoid</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> jax.nn.sigmoid(x)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>Fhat <span class="op">=</span> legendre_transform(F)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(jax.grad(Fhat)(g, x), x)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.<span class="bu">all</span>(jax.grad(Fhat, argnums<span class="op">=</span><span class="dv">1</span>)(g, x) <span class="op">==</span> <span class="fl">0.</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> jnp.array([<span class="fl">1.</span>, <span class="dv">2</span>, <span class="dv">3</span>])</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> lagr_identity</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> x</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>Fhat <span class="op">=</span> legendre_transform(F)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(jax.grad(Fhat)(g, x), x)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.<span class="bu">all</span>(jax.grad(Fhat, argnums<span class="op">=</span><span class="dv">1</span>)(g, x) <span class="op">==</span> <span class="fl">0.</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+</div>
+</div>
+<p>The Legendre transform is the final piece of the puzzle to describe the energy of a neuron layer.</p>
+<hr>
+</section>
+<section id="neuronlayer.energy" class="level3">
+<h3 class="anchored" data-anchor-id="neuronlayer.energy">NeuronLayer.energy</h3>
+<blockquote class="blockquote">
+<pre><code> NeuronLayer.energy (xhat, x)</code></pre>
+</blockquote>
+<p><em>The energy of the neuron layer is the Legendre transform of the Lagrangian</em></p>
+<div id="cell-24" class="cell">
+<details open="" class="code-fold">
+<summary>Exported source</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="at">@patch</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> energy(<span class="va">self</span>: NeuronLayer, xhat, x): </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""The energy of the neuron layer is the Legendre transform of the Lagrangian"""</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> legendre_transform(<span class="va">self</span>.lagrangian)(xhat, x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The energy is the Legendre transform of the Lagrangian:</p>
+<p><span class="math display">\[
+E_\text{neuron} = \langle \mathbf{x}, \hat{\mathbf{x}} \rangle - \mathcal{L}_x(\mathbf{x})
+\]</span></p>
+<div id="cell-26" class="cell">
+<details class="code-fold">
+<summary>Test the energy</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>nn <span class="op">=</span> NeuronLayer(lagrangian<span class="op">=</span>lagr_sigmoid, shape<span class="op">=</span>(<span class="dv">3</span>,))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> jnp.array([<span class="fl">1.</span>, <span class="dv">2</span>, <span class="dv">3</span>])</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>xhat <span class="op">=</span> nn.activations(x)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(jax.grad(nn.energy, argnums<span class="op">=</span><span class="dv">0</span>)(xhat, x), x)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(jax.grad(nn.energy, argnums<span class="op">=</span><span class="dv">1</span>)(xhat, x), <span class="fl">0.</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Additional methods
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We alias a few of the methods for convenience.</p>
+<div id="cell-28" class="cell">
+<details open="" class="code-fold">
+<summary>Exported source</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>NeuronLayer.sigma <span class="op">=</span> NeuronLayer.activations</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>NeuronLayer.E <span class="op">=</span> NeuronLayer.energy</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>And wrap a few other python conveniences.</p>
+<hr>
+<section id="neuronlayer.__post_init__" class="level3">
+<h3 class="anchored" data-anchor-id="neuronlayer.__post_init__">NeuronLayer.__post_init__</h3>
+<blockquote class="blockquote">
+<pre><code> NeuronLayer.__post_init__ ()</code></pre>
+</blockquote>
+<p><em>Ensure the neuron shape is a tuple</em></p>
+<hr>
+</section>
+<section id="neuronlayer.__repr__" class="level3">
+<h3 class="anchored" data-anchor-id="neuronlayer.__repr__">NeuronLayer.__repr__</h3>
+<blockquote class="blockquote">
+<pre><code> NeuronLayer.__repr__ ()</code></pre>
+</blockquote>
+<p><em>Look nice when inspected</em></p>
+</section>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="sec-hypersynapses" class="level1">
+<h1>Hypersynapses</h1>
+<blockquote class="blockquote">
+<p>Hypersynapses modulate signals between one or more neuron layers.</p>
+</blockquote>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/HypersynapseOverview.png" class="img-fluid figure-img" width="400"></p>
+<figcaption>A hypersynapse is a scalar valued energy function defined on top of the activations of connected neuron layers</figcaption>
+</figure>
+</div>
+<p>The activations of one <code>NeuronLayer</code> are sent to other neurons via communication channels called <strong>hypersynapses</strong>. At its most general, a hypersynapse is a scalar valued energy function defined on top of the activations of connected neuron layers. For example, a hypersynapse connecting neuron layers <span class="math inline">\(\mathsf{X}\)</span> and <span class="math inline">\(\mathsf{Y}\)</span> has an <strong>interaction energy</strong> <span class="math inline">\(E_{xy}(\hat{\mathbf{x}}, \hat{\mathbf{y}}; \mathbf{\Xi})\)</span>, where <span class="math inline">\(\mathbf{\Xi}\)</span> represents the <strong>synaptic weights</strong> or learnable parameters.</p>
+<p><span class="math inline">\(E_{xy}(\hat{\mathbf{x}}, \hat{\mathbf{y}}; \mathbf{\Xi})\)</span> encodes the desired relationship between activations <span class="math inline">\(\hat{\mathbf{x}}\)</span> and <span class="math inline">\(\hat{\mathbf{y}}\)</span>. When this energy is low, the activations satisfy the relationship encoded by the synaptic weights <span class="math inline">\(\mathbf{\Xi}\)</span>. During energy minimization, the system adjusts the activations to reduce all energy terms, which means synapses effectively <em>pull</em> the connected neuron layers toward configurations encoded in the parameters that minimize their interaction energy.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Hypersynapse notation conventions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For synapses connecting multiple layers, we subscript with the identifiers of all connected layers. For example:</p>
+<ul>
+<li><span class="math inline">\(E_{xy}\)</span> — synapse connecting layers <span class="math inline">\(\mathsf{X}\)</span> and <span class="math inline">\(\mathsf{Y}\)</span></li>
+<li><span class="math inline">\(E_{xyz}\)</span> — synapse connecting layers <span class="math inline">\(\mathsf{X}\)</span>, <span class="math inline">\(\mathsf{Y}\)</span>, and <span class="math inline">\(\mathsf{Z}\)</span>.<br>
+</li>
+<li><span class="math inline">\(E_{xyz\ldots}\)</span> — synapses connecting more than three layers are possible, but rare.</li>
+</ul>
+<p>However, synapses can also connect a layer to itself (self-connections). To avoid confusion with neuron layer energy <span class="math inline">\(E_x\)</span>, we use curly brackets for synaptic self-connections. For example, <span class="math inline">\(E_{\{x\}}\)</span> represents the interaction energy of a synapse that connects layer <span class="math inline">\(\mathsf{X}\)</span> to itself.</p>
+</div>
+</div>
+<section id="how-biological-are-hypersynapses" class="level3">
+<h3 class="anchored" data-anchor-id="how-biological-are-hypersynapses">How biological are hypersynapses?</h3>
+<p>Hypersynapses in <code>hamux</code> differ from biological synapses in two fundamental ways:</p>
+<ul>
+<li><strong>Hypersynapses can connect any number of layers simultaneously</strong>, while biological synapses connect only two neurons. This officially makes hypersynapses “hyperedges” in graph theory terms.</li>
+<li><strong>Hypersynapses are undirected</strong>, meaning that all connected layers influence each other bidirectionally during energy minimization. Meanwhile, biological synapses are unidirectional, meaning signal flows from a presynaptic to postsynaptic neuron.</li>
+</ul>
+<p>Because of these differences, we choose the distinct term “hypersynapses” to distinguish them from biological synapses.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/hamux-undirected-synapses.png" class="img-fluid figure-img" width="400"></p>
+<figcaption><strong>Hypersynapses are represented as undirected (hyper)edges in a hypergraph.</strong> Shown is an example pairwise synapse, which is a single energy function <span class="math inline">\(E_{xy}(\hat{\mathbf{x}}, \hat{\mathbf{y}}; \mathbf{\Xi})\)</span> defined on the activations <span class="math inline">\(\hat{\mathbf{x}}\)</span> and <span class="math inline">\(\hat{\mathbf{y}}\)</span> from connected nodes, which necessarily propagate signal to both connected nodes. Here, is defined as the negative gradient of the interaction energy {w.r.t.} the connected layer’s activations (e.g., layer <span class="math inline">\(\mathsf{X}\)</span> receives signal <span class="math inline">\(\mathcal{I}_x = -\nabla_{\hat{\mathbf{x}}} E_{xy}(\hat{\mathbf{x}}, \hat{\mathbf{y}}; \mathbf{\Xi})\)</span>). This is in contrast to biological synapses which are directional and only propagate signal in one direction from layer <span class="math inline">\(\mathsf{X}\)</span> to <span class="math inline">\(\mathsf{Y}\)</span>, needing a separate synapse to bring information back from <span class="math inline">\(\mathsf{Y}\)</span> to <span class="math inline">\(\mathsf{X}\)</span></figcaption>
+</figure>
+</div>
+<p>The undirected nature of hypersynapses fundamentally distinguishes AM from traditional neural networks. Whereas feed-forward networks follow a directed computational graph with clear input-to-output flow, AMs have no inherent concept of “forward” or “backward” directions. All connected layers influence each other bidirectionally during energy minimization, with information propagating from deeper layers to shallower layers as readily as the other way around.</p>
+<p>Unlike the <code>NeuronLayer</code>’s energies, the interaction energies of the hypersynapses are completely unconstrained: <em>any function</em> that takes activations as input and returns a scalar is admissable and will have well-behaved dynamics. The interaction energy of a synapse may choose to introduce its own non-linearities beyond those handled by the neuron layers. When this occurs, the energy minimization dynamics must compute gradients through these “synaptic non-linearities”, unlike the case where all non-linearities are abstracted into the <code>NeuronLayer</code> Lagrangians.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>TL;DR
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>A <em>hypersynapse</em> describes the “strain energy” between the activations of one or more neuron layers. The lower that energy, the more aligned the activations.</li>
+<li>In the complete hypergraph of Associative Memory, our neurons are the nodes and our hypersynapses are the <em>hyperedges</em>.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="sec-hypersynapse-implementation" class="level2">
+<h2 class="anchored" data-anchor-id="sec-hypersynapse-implementation">Hypersynapse implementation</h2>
+<blockquote class="blockquote">
+<p><strong>Hypersynapses are just callable <code>equinox.Module</code> with trainable parameters.</strong> Any differentiable, scalar-valued function, implemented in a <code>__call__</code> method, will work.</p>
+</blockquote>
+<p>That’s it. Many things can be hypersynapse energies. Here are two examples that may look familiar to those with a background in ML.</p>
+<hr>
+<section id="linearsynapse" class="level3">
+<h3 class="anchored" data-anchor-id="linearsynapse">LinearSynapse</h3>
+<blockquote class="blockquote">
+<pre><code> LinearSynapse (W:jax.Array)</code></pre>
+</blockquote>
+<p><em>The energy synapse corrolary of the linear layer in standard neural networks</em></p>
+<div id="cell-34" class="cell">
+<details open="" class="code-fold">
+<summary>Exported source</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LinearSynapse(eqx.Module):</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""The energy synapse corrolary of the linear layer in standard neural networks"""</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    W: jax.Array</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, xhat1:jax.Array, xhat2:jax.Array):</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">"Compute the interaction energy between activations `xhat1` and `xhat2`."</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Best to use batch-dim agnostic operations</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span>jnp.einsum(<span class="st">"...c,...d,cd-&gt;..."</span>, xhat1, xhat2, <span class="va">self</span>.W)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">@classmethod</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> rand_init(cls, key: jax.Array, x1_dim: <span class="bu">int</span>, x2_dim: <span class="bu">int</span>):</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        Winit <span class="op">=</span> <span class="fl">0.02</span> <span class="op">*</span> jr.normal(key, (x1_dim, x2_dim))</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> cls(W<span class="op">=</span>Winit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Take the gradient w.r.t. either of the input activations and you have a linear layer.</p>
+<div id="cell-36" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>syn <span class="op">=</span> LinearSynapse.rand_init(jr.key(<span class="dv">0</span>), <span class="dv">10</span>, <span class="dv">20</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>xhat1 <span class="op">=</span> jr.normal(jr.key(<span class="dv">1</span>), (<span class="dv">10</span>,))</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>xhat2 <span class="op">=</span> jr.normal(jr.key(<span class="dv">2</span>), (<span class="dv">20</span>,))</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Energy:"</span>, syn(xhat1, xhat2))</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>ff_compute <span class="op">=</span> <span class="op">-</span>jnp.einsum(<span class="st">"...c,cd-&gt;...d"</span>, xhat1, syn.W)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>fb_compute <span class="op">=</span> <span class="op">-</span>jnp.einsum(<span class="st">"...d,cd-&gt;...c"</span>, xhat2, syn.W)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(jax.grad(syn, argnums<span class="op">=</span><span class="dv">1</span>)(xhat1, xhat2), ff_compute)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(jax.grad(syn, argnums<span class="op">=</span><span class="dv">0</span>)(xhat1, xhat2), fb_compute)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Energy: 0.045816228</code></pre>
+</div>
+</div>
+<p><em>The linear layer is trying to align the activations of its two connected layers, and taking the gradient w.r.t. either of the activations gives you the standard linear layer output.</em></p>
+<p>We may want to add biases to the network. We can do so in two ways.</p>
+<hr>
+</section>
+<section id="biassynapse" class="level3">
+<h3 class="anchored" data-anchor-id="biassynapse">BiasSynapse</h3>
+<blockquote class="blockquote">
+<pre><code> BiasSynapse (b:jax.Array)</code></pre>
+</blockquote>
+<p><em>Energy defines constant input to a neuron layer</em></p>
+<hr>
+</section>
+<section id="linearsynapsewithbias" class="level3">
+<h3 class="anchored" data-anchor-id="linearsynapsewithbias">LinearSynapseWithBias</h3>
+<blockquote class="blockquote">
+<pre><code> LinearSynapseWithBias (W:jax.Array, b:jax.Array)</code></pre>
+</blockquote>
+<p><em>A linear synapse with a bias</em></p>
+<div id="cell-40" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>D1, D2 <span class="op">=</span> <span class="dv">10</span>, <span class="dv">20</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> <span class="fl">0.02</span> <span class="op">*</span> jr.normal(jr.key(<span class="dv">0</span>), (D1, D2))</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> jnp.arange(D2)<span class="op">+</span><span class="dv">1</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>linear_syn_with_bias <span class="op">=</span> LinearSynapseWithBias(W, b)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Gradients match how linear layers work</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>xhat1 <span class="op">=</span> jr.normal(jr.key(<span class="dv">3</span>), (D1,))</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>xhat2 <span class="op">=</span> jr.normal(jr.key(<span class="dv">4</span>), (D2,))</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>expected_forward <span class="op">=</span> W.T <span class="op">@</span> xhat1 <span class="op">+</span> b</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>expected_backward <span class="op">=</span> W <span class="op">@</span> xhat2</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>forward_signal <span class="op">=</span> <span class="op">-</span>jax.grad(linear_syn_with_bias, argnums<span class="op">=</span><span class="dv">1</span>)(xhat1, xhat2)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>backward_signal <span class="op">=</span> <span class="op">-</span>jax.grad(linear_syn_with_bias, argnums<span class="op">=</span><span class="dv">0</span>)(xhat1, xhat2)</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(forward_signal, expected_forward)</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(backward_signal, expected_backward)</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Could also use a dedicated bias synapse</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>bias_syn <span class="op">=</span> BiasSynapse(b<span class="op">=</span>b)</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(<span class="op">-</span>jax.grad(bias_syn)(xhat2), bias_syn.b)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Finally, we can consider even convolutional synapses. We have to get a bit creative to define the energy here to use efficient forward convolution implementations in jax.</p>
+<hr>
+</section>
+<section id="convsynapse" class="level3">
+<h3 class="anchored" data-anchor-id="convsynapse">ConvSynapse</h3>
+<blockquote class="blockquote">
+<pre><code> ConvSynapse (W:jax.Array, window_strides:Tuple[int,int], padding:str)</code></pre>
+</blockquote>
+<p><em>The energy corrolary of a convolutional layer in standard neural networks</em></p>
+<p>The gradient w.r.t. <code>xhat2</code> is what we call a “forward convolution”. The gradient w.r.t. <code>xhat1</code> is a <a href="https://docs.jax.dev/en/latest/_autosummary/jax.lax.conv_transpose.html">“transposed convolution”</a>!</p>
+<div id="cell-44" class="cell">
+<details class="code-fold">
+<summary>Simple test for ConvSynapse</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>key <span class="op">=</span> jr.key(<span class="dv">42</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>H, W, C_in, C_out <span class="op">=</span> <span class="dv">8</span>, <span class="dv">8</span>, <span class="dv">3</span>, <span class="dv">5</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>filter_h, filter_w <span class="op">=</span> <span class="dv">3</span>, <span class="dv">3</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a ConvSynapse</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>conv_syn <span class="op">=</span> ConvSynapse.from_conv_params(</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    key<span class="op">=</span>key,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    channels_out<span class="op">=</span>C_out,</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    channels_in<span class="op">=</span>C_in, </span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    filter_shape<span class="op">=</span>(filter_h, filter_w),</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    window_strides<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>    padding<span class="op">=</span><span class="st">"SAME"</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create test activations</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>xhat1 <span class="op">=</span> jr.normal(jr.key(<span class="dv">1</span>), (H, W, C_in))  <span class="co"># Input activation</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>xhat2 <span class="op">=</span> jr.normal(jr.key(<span class="dv">2</span>), (H, W, C_out))  <span class="co"># Output activation</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Test energy computation</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>energy <span class="op">=</span> conv_syn(xhat1, xhat2)</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Energy: </span><span class="sc">{</span>energy<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">isinstance</span>(energy, jax.Array) <span class="kw">and</span> energy.shape <span class="op">==</span> ()</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a><span class="co"># The negative gradient w.r.t. xhat2 is a standard convolution</span></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>conv_result <span class="op">=</span> conv_syn.forward_conv(xhat1[<span class="va">None</span>])[<span class="dv">0</span>]  <span class="co"># Remove batch dim</span></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>grad_xhat2 <span class="op">=</span> jax.grad(conv_syn, argnums<span class="op">=</span><span class="dv">1</span>)(xhat1, xhat2)</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(<span class="op">-</span>grad_xhat2, conv_result)</span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Test that the conv_transpose is the same as the gradient w.r.t. xhat1</span></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>conv_transpose_result <span class="op">=</span> jax.lax.conv_transpose(xhat2[<span class="va">None</span>], conv_syn.W, strides<span class="op">=</span>conv_syn.window_strides, padding<span class="op">=</span>conv_syn.padding, dimension_numbers<span class="op">=</span>(<span class="st">"NHWC"</span>, <span class="st">"OIHW"</span>, <span class="st">"NHWC"</span>), transpose_kernel<span class="op">=</span><span class="va">True</span>)[<span class="dv">0</span>]</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>grad_xhat1 <span class="op">=</span> jax.grad(conv_syn, argnums<span class="op">=</span><span class="dv">0</span>)(xhat1, xhat2)</span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.allclose(conv_transpose_result, <span class="op">-</span>grad_xhat1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Energy: -8.785972595214844</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="sec-energy-hypergraphs" class="level1">
+<h1>Energy Hypergraphs</h1>
+<p>The above sections have described the building blocks of an Associative Memory. What remains is to build the hypergraph that assembles them into a complete Associative Memory.</p>
+<p>The rules of the building blocks give us a <strong>single total energy</strong> where the update rules are <strong>local</strong> and the system’s energy is <strong>guaranteed to decrease</strong>. See <a href="#fig-hamux-overview" class="quarto-xref">Figure&nbsp;1</a> for a graphical depiction of the hypergraph of an Associative Memory.</p>
+<div id="fig-hamux-overview" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hamux-overview-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./figures/hamux_overview.png" class="img-fluid figure-img" width="700">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hamux-overview-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: <code>hamux</code> hypergraph diagrams are a graphical depiction of an AM whose total energy is the sum of the neuron layer (node) and hypersynapse (hyperedge) energies. Inference is done recurrently, modeled by a system of differential equations where each neuron layer’s hidden state updates to minimize the total energy. When all non-linearities are captured in the dynamic neurons, inference becomes a local computation that avoids differentiating through non-linearities.
+</figcaption>
+</figure>
+</div>
+<p>The total energy is structured such that the activations of a neuron layer affect only connected hypersynapses and itself. Let <span class="math inline">\(\hat{\mathbf{x}}_\ell\)</span> and <span class="math inline">\(\mathbf{x}_\ell\)</span> represent the activations and internal states of neuron layer <span class="math inline">\(\ell\)</span>, and let <span class="math inline">\(\mathtt{N}(\ell)\)</span> represent the set of hypersynapses that connect to neuron layer <span class="math inline">\(\ell\)</span>. The following update rule describes how neuron internal states <span class="math inline">\(\mathbf{x}_\ell\)</span> minimize the total energy using only local signals:</p>
+<p><span id="eq-hamux-local-update"><span class="math display">\[
+\tau_\ell\frac{d \mathbf{x}_\ell}{dt} = - \frac{\partial E_\text{total}}{\partial \hat{\mathbf{x}}_\ell} = - \left(\sum_{s \in \mathtt{N}(\ell)} \frac{\partial E^\text{synapse}_s}{\partial \hat{\mathbf{x}}_\ell}\right) - \frac{\partial E^\text{neuron}_\ell}{\partial \hat{\mathbf{x}}_\ell} = \mathcal{I}_{x_\ell} - \mathbf{x}_\ell,
+\tag{3}\]</span></span></p>
+<p>where <span class="math inline">\(\mathcal{I}_{x_\ell} := - \sum_{s \in \mathtt{N}(\ell)} \nabla_{\hat{\mathbf{x}}_\ell} E^\text{synapse}_s\)</span> is the <strong>total synaptic input current</strong> to neuron layer <span class="math inline">\(\ell\)</span>, which is fundamentally local and serves to minimize the energy of connected hypersynapses. See sections. The time constant for neurons in layer <span class="math inline">\(\ell\)</span> is denoted by <span class="math inline">\(\tau_\ell\)</span>.</p>
+<p>The central result is that dynamical equations <a href="#eq-hamux-local-update" class="quarto-xref">Equation&nbsp;3</a> decrease the global energy of the network. In order to demostrate this, consider the total time derivative of the energy</p>
+<p><span class="math display">\[
+\frac{dE_\text{total}}{dt} = \sum\limits_{\ell=1}^L \frac{\partial E_\text{total}}{\partial \hat{\mathbf{x}}_\ell} \frac{\partial \hat{\mathbf{x}}_\ell}{\partial \mathbf{x}_\ell} \frac{d\mathbf{x}_\ell}{dt} = -\sum\limits_{\ell=1}^L \tau_\ell \frac{d \mathbf{x} _\ell }{dt} \frac{\partial^2 \mathcal{L}_x}{\partial \mathbf{x}_\ell \partial \mathbf{x}_\ell} \frac{d\mathbf{x}_\ell}{dt} \leq 0,
+\]</span></p>
+<p>where we expressed the partial of the energy w.r.t. the activations through the velocity of the neuron’s internal states <a href="#eq-hamux-local-update" class="quarto-xref">Equation&nbsp;3</a>. The Hessian matrix <span class="math inline">\(\frac{\partial^2 \mathcal{L}_x}{\partial \mathbf{x}_\ell \partial \mathbf{x}_\ell}\)</span> has the size number of neurons in layer <span class="math inline">\(\ell\)</span> multiplied by the number of neurons in layer <span class="math inline">\(\ell\)</span>. As long as this matrix is positive semi-definite, a property resulting from the convexity of the Lagrangian, the total energy of the network is guaranteed to either decrease or stay constant — increase of the energy is not allowed.</p>
+<p>Additionally, if the energy of the network is bounded from below, the dynamics in <a href="#eq-hamux-local-update" class="quarto-xref">Equation&nbsp;3</a> are guaranteed to lead the trajectories to fixed manifolds corresponding to local minima of the energy. If the fixed manifolds have zero-dimension, i.e., they are fixed point attractors, the velocity field will vanish once the network arrives at the local minimum. This correspondes to Hessians being strictly positive definite. Alternatively, if the Lagrangians have zero modes, resulting in existence of zero eigenvalues of the Hessian matrices, the network may converge to the fixed manifolds, but the velocity fields may stay non-zero, while the network’s state moves along that manifold.</p>
+<section id="energy-hypergraph-implementation" class="level2">
+<h2 class="anchored" data-anchor-id="energy-hypergraph-implementation">Energy Hypergraph Implementation</h2>
+<p>The local, summing structure of the <span class="math inline">\(E^\text{total}\)</span> is expressible in code as a hypergraph. We roll our own implementation in JAX to keep things simple.</p>
+<hr>
+<section id="ham" class="level3">
+<h3 class="anchored" data-anchor-id="ham">HAM</h3>
+<blockquote class="blockquote">
+<pre><code> HAM (neurons:Dict[str,__main__.NeuronLayer],
+      hypersynapses:Dict[str,equinox._module.Module],
+      connections:List[Tuple[Tuple,str]])</code></pre>
+</blockquote>
+<p><em>A Hypergraph wrapper connecting all dynamic states (neurons) and learnable parameters (synapses) for our associative memory</em></p>
+<div id="cell-47" class="cell">
+<details open="" class="code-fold">
+<summary>Exported source</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HAM(eqx.Module): </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"A Hypergraph wrapper connecting all dynamic states (neurons) and learnable parameters (synapses) for our associative memory"</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    neurons: Dict[<span class="bu">str</span>, NeuronLayer]</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    hypersynapses: Dict[<span class="bu">str</span>, eqx.Module] </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    connections: List[Tuple[Tuple, <span class="bu">str</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>We describe an HAM using plain python datastructures for our <code>neurons</code>, <code>hypersynapses</code> and edge list of <code>connections</code>. This makes each object fully compatible with <code>jax</code>’s tree mapping utilities, which will help keep our hypergraph code super succinct.</p>
+<p>For example, we can create a simple HAM with two neurons and one hypersynapse:</p>
+<div id="cell-49" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>n1_dim, n2_dim <span class="op">=</span> <span class="dv">10</span>, <span class="dv">100</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>neurons <span class="op">=</span> {</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n1"</span>: NeuronLayer(lagrangian<span class="op">=</span>lagr_sigmoid, shape<span class="op">=</span>(n1_dim,)),</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n2"</span>: NeuronLayer(lagrangian<span class="op">=</span><span class="kw">lambda</span> x: lagr_softmax(x, axis<span class="op">=-</span><span class="dv">1</span>), shape<span class="op">=</span>(n2_dim,)),</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>hypersynapses <span class="op">=</span> {</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s1"</span>: LinearSynapse.rand_init(jax.random.key(<span class="dv">0</span>), n1_dim, n2_dim),</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>connections <span class="op">=</span> [</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    ((<span class="st">"n1"</span>, <span class="st">"n2"</span>), <span class="st">"s1"</span>), <span class="co"># Read as: "Connect neurons n1 and n2 via synapse s1"</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>ham <span class="op">=</span> HAM(neurons, hypersynapses, connections)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Let’s start with some basic description of the hypergraph, describing the data object we want to create.</p>
+<hr>
+</section>
+<section id="ham.n_connections" class="level3">
+<h3 class="anchored" data-anchor-id="ham.n_connections">HAM.n_connections</h3>
+<blockquote class="blockquote">
+<pre><code> HAM.n_connections ()</code></pre>
+</blockquote>
+<p><em>Total number of connections</em></p>
+<div id="cell-52" class="cell">
+<details open="" class="code-fold">
+<summary>Exported source</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="at">@patch</span>(as_prop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> n_neurons(<span class="va">self</span>:HAM) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>   <span class="co">"Total number of neurons"</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.neurons)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="at">@patch</span>(as_prop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> n_hypersynapses(<span class="va">self</span>:HAM) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>   <span class="co">"Total number of hypersynapses"</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.hypersynapses)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="at">@patch</span>(as_prop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> n_connections(<span class="va">self</span>:HAM) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>   <span class="co">"Total number of connections"</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.connections)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<hr>
+</section>
+<section id="ham.n_hypersynapses" class="level3">
+<h3 class="anchored" data-anchor-id="ham.n_hypersynapses">HAM.n_hypersynapses</h3>
+<blockquote class="blockquote">
+<pre><code> HAM.n_hypersynapses ()</code></pre>
+</blockquote>
+<p><em>Total number of hypersynapses</em></p>
+<hr>
+</section>
+<section id="ham.n_neurons" class="level3">
+<h3 class="anchored" data-anchor-id="ham.n_neurons">HAM.n_neurons</h3>
+<blockquote class="blockquote">
+<pre><code> HAM.n_neurons ()</code></pre>
+</blockquote>
+<p><em>Total number of neurons</em></p>
+<hr>
+</section>
+<section id="ham.init_states" class="level3">
+<h3 class="anchored" data-anchor-id="ham.init_states">HAM.init_states</h3>
+<blockquote class="blockquote">
+<pre><code> HAM.init_states (bs:Optional[int]=None)</code></pre>
+</blockquote>
+<p><em>Initialize all neuron states</em></p>
+<div id="cell-56" class="cell">
+<details open="" class="code-fold">
+<summary>Exported source</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="at">@patch</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> init_states(<span class="va">self</span>: HAM, bs: Optional[<span class="bu">int</span>] <span class="op">=</span> <span class="va">None</span>):</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Initialize all neuron states"""</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> bs <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> bs <span class="op">&gt;</span> <span class="dv">0</span>: warn(<span class="st">"Vectorize with `ham.vectorize()` before processing batched states"</span>)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    xs <span class="op">=</span> {k: v.init(bs) <span class="cf">for</span> k, v <span class="kw">in</span> <span class="va">self</span>.neurons.items()}</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> xs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Initialize all the dynamic neuron states at once, optionally with a batch size. This makes it easy to treat the whole collection of neuron states as a single tensor.</p>
+<div id="cell-58" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> ham.init_states()</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(jtu.tree_map(<span class="kw">lambda</span> x: <span class="ss">f"Shape: </span><span class="sc">{</span>x<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>, xs))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'n1': 'Shape: (10,)', 'n2': 'Shape: (100,)'}</code></pre>
+</div>
+</div>
+<p>Key into these empty states to replace the states with real data.</p>
+<div id="cell-60" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>example_data <span class="op">=</span> jr.normal(jr.key(<span class="dv">4</span>), xs[<span class="st">'n1'</span>].shape)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>xs[<span class="st">"n1"</span>] <span class="op">=</span> example_data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Variable naming conventions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Throughout this code, we universally use the <code>xs</code> variable to refer to the collection of neuron internal states and the <code>xhats</code> variable to refer to the collection of neuron activations.</p>
+<p>Additionally, whenever a function <code>f</code> takes both <code>xs</code> and <code>xhats</code> as arguments, we assume the <code>xhats</code> are passed first in the argument order i.e., <code>f(xhats, xs, *args, **kwargs)</code>. This is because most AM operations do gradient descent on the activations, not the internal states, and the 0-th positional arg is the default argument for <code>jax.grad</code></p>
+</div>
+</div>
+<hr>
+</section>
+<section id="ham.activations" class="level3">
+<h3 class="anchored" data-anchor-id="ham.activations">HAM.activations</h3>
+<blockquote class="blockquote">
+<pre><code> HAM.activations (xs)</code></pre>
+</blockquote>
+<p><em>Convert hidden states of each neuron into their activations</em></p>
+<div id="cell-63" class="cell">
+<details open="" class="code-fold">
+<summary>Exported source</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="at">@patch</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> activations(<span class="va">self</span>: HAM, xs):</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert hidden states of each neuron into their activations"""</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    xhats <span class="op">=</span> {k: v.sigma(xs[k]) <span class="cf">for</span> k, v <span class="kw">in</span> <span class="va">self</span>.neurons.items()}</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> xhats</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>From the states, we can compute the activations of each neuron as a single collection:</p>
+<div id="cell-65" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>xhats <span class="op">=</span> ham.activations(xs)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.<span class="bu">all</span>(xhats[<span class="st">'n1'</span>] <span class="op">&gt;</span> <span class="dv">0</span>) <span class="kw">and</span> jnp.<span class="bu">all</span>(xhats[<span class="st">'n1'</span>] <span class="op">&lt;</span> <span class="dv">1</span>), <span class="st">"Sigmoid neurons should be between 0 and 1"</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> jnp.isclose(xhats[<span class="st">'n2'</span>].<span class="bu">sum</span>(), <span class="fl">1.0</span>), <span class="st">"Softmax neurons should sum to 1"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="ham.energy" class="level3">
+<h3 class="anchored" data-anchor-id="ham.energy">HAM.energy</h3>
+<blockquote class="blockquote">
+<pre><code> HAM.energy (xhats, xs)</code></pre>
+</blockquote>
+<p><em>The complete energy of the HAM</em></p>
+<hr>
+</section>
+<section id="ham.energy_tree" class="level3">
+<h3 class="anchored" data-anchor-id="ham.energy_tree">HAM.energy_tree</h3>
+<blockquote class="blockquote">
+<pre><code> HAM.energy_tree (xhats, xs)</code></pre>
+</blockquote>
+<p><em>Return energies for each individual component</em></p>
+<hr>
+</section>
+<section id="ham.connection_energies" class="level3">
+<h3 class="anchored" data-anchor-id="ham.connection_energies">HAM.connection_energies</h3>
+<blockquote class="blockquote">
+<pre><code> HAM.connection_energies (xhats)</code></pre>
+</blockquote>
+<p><em>Get the energy for each connection</em></p>
+<hr>
+</section>
+<section id="ham.neuron_energies" class="level3">
+<h3 class="anchored" data-anchor-id="ham.neuron_energies">HAM.neuron_energies</h3>
+<blockquote class="blockquote">
+<pre><code> HAM.neuron_energies (xhats, xs)</code></pre>
+</blockquote>
+<p><em>Retrieve the energies of each neuron in the HAM</em></p>
+<p>From the activations, we can collect all the energies of the neurons and the connections in the HAM. We can organize these into an energy tree from which we compute the total energy of the entire HAM..</p>
+<p>The complete energy of the HAM is the sum of all the individual energies from the <code>HAM.energy_tree</code>.</p>
+<div id="cell-71" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>xhats <span class="op">=</span> ham.activations(xs)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>pp(ham.energy_tree(xhats, xs))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'neurons': {'n1': Array(-6.215218, dtype=float32),
+             'n2': Array(-4.6051702, dtype=float32)},
+ 'connections': [Array(-0.00045318, dtype=float32)]}</code></pre>
+</div>
+</div>
+<div id="cell-72" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>pp(ham.energy(xhats, xs))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Array(-10.820841, dtype=float32)</code></pre>
+</div>
+</div>
+<hr>
+</section>
+<section id="ham.dedact" class="level3">
+<h3 class="anchored" data-anchor-id="ham.dedact">HAM.dEdact</h3>
+<blockquote class="blockquote">
+<pre><code> HAM.dEdact (xhats, xs, return_energy=False)</code></pre>
+</blockquote>
+<p><em>Calculate gradient of system energy w.r.t. each activation</em></p>
+<p>A small helper function to make it easier to compute the gradient of the energy w.r.t. the activations.</p>
+<p>This energy is guaranteed to monotonically decrease over time, and be bounded from below.</p>
+</section>
+</section>
+</section>
+<section id="vectorizing-the-energy" class="level1">
+<h1>Vectorizing the Energy</h1>
+<p>To scale these models, we generally want to operate on batches of data and activations using the same model. We can do this by creating a <code>VectorizedHAM</code> object whose functions all expect a batch dimension in neuron state and activations.</p>
+<hr>
+<section id="vectorizedham" class="level3">
+<h3 class="anchored" data-anchor-id="vectorizedham">VectorizedHAM</h3>
+<blockquote class="blockquote">
+<pre><code> VectorizedHAM (_ham:equinox._module.Module)</code></pre>
+</blockquote>
+<p><em>Re-expose HAM API with vectorized inputs. No new HAM behaviors should be implemented in this class.</em></p>
+<hr>
+</section>
+<section id="ham.unvectorize" class="level3">
+<h3 class="anchored" data-anchor-id="ham.unvectorize">HAM.unvectorize</h3>
+<blockquote class="blockquote">
+<pre><code> HAM.unvectorize ()</code></pre>
+</blockquote>
+<p><em>Unvectorize to work on single inputs</em></p>
+<div id="cell-77" class="cell">
+<details open="" class="code-fold">
+<summary>Exported source</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="at">@patch</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vectorize(<span class="va">self</span>: HAM):</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Vectorize to work on batches of inputs"""</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> VectorizedHAM(<span class="va">self</span>)</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="at">@patch</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> unvectorize(<span class="va">self</span>: HAM):</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Unvectorize to work on single inputs"""</span></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<hr>
+</section>
+<section id="ham.vectorize" class="level3">
+<h3 class="anchored" data-anchor-id="ham.vectorize">HAM.vectorize</h3>
+<blockquote class="blockquote">
+<pre><code> HAM.vectorize ()</code></pre>
+</blockquote>
+<p><em>Vectorize to work on batches of inputs</em></p>
+<p>Now our <code>HAM</code> logic works on batches of inputs using <code>jax.vmap</code>.</p>
+<div id="cell-80" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Instead of this</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>ham <span class="op">=</span> HAM(neurons<span class="op">=</span>neurons, hypersynapses<span class="op">=</span>hypersynapses, connections<span class="op">=</span>connections)</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>test_warns(<span class="kw">lambda</span>: ham.init_states(bs<span class="op">=</span><span class="dv">5</span>), show<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>vxs <span class="op">=</span> ham.init_states(bs<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>test_fail(ham.activations, args<span class="op">=</span>vxs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>UserWarning: Vectorize with `ham.vectorize()` before processing batched states
+  if bs is not None and bs &gt; 0: warn("Vectorize with `ham.vectorize()` before processing batched states")</code></pre>
+</div>
+</div>
+<div id="cell-81" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Do this</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>vham <span class="op">=</span> ham.vectorize()</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>vxs <span class="op">=</span> vham.init_states(bs<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>vxhats <span class="op">=</span> vham.activations(vxs)</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">all</span>(g.shape[<span class="dv">0</span>] <span class="op">==</span> <span class="dv">5</span> <span class="cf">for</span> g <span class="kw">in</span> vxhats.values()), <span class="st">"All activations should have batch dim"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/bhoov\.github\.io\/hamux");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/bhoov/hamux/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
